@@ -9,10 +9,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     private Button mStartActivityButton;
+    private CardView mMusicCardView;
+    private CardView mActivityCardView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -84,6 +88,27 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "isSpotifyInstalled: " + isSpotifyInstalled());
                 Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
                 Log.d(TAG, "isInternetConnection: " + isInternetConnection());
+            }
+        });
+        
+        mMusicCardView = findViewById(R.id.musicCV);
+        mMusicCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_MUSIC);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            }
+        });
+        mActivityCardView = findViewById(R.id.activityCV);
+        mActivityCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ChooseSportActivity.class);
+                startActivity(intent);
             }
         });
 
