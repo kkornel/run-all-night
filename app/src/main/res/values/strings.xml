@@ -16,4 +16,6 @@
     <string name="tab_text_3">Tab 3</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_choose_sport">ChooseSportActivity</string>
+    <string name="gps_tab_activities">GPS based</string>
+    <string name="non_gps_tab_activities">NON GPS</string>
 </resources>

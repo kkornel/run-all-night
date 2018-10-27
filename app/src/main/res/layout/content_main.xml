@@ -9,20 +9,20 @@
     tools:showIn="@layout/app_bar_main">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/welcomeCV"
+        android:id="@+id/welcomeCardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@android:color/background_light"
-        app:layout_constraintBottom_toTopOf="@+id/weatherCV"
+        app:layout_constraintBottom_toTopOf="@+id/weatherCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/welcomeCL"
+            android:id="@+id/welcomeConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -62,7 +62,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/weatherCV"
+        android:id="@+id/weatherCardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -73,35 +73,15 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeCV">
+        app:layout_constraintTop_toBottomOf="@+id/welcomeCardView">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/weatherCL"
+            android:id="@+id/weatherConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/weatherInfoTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="7dp"
-                android:text="Take a coat."
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/weatherTextView" />
-
-            <android.support.constraint.Guideline
-                android:id="@+id/horizontalMiddle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/weatherImageView"
                 android:layout_width="78dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -117,20 +97,6 @@
                 tools:src="@drawable/art_light_rain" />
 
             <TextView
-                android:id="@+id/tempTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="12\u00b0"
-                android:textColor="@android:color/black"
-                android:textSize="48sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
-
-            <TextView
                 android:id="@+id/weatherTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,9 +109,43 @@
                 app:layout_constraintBottom_toTopOf="@+id/weatherInfoTextView"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/weatherImageView"
+                app:layout_constraintTop_toTopOf="@+id/weatherImageView"
                 app:layout_constraintVertical_bias="0.52" />
+
+            <TextView
+                android:id="@+id/weatherInfoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="7dp"
+                android:text="Take a coat."
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/weatherImageView"
+                app:layout_constraintTop_toBottomOf="@+id/weatherTextView" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/horizontalMiddle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <TextView
+                android:id="@+id/tempTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="12\u00b0"
+                android:textColor="@android:color/black"
+                android:textSize="48sp"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/horizontalMiddle1"
+                app:layout_constraintTop_toTopOf="@+id/weatherImageView" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
@@ -161,7 +161,7 @@
         app:layout_constraintBottom_toTopOf="@+id/startActivityButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weatherCV">
+        app:layout_constraintTop_toBottomOf="@+id/weatherCardView">
 
         <!--<android.support.v7.widget.CardView-->
         <!--android:layout_width="match_parent"-->
@@ -178,7 +178,7 @@
         <!--</android.support.v7.widget.CardView>-->
 
         <android.support.v7.widget.CardView
-            android:id="@+id/activityCV"
+            android:id="@+id/activityCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
@@ -186,12 +186,12 @@
             app:cardBackgroundColor="@android:color/background_light">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/activityCL"
+                android:id="@+id/activityConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/activityImageView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -205,8 +205,15 @@
                     app:srcCompat="@drawable/bike_64dp"
                     tools:src="@drawable/ic_spotify" />
 
+                <android.support.constraint.Guideline
+                    android:id="@+id/horizontalMiddle2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/activityTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -216,7 +223,7 @@
                     android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/horizontalMiddle2"
-                    app:layout_constraintTop_toTopOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/activityImageView"
                     app:layout_constraintVertical_chainStyle="packed" />
 
                 <TextView
@@ -230,24 +237,17 @@
                     android:text="Running"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                    app:layout_constraintBottom_toBottomOf="@+id/activityImageView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/horizontalMiddle2"
-                    app:layout_constraintTop_toBottomOf="@+id/textView15"
+                    app:layout_constraintTop_toBottomOf="@+id/activityTextView"
                     app:layout_constraintVertical_bias="1.0" />
-
-                <android.support.constraint.Guideline
-                    android:id="@+id/horizontalMiddle2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/musicCV"
+            android:id="@+id/musicCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="4dp"
@@ -255,12 +255,12 @@
             app:cardBackgroundColor="@android:color/background_light">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/musicCL"
+                android:id="@+id/musicConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/musicImageView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -274,8 +274,15 @@
                     app:srcCompat="@drawable/ic_spotify"
                     tools:src="@drawable/ic_spotify" />
 
+                <android.support.constraint.Guideline
+                    android:id="@+id/horizontalMiddle3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/musicTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -285,10 +292,10 @@
                     android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/horizontalMiddle3"
-                    app:layout_constraintTop_toTopOf="@+id/imageView4" />
+                    app:layout_constraintTop_toTopOf="@+id/musicImageView" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/selectMusicTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -298,18 +305,12 @@
                     android:text="Select"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+                    app:layout_constraintBottom_toBottomOf="@+id/musicImageView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/horizontalMiddle3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView13"
+                    app:layout_constraintTop_toBottomOf="@+id/musicTextView"
                     app:layout_constraintVertical_bias="1.0" />
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/horizontalMiddle3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 

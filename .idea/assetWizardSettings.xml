@@ -66,11 +66,11 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="64" />
-                            <entry key="outputName" value="bike_64dp" />
+                            <entry key="height" value="48" />
+                            <entry key="outputName" value="ic_directions_bike_black_48dp" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Kornel" />
-                            <entry key="width" value="64" />
+                            <entry key="width" value="48" />
                           </map>
                         </option>
                       </PersistentState>
