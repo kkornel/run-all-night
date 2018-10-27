@@ -23,7 +23,7 @@
         </activity>
         <activity
             android:name=".ChooseSportActivity"
-            android:label="@string/title_activity_chooose_sport"
+            android:label="@string/title_activity_choose_sport"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
