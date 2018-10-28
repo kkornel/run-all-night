@@ -32,7 +32,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         // Called by the layout manager when it needs a new view
         Log.d(TAG, "onCreateViewHolder: ");
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.activity_list_item;
+        int layoutIdForListItem = R.layout.workout_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

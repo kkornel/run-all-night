@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.util.List;
 
-// import static com.example.kornel.alphaui.MainActivity.ACTIVITY_RESULT;
+import static com.example.kornel.alphaui.WorkoutFragment.ACTIVITY_RESULT;
 
 public class GpsBasedFragment extends Fragment implements
         ActivityAdapter.ListItemClickListener {
@@ -52,7 +52,7 @@ public class GpsBasedFragment extends Fragment implements
     public void onListItemClick(int clickedItemIndex) {
         Intent returnIntent = new Intent();
         String activity = mActivitiesList.get(clickedItemIndex);
-        // returnIntent.putExtra(ACTIVITY_RESULT, activity);
+        returnIntent.putExtra(ACTIVITY_RESULT, activity);
         getActivity().setResult(Activity.RESULT_OK, returnIntent);
         getActivity().finish();
     }
