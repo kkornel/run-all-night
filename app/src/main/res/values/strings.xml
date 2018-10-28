@@ -18,4 +18,5 @@
     <string name="title_activity_choose_sport">ChooseSportActivity</string>
     <string name="gps_tab_activities">GPS based</string>
     <string name="non_gps_tab_activities">NON GPS</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

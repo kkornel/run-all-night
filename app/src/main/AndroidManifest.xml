@@ -24,7 +24,10 @@
         <activity
             android:name=".ChooseSportActivity"
             android:label="@string/title_activity_choose_sport"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"></activity>
     </application>
 
 </manifest>
