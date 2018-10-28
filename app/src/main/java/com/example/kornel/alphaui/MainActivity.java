@@ -15,6 +15,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -37,32 +39,38 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    public static final String ACTIVITY_RESULT = "result";
+    final Fragment fragment1 = new FeedFragment();
+    final Fragment fragment2 = new WorkoutFragment();
+    final Fragment fragment3 = new MoreFragment();
+    final FragmentManager fm = getSupportFragmentManager();
+    Fragment active = fragment1;
 
-    private final int PICK_ACTIVITY_REQUEST = 1;
-
-    // Welcome CardView
-    private TextView mWelcomeTextView;
-    private TextView mLastTrainingTextView;
-
-    // Weather CardView
-    private CardView mWeatherCardView;
-    private ImageView mWeatherImageView;
-    private TextView mWeatherTextView;
-    private TextView mWeatherInfoTextView;
-    private TextView mTempTextView;
-
-    // Activity CardView
-    private CardView mActivityCardView;
-    private ImageView mActivityImageView;
-    private TextView mActivityNameTextView;
-
-    // Music CardView
-    private CardView mMusicCardView;
-    private ImageView mMusicImageView;
-    private TextView mSelectMusicTextView;
-
-    private Button mStartActivityButton;
+    // public static final String ACTIVITY_RESULT = "result";
+    //
+    // private final int PICK_ACTIVITY_REQUEST = 1;
+    //
+    // // Welcome CardView
+    // private TextView mWelcomeTextView;
+    // private TextView mLastTrainingTextView;
+    //
+    // // Weather CardView
+    // private CardView mWeatherCardView;
+    // private ImageView mWeatherImageView;
+    // private TextView mWeatherTextView;
+    // private TextView mWeatherInfoTextView;
+    // private TextView mTempTextView;
+    //
+    // // Activity CardView
+    // private CardView mActivityCardView;
+    // private ImageView mActivityImageView;
+    // private TextView mActivityNameTextView;
+    //
+    // // Music CardView
+    // private CardView mMusicCardView;
+    // private ImageView mMusicImageView;
+    // private TextView mSelectMusicTextView;
+    //
+    // private Button mStartActivityButton;
 
     private BottomNavigationView mBottomNavigationView;
 
@@ -73,13 +81,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mStartActivityButton.setText(R.string.title_home);
+                    // mStartActivityButton.setText(R.string.title_home);
+                    fm.beginTransaction().hide(active).show(fragment1).commit();
+                    active = fragment1;
                     return true;
                 case R.id.navigation_dashboard:
-                    mStartActivityButton.setText(R.string.title_dashboard);
+                    // mStartActivityButton.setText(R.string.title_dashboard);
+                    fm.beginTransaction().hide(active).show(fragment2).commit();
+                    active = fragment2;
                     return true;
                 case R.id.navigation_notifications:
-                    mStartActivityButton.setText(R.string.title_notifications);
+                    fm.beginTransaction().hide(active).show(fragment3).commit();
+                    active = fragment3;
+                    // mStartActivityButton.setText(R.string.title_notifications);
                     return true;
             }
             return false;
@@ -94,52 +108,56 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mWelcomeTextView = findViewById(R.id.welcomeTextView);
-        mLastTrainingTextView = findViewById(R.id.lastTrainingTextView);
+        fm.beginTransaction().add(R.id.main_container, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.main_container, fragment2, "2").hide(fragment2).commit();
+        fm.beginTransaction().add(R.id.main_container,fragment1, "1").commit();
 
-        mWeatherCardView = findViewById(R.id.weatherCardView);
-        mWeatherImageView = findViewById(R.id.weatherImageView);
-        mWeatherTextView = findViewById(R.id.weatherTextView);
-        mWeatherInfoTextView = findViewById(R.id.weatherInfoTextView);
-        mTempTextView = findViewById(R.id.tempTextView);
-
-        mActivityCardView = findViewById(R.id.activityCardView);
-        mActivityCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChooseSportActivity.class);
-                startActivityForResult(intent, PICK_ACTIVITY_REQUEST);
-            }
-        });
-        mActivityImageView = findViewById(R.id.activityImageView);
-        mActivityNameTextView = findViewById(R.id.activityNameTextView);
-
-        mMusicCardView = findViewById(R.id.musicCardView);
-        mMusicCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_MUSIC);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
-
-        mMusicImageView = findViewById(R.id.musicImageView);
-        mSelectMusicTextView = findViewById(R.id.selectMusicTextView);
-
-        mWeatherCardView = findViewById(R.id.weatherCardView);
-
-        mStartActivityButton = findViewById(R.id.startActivityButton);
-        mStartActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "isSpotifyInstalled: " + isSpotifyInstalled());
-                Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
-                Log.d(TAG, "isInternetConnection: " + isInternetConnection());
-            }
-        });
+        // mWelcomeTextView = findViewById(R.id.welcomeTextView);
+        // mLastTrainingTextView = findViewById(R.id.lastTrainingTextView);
+        //
+        // mWeatherCardView = findViewById(R.id.weatherCardView);
+        // mWeatherImageView = findViewById(R.id.weatherImageView);
+        // mWeatherTextView = findViewById(R.id.weatherTextView);
+        // mWeatherInfoTextView = findViewById(R.id.weatherInfoTextView);
+        // mTempTextView = findViewById(R.id.tempTextView);
+        //
+        // mActivityCardView = findViewById(R.id.activityCardView);
+        // mActivityCardView.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         Intent intent = new Intent(MainActivity.this, ChooseSportActivity.class);
+        //         startActivityForResult(intent, PICK_ACTIVITY_REQUEST);
+        //     }
+        // });
+        // mActivityImageView = findViewById(R.id.activityImageView);
+        // mActivityNameTextView = findViewById(R.id.activityNameTextView);
+        //
+        // mMusicCardView = findViewById(R.id.musicCardView);
+        // mMusicCardView.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         Intent intent = new Intent();
+        //         intent.setAction(Intent.ACTION_MAIN);
+        //         intent.addCategory(Intent.CATEGORY_APP_MUSIC);
+        //         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //         startActivity(intent);
+        //     }
+        // });
+        //
+        // mMusicImageView = findViewById(R.id.musicImageView);
+        // mSelectMusicTextView = findViewById(R.id.selectMusicTextView);
+        //
+        // mWeatherCardView = findViewById(R.id.weatherCardView);
+        //
+        // mStartActivityButton = findViewById(R.id.startActivityButton);
+        // mStartActivityButton.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         Log.d(TAG, "isSpotifyInstalled: " + isSpotifyInstalled());
+        //         Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
+        //         Log.d(TAG, "isInternetConnection: " + isInternetConnection());
+        //     }
+        // });
 
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -147,18 +165,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_ACTIVITY_REQUEST) {
-            if(resultCode == Activity.RESULT_OK){
-                String result = data.getStringExtra(ACTIVITY_RESULT);
-                mActivityNameTextView.setText(result);
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
-    }
+    // @Override
+    // protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    //     if (requestCode == PICK_ACTIVITY_REQUEST) {
+    //         if(resultCode == Activity.RESULT_OK){
+    //             String result = data.getStringExtra(ACTIVITY_RESULT);
+    //             mActivityNameTextView.setText(result);
+    //         }
+    //         if (resultCode == Activity.RESULT_CANCELED) {
+    //             //Write your code if there's no result
+    //         }
+    //     }
+    // }
 
     private boolean isSpotifyInstalled() {
         PackageManager pm = getPackageManager();
