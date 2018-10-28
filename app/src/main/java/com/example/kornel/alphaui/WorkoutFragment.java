@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -21,10 +20,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class WorkoutFragment extends Fragment {
     private static final String TAG = "WorkoutFragment";
 
@@ -57,7 +52,6 @@ public class WorkoutFragment extends Fragment {
     public WorkoutFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -165,5 +159,4 @@ public class WorkoutFragment extends Fragment {
                 activeNetwork.isConnectedOrConnecting();
         return isConnected;
     }
-
 }

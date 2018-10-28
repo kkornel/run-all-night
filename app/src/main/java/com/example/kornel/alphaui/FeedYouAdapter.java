@@ -14,38 +14,38 @@ import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder> {
+public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
     private List<String> mActivities;
 
-    public ActivityAdapter(ListItemClickListener onClickListener, List<String> activities) {
+    public FeedYouAdapter(ListItemClickListener onClickListener, List<String> activities) {
         mOnClickListener = onClickListener;
         mActivities = activities;
     }
 
     @Override
-    public ActivityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FeedYouViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.workout_list_item;
+        int layoutIdForListItem = R.layout.feed_you_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        ActivityViewHolder activityViewHolder = new ActivityViewHolder(view);
+        FeedYouViewHolder activityViewHolder = new FeedYouViewHolder(view);
 
         return activityViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ActivityViewHolder activityViewHolder, int position) {
+    public void onBindViewHolder(@NonNull FeedYouViewHolder activityViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
         if ((mActivities == null) || (mActivities.size() == 0)) {
-            activityViewHolder.mActivityTextView.setText("ERROR");
+            activityViewHolder.mDateTextView.setText("ERROR");
         } else {
-            activityViewHolder.mActivityTextView.setText(mActivities.get(position));
+            activityViewHolder.mDateTextView.setText(mActivities.get(position));
         }
 
         // Googles way
@@ -62,20 +62,27 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         notifyDataSetChanged();
     }
 
-    class ActivityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mActivityImageView;
-        private TextView mActivityTextView;
+    class FeedYouViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private static final String TAG = "FeedYouViewHolder";
 
-        public ActivityViewHolder(View itemView) {
+        private ImageView mActivityImageView;
+        private TextView mDateTextView;
+        private TextView mDistanceTextView;
+        private TextView mDuartionTextView;
+
+        public FeedYouViewHolder(View itemView) {
             super(itemView);
+            Log.d(TAG, "ActivityViewHolder: ");
             this.mActivityImageView = itemView.findViewById(R.id.activityImageView);
-            this.mActivityTextView = itemView.findViewById(R.id.activityTextView);
+            this.mDateTextView = itemView.findViewById(R.id.dateTextView);
+            this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
+            this.mDuartionTextView = itemView.findViewById(R.id.durationTextView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d("s", "onClick: ");
+            Log.d(TAG, "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

@@ -13,6 +13,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
+import com.example.kornel.alphaui.utils.GpsBasedActivity;
+import com.example.kornel.alphaui.utils.NonGpsBasedActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class ChooseSportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_workout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Create the adapter that will return a fragment for each of the three
@@ -63,68 +66,6 @@ public class ChooseSportActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED, returnIntent);
         finish();
     }
-
-    // // A placeholder fragment containing a simple view.
-    // public static class PlaceholderFragment extends Fragment implements
-    //         ActivityAdapter.ListItemClickListener {
-    //     private static final String ARG_SECTION_NUMBER = "section_number";
-    //
-    //     private ActivityAdapter mActivityAdapter;
-    //     private RecyclerView mRecyclerView;
-    //
-    //     private List<String> mActivitiesList = new ArrayList<>();
-    //
-    //
-    //     public PlaceholderFragment() {
-    //     }
-    //
-    //     // Returns a new instance of this fragment for the given section number.
-    //     public static PlaceholderFragment newInstance(int sectionNumber) {
-    //         Log.d("kurr", "newInstance: ");
-    //         PlaceholderFragment fragment = new PlaceholderFragment();
-    //         Bundle args = new Bundle();
-    //         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-    //         fragment.setArguments(args);
-    //         return fragment;
-    //     }
-    //
-    //     @Override
-    //     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-    //                              Bundle savedInstanceState) {
-    //         Log.d("kurr", "onCreateView: ");
-    //         View rootView = inflater.inflate(R.layout.fragment_choose_sport, container, false);
-    //
-    //         mRecyclerView = rootView.findViewById(R.id.activitiesRecyclerView);
-    //         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-    //         mRecyclerView.setLayoutManager(linearLayoutManager);
-    //         mRecyclerView.setHasFixedSize(true);
-    //
-    //         // TODO change 100
-    //
-    //         mActivitiesList.add("22");
-    //         mActivitiesList.add("22");
-    //         mActivitiesList.add("22");
-    //         mActivitiesList.add("22");
-    //          mActivityAdapter = new ActivityAdapter(this, mActivitiesList);
-    //         mRecyclerView.setAdapter(mActivityAdapter);
-    //
-    //
-    //         return rootView;
-    //     }
-    //
-    //     @Override
-    //     public void onListItemClick(int clickedItemIndex) {
-    //         // if (mToast != null) {
-    //         //     mToast.cancel();
-    //         // }
-    //         Log.d("kur", "onListItemClick: ");
-    //         String msg = "Clicked: " + clickedItemIndex;
-    //         Log.d("kur", "onListItemClick: " + msg);
-    //         // mToast = Toast.makeText(getContext(), msg, Toast.LENGTH_LONG);
-    //         // mToast.show();
-    //     }
-    // }
-
 
     // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
     // one of the sections/tabs/pages.
