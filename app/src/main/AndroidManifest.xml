@@ -25,6 +25,7 @@
             android:name=".ChooseSportActivity"
             android:label="@string/title_activity_choose_sport"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>
