@@ -17,10 +17,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
 
-    private EditText mfirstNameEditText;
+    private EditText mFirstNameEditText;
     private EditText mSurnameEditText;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
@@ -36,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        mfirstNameEditText = findViewById(R.id.firstNameEditText);
+        mFirstNameEditText = findViewById(R.id.firstNameEditText);
         mSurnameEditText = findViewById(R.id.surnameEditText);
         mEmailEditText = findViewById(R.id.emailEditText);
         mPasswordEditText = findViewById(R.id.passwordEditText);
@@ -45,22 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount("","");
+                onRegisterClicked();
             }
         });
 
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void createAccount(String email, String password) {
+    private void createAccount(String firstName, String surname, String email, String password) {
         Log.d(TAG, "createAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
 
         showProgressDialog();
 
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -69,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            sendEmailVerification(user);
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -83,21 +83,11 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void sendEmailVerification() {
-        // Disable button
-        // findViewById(R.id.verifyEmailButton).setEnabled(false);
-
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
+    private void sendEmailVerification(final FirebaseUser user) {
         user.sendEmailVerification()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        // Re-enable button
-                        // findViewById(R.id.verifyEmailButton).setEnabled(true);
-
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this,
                                     "Verification email sent to " + user.getEmail(),
@@ -108,21 +98,32 @@ public class RegisterActivity extends AppCompatActivity {
                                     "Failed to send verification email.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        // [END_EXCLUDE]
                     }
                 });
-        // [END send_email_verification]
     }
+
+    private void onRegisterClicked() {
+        if (!validateForm()) {
+            return;
+        }
+        String firstName = mFirstNameEditText.getText().toString();
+        String surname = mSurnameEditText.getText().toString();
+        String email = mEmailEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+
+        createAccount(firstName, surname, email, password);
+    }
+
 
     private boolean validateForm() {
         boolean valid = true;
 
-        String firstName = mfirstNameEditText.getText().toString();
+        String firstName = mFirstNameEditText.getText().toString();
         if (TextUtils.isEmpty(firstName)) {
-            mfirstNameEditText.setError("Required.");
+            mFirstNameEditText.setError("Required.");
             valid = false;
         } else {
-            mfirstNameEditText.setError(null);
+            mFirstNameEditText.setError(null);
         }
 
         String surname = mSurnameEditText.getText().toString();
@@ -137,11 +138,31 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(email)) {
             mEmailEditText.setError("Required.");
             valid = false;
+        } else if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            mEmailEditText.setError("Invalid email.");
+            valid = false;
         } else {
             mEmailEditText.setError(null);
         }
 
         String password = mPasswordEditText.getText().toString();
+        String confirmPassword = mConfirmPasswordEditText.getText().toString();
+        if (!password.equals(confirmPassword)) {
+            mPasswordEditText.setError("Passwords do not match.");
+            mConfirmPasswordEditText.setError("Passwords do not match.");
+            valid = false;
+        } else {
+            mPasswordEditText.setError(null);
+            mConfirmPasswordEditText.setError(null);
+        }
+
+        if (!isValidPassword(password)) {
+            mPasswordEditText.setError("Valid.. 8chars etc..");
+            valid = false;
+        } else {
+            mPasswordEditText.setError(null);
+        }
+
         if (TextUtils.isEmpty(password)) {
             mPasswordEditText.setError("Required.");
             valid = false;
@@ -149,8 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
             mPasswordEditText.setError(null);
         }
 
-        String confirmPassword = mConfirmPasswordEditText.getText().toString();
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(confirmPassword)) {
             mConfirmPasswordEditText.setError("Required.");
             valid = false;
         } else {
@@ -158,6 +178,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    private boolean isValidPassword(final String password) {
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 
     private void updateUI(FirebaseUser user) {
