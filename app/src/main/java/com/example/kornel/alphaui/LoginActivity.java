@@ -3,15 +3,19 @@ package com.example.kornel.alphaui;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,41 +25,31 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    public static final String INTENT_EXTRA_FIREBASE_USER = "firebase-user";
+    public static final String INTENT_EXTRA_FIREBASE_USER = "firebase_user";
+    public static final String INTENT_EXTRA_USER_EMAIL = "user_email";
 
-    private FirebaseAuth mAuth;
+    private Toolbar mToolbar;
+    private TextView mTitle;
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private Button mLoginButton;
-    private Button mRegisterButton;
+    private Button mCreateAccountButton;
 
+    private FirebaseAuth mAuth;
 
-    public ProgressDialog mProgressDialog;
-
-    public void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
-
-    public void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        mToolbar = findViewById(R.id.toolbar);
+        // setSupportActionBar(mToolbar);
+        // getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // mTitle = mToolbar.findViewById(R.id.toolbar_title);
 
         mEmailEditText = findViewById(R.id.emailEditText);
         mPasswordEditText = findViewById(R.id.passwordEditText);
@@ -63,32 +57,40 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(mEmailEditText.getText().toString(), mEmailEditText.getText().toString());
+                signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
             }
         });
-        mRegisterButton = findViewById(R.id.registerButton);
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+        mCreateAccountButton = findViewById(R.id.createAccountButton);
+        mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
             }
         });
+
+        if (getIntent().getExtras() != null) {
+            String email = getIntent().getStringExtra(INTENT_EXTRA_USER_EMAIL);
+            mEmailEditText.setText(email);
+        }
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // Intent mainActivityIntent = new Intent(this, MainActivity.class);
-            // mainActivityIntent.putExtra(INTENT_EXTRA_FIREBASE_USER, currentUser);
-            // startActivity(mainActivityIntent);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // login(user);
         }
     }
 
     private void signIn(String email, String password) {
+        Utils.hideKeyboard(this);
+
         if (!validateForm()) {
             return;
         }
@@ -101,18 +103,38 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            hideProgressDialog();
+
+                            if (!user.isEmailVerified()) {
+                                Snackbar.make(
+                                        mLoginButton,
+                                        "Email is not verified.",
+                                        Snackbar.LENGTH_LONG)
+                                        .show();
+                                return;
+                            }
+
+                            login(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            Log.e(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Authentication failed.",
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            hideProgressDialog();
                         }
                     }
                 });
+    }
+
+    private void login(FirebaseUser user) {
+        // TODO: Do I need to send user as extra?
+        Intent loginIntent = new Intent(this, MainActivity.class);
+        loginIntent.putExtra(INTENT_EXTRA_FIREBASE_USER, user);
+        startActivity(loginIntent);
     }
 
     private boolean validateForm() {
@@ -137,7 +159,19 @@ public class LoginActivity extends AppCompatActivity {
         return valid;
     }
 
-    private void updateUI(FirebaseUser user) {
-        hideProgressDialog();
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Processing...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 }

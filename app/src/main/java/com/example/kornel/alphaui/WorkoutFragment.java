@@ -20,6 +20,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.utils.Database;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class WorkoutFragment extends Fragment {
     private static final String TAG = "WorkoutFragment";
 
@@ -48,6 +54,9 @@ public class WorkoutFragment extends Fragment {
     private TextView mSelectMusicTextView;
 
     private Button mStartActivityButton;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     public WorkoutFragment() {
         // Required empty public constructor
@@ -105,8 +114,25 @@ public class WorkoutFragment extends Fragment {
                 Log.d(TAG, "isInternetConnection: " + isInternetConnection());
             }
         });
-        
+
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        String userUid = mUser.getUid();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = database.getReference(Database.USERS);
+
+        // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
+        // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
+        // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
     }
 
     @Override
