@@ -94,13 +94,14 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             hideProgressDialog();
 
+                            // TODO: Enable this
                             if (!user.isEmailVerified()) {
                                 Snackbar.make(
                                         mLoginButton,
                                         R.string.login_email_not_verified,
                                         Snackbar.LENGTH_LONG)
                                         .show();
-                                return;
+                                // return;
                             }
 
                             login(user);

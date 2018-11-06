@@ -1,7 +1,5 @@
 package com.example.kornel.alphaui;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,29 +7,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_FIREBASE_USER;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
     private FirebaseUser mUser;
 
     private Toolbar mToolbar;
@@ -60,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     mToolbar.setNavigationIcon(null);
                     invalidateOptionsMenu();
                     return true;
+
                 case R.id.navigation_workout:
                     fragmentManager.beginTransaction().hide(active).show(workoutFragment).commit();
                     active = workoutFragment;
@@ -69,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     invalidateOptionsMenu();
                     mToolbar.setNavigationIcon(null);
                     return true;
+
                 case R.id.navigation_more:
                     fragmentManager.beginTransaction().hide(active).show(moreFragment).commit();
                     active = moreFragment;
@@ -102,21 +90,17 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView.setSelectedItemId(R.id.navigation_workout);
 
         mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
-
         getMenuInflater().inflate(R.menu.settings_menu, menu);
 
         if (mBottomNavigationView.getSelectedItemId() == R.id.navigation_feed
                 || mBottomNavigationView.getSelectedItemId() == R.id.navigation_workout) {
             MenuItem item = menu.findItem(R.id.settings_menu_item);
             item.setVisible(false);
-            return true;
         }
         return true;
     }

@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -21,10 +22,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class WorkoutFragment extends Fragment {
     private static final String TAG = "WorkoutFragment";
@@ -127,9 +132,24 @@ public class WorkoutFragment extends Fragment {
 
         String userUid = mUser.getUid();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference(Database.USERS);
 
+        ValueEventListener userInfoListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                User user = dataSnapshot.getValue(User.class);
+                mWelcomeTextView.setText(user.getFirstName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
         // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
         // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
         // usersRef.child(userUid).child(Database.EMAIL).setValue(email);

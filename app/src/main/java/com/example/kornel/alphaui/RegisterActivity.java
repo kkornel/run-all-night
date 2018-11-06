@@ -14,6 +14,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -97,9 +98,13 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference usersRef = database.getReference(Database.USERS);
 
-                            usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
-                            usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
-                            usersRef.child(userUid).child(Database.EMAIL).setValue(email);
+                            // TODO: Here was a change
+                            User newUser = new User(firstName, surname, email);
+                            usersRef.child(userUid).setValue(newUser);
+
+                            // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
+                            // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
+                            // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
 
                             hideProgressDialog();
                             backToLogin(email);
