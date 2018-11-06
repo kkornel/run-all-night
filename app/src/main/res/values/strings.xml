@@ -14,6 +14,41 @@
     <string name="non_gps_tab_activities">NON GPS</string>
     <string name="title_activity_main2">Main2Activity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Register -->
+
+    <string name="register_toolbar_title">Utwórz konto</string>
+    <string name="register_email_in_use">Podany adres email jest zajęty.</string>
+    <string name="register_forget_password">Zapomniałeś hasła?</string>
+    <string name="register_password_reset">Hasło zostało zresetowane. Sprawdź swoją skrzynkę pocztową.</string>
+    <string name="register_successful">Konto zostało utworzone. Email weryfikacyjny został wysłany.</string>
+    <string name="register_failed">Nie można wysłać wiadomości weryfikacyjnej.</string>
+    <string name="register_required">To pole jest wymagane.</string>
+    <string name="register_not_valid_name">Pole to nie może zawierać cyfr, spacji ani znaków specjalnych.</string>
+    <string name="register_invalid_email">Niepoprawny adres email.</string>
+    <string name="register_passwords_not_match">Hasła nie są identyczne!</string>
+    <string name="register_password_validation">Hasło musi mieć długość conajmniej 8 znaków, zawierać małe i duże litery, znak specjalny i cyfrę.</string>
+    <string name="register_progress_dialog">Proszę czekać...</string>
+
+    <string name="register_first_name_hint">Imię</string>
+    <string name="register_surname_hint">Nazwisko</string>
+    <string name="register_email_hint">Adres email</string>
+    <string name="register_password_hint">Hasło</string>
+    <string name="register_confirm_password_hint">Potwierdź hasło</string>
+
+    <string name="register_register_button">Utwórz konto</string>
+    <string name="register_back_to_login_button">Powrót do logowania</string>
+
+    <!-- Login -->
+
+    <string name="login_toolbar_title">Logowanie</string>
+    <string name="login_required">To pole jest wymagane</string>
+    <string name="login_progress_dialog">Logowanie...</string>
+    <string name="login_email_not_verified">Adres email nie jest zweryfikowany.</string>
+    <string name="login_failed">Niepoprawny email lub hasło.</string>
+
+    <string name="login_email_hint">Adres email</string>
+    <string name="login_password_hint">Hasło</string>
+
+    <string name="login_login_button">Zaloguj</string>
+    <string name="login_create_account_button">Utwórz konto</string>
 </resources>

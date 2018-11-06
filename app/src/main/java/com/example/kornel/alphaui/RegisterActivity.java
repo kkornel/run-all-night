@@ -7,11 +7,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.Utils;
@@ -28,7 +28,12 @@ import java.util.regex.Pattern;
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
 public class RegisterActivity extends AppCompatActivity {
-    private static final String TAG = "RegisterActivity";
+    private static final String NAME_REGEX = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$";
+    private static final String SPECIAL_CHARS_REGEX = "[^a-z0-9 ]";
+    private static final String UPPER_CASE_REGEX = "[A-Z ]";
+    private static final String LOWER_CASE_REGEX = "[a-z ]";
+    private static final String DIGITS_REGEX = "[0-9 ]";
+    private static final int PASSWORD_MIN_LENGTH = 8;
 
     private EditText mFirstNameEditText;
     private EditText mSurnameEditText;
@@ -46,6 +51,11 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+
+        getSupportActionBar().setTitle(R.string.register_toolbar_title);
 
         mFirstNameEditText = findViewById(R.id.firstNameEditText);
         mSurnameEditText = findViewById(R.id.surnameEditText);
@@ -71,8 +81,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createAccount(final String firstName, final String surname, final String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
-
         showProgressDialog();
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -81,7 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification(user);
 
@@ -98,15 +105,36 @@ public class RegisterActivity extends AppCompatActivity {
                             backToLogin(email);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.e(TAG, "createUserWithEmail:failure", task.getException());
                             Snackbar.make(
                                     mRegisterButton,
-                                    task.getException().getMessage(),
-                                    Snackbar.LENGTH_LONG)
+                                    R.string.register_email_in_use,
+                                    Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(R.string.register_forget_password, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            resetPassword(email);
+                                        }
+                                    })
                                     .show();
                         }
 
                         hideProgressDialog();
+                    }
+                });
+    }
+
+    private void resetPassword(String emailAddress) {
+        mAuth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Snackbar.make(
+                                    mRegisterButton,
+                                    R.string.register_password_reset,
+                                    Snackbar.LENGTH_LONG)
+                                    .show();
+                        }
                     }
                 });
     }
@@ -127,14 +155,13 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(
                                     RegisterActivity.this,
-                                    "Successfully created account. \nVerification email send.",
+                                    getString(R.string.register_successful),
                                     Toast.LENGTH_LONG)
                                     .show();
                         } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
                             Snackbar.make(
                                     mRegisterButton,
-                                    "Failed to send verification email.",
+                                    R.string.register_failed,
                                     Snackbar.LENGTH_LONG)
                                     .show();
                         }
@@ -160,12 +187,12 @@ public class RegisterActivity extends AppCompatActivity {
         boolean valid = true;
 
         String firstName = mFirstNameEditText.getText().toString();
-        Pattern namePattern = Pattern.compile("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+        Pattern namePattern = Pattern.compile(NAME_REGEX);
         if (TextUtils.isEmpty(firstName)) {
-            mFirstNameEditText.setError("Required.");
+            mFirstNameEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (!namePattern.matcher(firstName).find()) {
-            mFirstNameEditText.setError("Not valid");
+            mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
             mFirstNameEditText.setError(null);
@@ -173,10 +200,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         String surname = mSurnameEditText.getText().toString();
         if (TextUtils.isEmpty(surname)) {
-            mSurnameEditText.setError("Required.");
+            mSurnameEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (!namePattern.matcher(surname).find()) {
-            mSurnameEditText.setError("Not valid");
+            mSurnameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
             mSurnameEditText.setError(null);
@@ -184,10 +211,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         String email = mEmailEditText.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmailEditText.setError("Required.");
+            mEmailEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmailEditText.setError("Invalid email.");
+            mEmailEditText.setError(getString(R.string.register_invalid_email));
             valid = false;
         } else {
             mEmailEditText.setError(null);
@@ -195,18 +222,18 @@ public class RegisterActivity extends AppCompatActivity {
 
         String password = mPasswordEditText.getText().toString();
         String confirmPassword = mConfirmPasswordEditText.getText().toString();
-        if (!password.equals(confirmPassword)) {
-            mPasswordEditText.setError("Passwords do not match.");
-            mConfirmPasswordEditText.setError("Passwords do not match.");
+        if (!isPasswordValid(password)) {
+            mPasswordEditText.setError(getString(R.string.register_password_validation));
             valid = false;
-        } else if (!isPasswordValid(password)) {
-            mPasswordEditText.setError("Valid.. 8chars etc..");
+        } else if (!password.equals(confirmPassword)) {
+            mPasswordEditText.setError(getString(R.string.register_passwords_not_match));
+            mConfirmPasswordEditText.setError(getString(R.string.register_passwords_not_match));
             valid = false;
         } else if (TextUtils.isEmpty(password)) {
-            mPasswordEditText.setError("Required.");
+            mPasswordEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (TextUtils.isEmpty(confirmPassword)) {
-            mConfirmPasswordEditText.setError("Required.");
+            mConfirmPasswordEditText.setError(getString(R.string.register_required));
             valid = false;
         } else {
             mPasswordEditText.setError(null);
@@ -217,13 +244,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        Pattern specialCharsPattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile("[A-Z ]");
-        Pattern lowerCasePattern = Pattern.compile("[a-z ]");
-        Pattern digitsPattern = Pattern.compile("[0-9 ]");
-        int passwordMinLength = 8;
+        Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
+        Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
+        Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
+        Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
 
-        if (password.length() < passwordMinLength) {
+        if (password.length() < PASSWORD_MIN_LENGTH) {
             return false;
         }
         if (!specialCharsPattern.matcher(password).find()) {
@@ -238,14 +264,13 @@ public class RegisterActivity extends AppCompatActivity {
         if (!digitsPattern.matcher(password).find()) {
             return false;
         }
-
         return true;
     }
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Processing...");
+            mProgressDialog.setMessage(getString(R.string.register_progress_dialog));
             mProgressDialog.setIndeterminate(true);
         }
 

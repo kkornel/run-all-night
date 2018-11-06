@@ -6,13 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Utils;
@@ -23,13 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "LoginActivity";
-
     public static final String INTENT_EXTRA_FIREBASE_USER = "firebase_user";
     public static final String INTENT_EXTRA_USER_EMAIL = "user_email";
-
-    private Toolbar mToolbar;
-    private TextView mTitle;
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
@@ -45,11 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mToolbar = findViewById(R.id.toolbar);
-        // setSupportActionBar(mToolbar);
-        // getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        // mTitle = mToolbar.findViewById(R.id.toolbar_title);
+        getSupportActionBar().setTitle(R.string.login_toolbar_title);
 
         mEmailEditText = findViewById(R.id.emailEditText);
         mPasswordEditText = findViewById(R.id.passwordEditText);
@@ -109,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (!user.isEmailVerified()) {
                                 Snackbar.make(
                                         mLoginButton,
-                                        "Email is not verified.",
+                                        R.string.login_email_not_verified,
                                         Snackbar.LENGTH_LONG)
                                         .show();
                                 return;
@@ -118,11 +106,10 @@ public class LoginActivity extends AppCompatActivity {
                             login(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.e(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(
-                                    LoginActivity.this,
-                                    "Authentication failed.",
-                                    Toast.LENGTH_SHORT)
+                            Snackbar.make(
+                                    mLoginButton,
+                                    R.string.login_failed,
+                                    Snackbar.LENGTH_LONG)
                                     .show();
                             hideProgressDialog();
                         }
@@ -142,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = mEmailEditText.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmailEditText.setError("Required.");
+            mEmailEditText.setError(getString(R.string.login_required));
             valid = false;
         } else {
             mEmailEditText.setError(null);
@@ -150,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String password = mPasswordEditText.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPasswordEditText.setError("Required.");
+            mPasswordEditText.setError(getString(R.string.login_required));
             valid = false;
         } else {
             mPasswordEditText.setError(null);
@@ -162,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Processing...");
+            mProgressDialog.setMessage(getString(R.string.login_progress_dialog));
             mProgressDialog.setIndeterminate(true);
         }
 
