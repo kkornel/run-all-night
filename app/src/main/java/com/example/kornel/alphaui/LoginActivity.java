@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -69,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        // TODO: Enable this
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -105,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             login(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Snackbar.make(
                                     mLoginButton,
                                     R.string.login_failed,
