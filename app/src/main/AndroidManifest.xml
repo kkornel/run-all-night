@@ -35,7 +35,13 @@
             android:label="@string/title_activity_choose_sport"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".test"></activity>
+        <activity android:name=".test" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".WorkoutSummary"></activity>
     </application>
 
 </manifest>
