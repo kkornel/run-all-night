@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.utils;
 
 public enum NonGpsBasedActivity  {
     AEROBICS("Aerobics"),

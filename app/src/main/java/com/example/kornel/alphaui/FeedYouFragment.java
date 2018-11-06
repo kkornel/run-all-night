@@ -1,7 +1,5 @@
 package com.example.kornel.alphaui;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,21 +14,19 @@ import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-import static com.example.kornel.alphaui.WorkoutFragment.ACTIVITY_RESULT;
+public class FeedYouFragment extends Fragment implements ListItemClickListener {
+    private static final String TAG = "FeedYouFragment";
 
-public class GpsBasedFragment extends Fragment implements ListItemClickListener {
-    private static final String TAG = "GpsBasedFragment";
-
-    private ActivityAdapter mActivityAdapter;
+    private FeedYouAdapter mFeedYouAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mActivitiesList;
+    private List<String> mFeedYouList;
 
-    public GpsBasedFragment() {
+    public FeedYouFragment() {
     }
 
-    public void setActivitiesList(List<String> activitiesList) {
-        mActivitiesList = activitiesList;
+    public void setFeedYouList(List<String> feedYouList) {
+        mFeedYouList = feedYouList;
     }
 
     @Override
@@ -38,6 +34,7 @@ public class GpsBasedFragment extends Fragment implements ListItemClickListener 
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         Log.d(TAG, "onCreateView: ");
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -45,18 +42,14 @@ public class GpsBasedFragment extends Fragment implements ListItemClickListener 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mActivityAdapter = new ActivityAdapter(this, mActivitiesList);
-        mRecyclerView.setAdapter(mActivityAdapter);
+        mFeedYouAdapter = new FeedYouAdapter(this, mFeedYouList);
+        mRecyclerView.setAdapter(mFeedYouAdapter);
 
         return rootView;
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Intent returnIntent = new Intent();
-        String activity = mActivitiesList.get(clickedItemIndex);
-        returnIntent.putExtra(ACTIVITY_RESULT, activity);
-        getActivity().setResult(Activity.RESULT_OK, returnIntent);
-        getActivity().finish();
+        Log.d(TAG, "onListItemClick: ");
     }
 }
