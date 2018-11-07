@@ -17,7 +17,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.NotificationUtils;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,36 @@ public class LocationTrackingService extends Service {
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The desired interval for location updates. Inexact. Updates may be more or less frequent.
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+    // The fastest rate for active location updates. Updates will never be more frequent than this value.
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    // Provides access to the Fused Location Provider API.
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    // Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderApi}.
+    private LocationRequest mLocationRequest;
+
+    // Callback for changes in location.
+    private LocationCallback mLocationCallback;
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    private List<LatLng> mTestCoordinates;
+    private List<LatLng> mTestCoordinates2;
+
+    private CurrentActivity mCurrentActivity;
+
+    private int i = -1;
+
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
     // Binder given to clients
     private final IBinder mBinder = new LocationTrackingBinder();
 
@@ -46,7 +81,6 @@ public class LocationTrackingService extends Service {
     private ServiceCallbacks mServiceCallbacks;
 
     private List<LatLng> mCoordinates;
-    private List<LatLng> mTestCoordinates;
 
     private boolean mIsTrainingPaused;
     private boolean mCameFromNotification;
@@ -92,16 +126,28 @@ public class LocationTrackingService extends Service {
             @Override
             public void run() {
                 // TODO replace with activity name
-                String ch183 =  Character.toString ((char) 183);
-                String ch187 =  Character.toString ((char) 187);
+                String ch183 = Character.toString((char) 183);
+                String ch187 = Character.toString((char) 187);
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
-                String message = "Run " + ch187 + "  " + mStopwatch.getTimeString() + "  "  + ch187 + "  3.54km";
+                String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  3.54km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
             }
         };
+    }
+
+    public String getTime() {
+        if (mCurrentActivity != null) {
+            return mCurrentActivity.getTime();
+        } else {
+            return "00:00:00";
+        }
+    }
+
+    public List<LatLng> getPath() {
+        return mCurrentActivity.getPath();
     }
 
     @Override
@@ -148,7 +194,7 @@ public class LocationTrackingService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
-        if(mLocationManager != null && mLocationListener != null) {
+        if (mLocationManager != null && mLocationListener != null) {
             Log.d(TAG, "onDestroy: ");
             mLocationManager.removeUpdates(mLocationListener);
         }
@@ -157,7 +203,9 @@ public class LocationTrackingService extends Service {
     private void startForegroundService() {
         Log.d(TAG, "startForegroundService: ");
 
-        mStopwatch.startStopwatch();
+        // mStopwatch.startStopwatch();
+
+        mCurrentActivity = new CurrentActivity();
 
         mLocationListener = new LocationListener() {
             @Override
@@ -168,11 +216,16 @@ public class LocationTrackingService extends Service {
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
+
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
 
         try {
@@ -207,10 +260,11 @@ public class LocationTrackingService extends Service {
     public void resumeSportActivity() {
         Log.d(TAG, "resumeSportActivity: ");
         mIsTrainingPaused = false;
-        mStopwatch.startStopwatch();
+        // mStopwatch.startStopwatch();
+        mCurrentActivity.startStopwatch();
         startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
-
+        onNewLocation(null);
         if (mCameFromNotification) {
             if (mServiceCallbacks != null) {
                 mServiceCallbacks.updateButtons(false);
@@ -222,9 +276,11 @@ public class LocationTrackingService extends Service {
     public void pauseSportActivity() {
         Log.d(TAG, "pauseSportActivity: ");
         mIsTrainingPaused = true;
-        mStopwatch.pauseStopwatch();
+        // mStopwatch.pauseStopwatch();
+        mCurrentActivity.pauseStopwatch();
         stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
+        onNewLocation(null);
 
         if (mCameFromNotification) {
             if (mServiceCallbacks != null) {
@@ -234,16 +290,53 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    private void onNewLocation(Location location) {
+    private void onNewLocation(Location newLocation) {
         // TODO calculate everything
-        Log.d(TAG, "onNewLocation: " + location);
+        Log.d(TAG, "onNewLocation: " + newLocation);
+
+        if (i == -1) {
+            i++;
+            return;
+        }
+
+        if (i >= mTestCoordinates.size())
+            return;
+
+        newLocation = new Location(LocationManager.GPS_PROVIDER);
+        newLocation.setLatitude(mTestCoordinates.get(i).latitude);
+        newLocation.setLongitude(mTestCoordinates.get(i).longitude);
+
+        // I have a new Location
+        // Create LatLng based on new Location
+        LatLng newLatLng = new LatLng(newLocation.getLatitude(), newLocation.getLongitude());
+
+        // Move camera to new position
+        // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
+
+        // Add new LatLng to the path
+        mCurrentActivity.addLatLngToPath(newLatLng);
+
+        // Calculate distance between two previous locations
+        mCurrentActivity.calculateDistanceBetweenTwoLastLocations();
+
+        if (i < 1) {
+            // mPolylineOptions = new PolylineOptions()
+            //         .add(newLatLng);
+            // mPolyline = mMap.addPolyline(mPolylineOptions);
+            mTestCoordinates2 = new ArrayList<>();
+            mTestCoordinates2.add(newLatLng);
+        } else {
+            mTestCoordinates2.add(newLatLng);
+            // mPolyline.setPoints(mTestCoordinates2);
+        }
+
+        i++;
 
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putExtra("lat", location.getLatitude());
-        intent.putExtra("lng", location.getLongitude());
-        sendBroadcast(intent);
-        mCoordinates.add(new LatLng(location.getLatitude(), location.getLongitude()));
-        mStopwatch.makeLap();
+        intent.putParcelableArrayListExtra("arr", mCurrentActivity.getPath());
+
+
+        // mDistanceTV.setText(String.valueOf(mCurrentActivity.getDistance()));
     }
 
     private void startNotificationHandler() {
@@ -261,6 +354,7 @@ public class LocationTrackingService extends Service {
      */
     public class LocationTrackingBinder extends Binder {
         private static final String TAG = "LocationTrackingBinder";
+
         LocationTrackingService getService() {
             Log.d(TAG, "getService: ");
             // Return this instance of LocationTrackingBinder so clients can call public methods
@@ -272,7 +366,9 @@ public class LocationTrackingService extends Service {
         mServiceCallbacks = serviceCallbacks;
     }
 
-    /** method for clients */
+    /**
+     * method for clients
+     */
     public List<LatLng> getLatLngArray() {
         Log.d(TAG, "getLatLngArray: ");
         return mCoordinates;

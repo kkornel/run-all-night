@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,20 @@ public class MainDetailsFragment extends Fragment {
     String avg;
     String current;
 
+    private Handler mTimeHandler;
+    private Runnable mTimeRunnable;
+
+    private OnDetailsChanged mCallBack;
+
     public MainDetailsFragment() {
+    }
+
+    interface OnDetailsChanged {
+        String onTimeChanged();
+    }
+
+    public void setCallBack(OnDetailsChanged callBack) {
+        mCallBack = callBack;
     }
 
     @Override
@@ -35,7 +49,7 @@ public class MainDetailsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.main_training_details_fragment, container, false);
 
-        TextView timeTextView = (TextView) rootView.findViewById(R.id.timeTextView);
+        final TextView timeTextView = (TextView) rootView.findViewById(R.id.timeTextView);
         TextView distanceTextView = (TextView) rootView.findViewById(R.id.distanceTextView);
         TextView currentTextView = (TextView) rootView.findViewById(R.id.currentPaceTextView);
         TextView avgTextView = (TextView) rootView.findViewById(R.id.avgTextView);
@@ -45,6 +59,16 @@ public class MainDetailsFragment extends Fragment {
         currentTextView.setText(avg);
         avgTextView.setText(current);
 
+        mTimeHandler = new Handler();
+        mTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                String time = mCallBack.onTimeChanged();
+                timeTextView.setText(time);
+                mTimeHandler.postDelayed(this, 500);
+            }
+        };
+
         return rootView;
     }
 
@@ -52,6 +76,7 @@ public class MainDetailsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: ");
+        mTimeHandler.postDelayed(mTimeRunnable, 0);
     }
 
     @Override

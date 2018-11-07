@@ -21,6 +21,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsFragment";
@@ -29,19 +34,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
-    private OnFABClicked mCallback;
+    private OnMapUpdate mCallback;
 
     private FloatingActionButton mFab;
 
     private IntentFilter mLocationIntentFilter;
     private LocationBroadcastReceiver mLocationReceiver;
 
-    public void setCallback(OnFABClicked mCallback) {
-        this.mCallback = mCallback;
-    }
 
-    public interface OnFABClicked {
-        void onFABClicked();
+    private PolylineOptions mPolylineOptions;
+    private Polyline mPolyline;
+
+
+    interface OnMapUpdate {
+        List<LatLng> onMapUpdate();
+        void onFabClicked();
+    }
+    public void setCallback(OnMapUpdate mCallback) {
+        this.mCallback = mCallback;
     }
 
     @Override
@@ -50,6 +60,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         if (isVisibleToUser) {
             // getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
+
         } else {
             if (getActivity() != null && mLocationReceiver != null ) {
                 // getActivity().unregisterReceiver(mLocationReceiver);
@@ -76,7 +87,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.onFABClicked();
+                mCallback.onFabClicked();
             }
         });
 
@@ -168,7 +179,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-
+                    if (mPolylineOptions == null) {
+                        mPolylineOptions = new PolylineOptions();
+                        // .add(newLatLng);
+                        mPolyline = mMap.addPolyline(mPolylineOptions);
+                    } else {
+                        mPolyline.setPoints(mCallback.onMapUpdate());
+                    }
                     LatLng sydney = new LatLng(lat, lng);
                     mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -28,11 +29,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
+import java.util.List;
+
 public class StartGPSWorkoutActivity extends AppCompatActivity implements
-        MapsFragment.OnFABClicked,
-        LocationTrackingService.ServiceCallbacks {
+        LocationTrackingService.ServiceCallbacks,
+        MainDetailsFragment.OnDetailsChanged,
+        MapsFragment.OnMapUpdate {
     private static final String TAG = "StartGPSWorkoutActivity";
 
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
@@ -64,6 +69,25 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    @Override
+    public List<LatLng> onMapUpdate() {
+        if (mService != null) {
+            return mService.getPath();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String onTimeChanged() {
+        if (mService != null) {
+            return mService.getTime();
+        } else {
+            return "00:00:00";
+        }
+
+    }
 
     // Monitors the state of the connection to the service.
     // Defines callbacks for service binding, passed to bindService()
@@ -193,6 +217,8 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         if (!checkPermissions()) {
             requestPermissions();
         }
+
+
     }
 
     @Override
@@ -283,7 +309,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFABClicked() {
+    public void onFabClicked() {
         mViewPager.setCurrentItem(1);
     }
 
@@ -445,6 +471,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                 mainDetailsFragment.setDistance("31:11");
                 mainDetailsFragment.setCurrent("4:11");
                 mainDetailsFragment.setAvg("3:11");
+                mainDetailsFragment.setCallBack(StartGPSWorkoutActivity.this);
                 return mainDetailsFragment;
             } else {
                 PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();

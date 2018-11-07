@@ -76,6 +76,10 @@ public class Stopwatch {
         lastLapSec = 0;
     }
 
+    public long getTotalMilliSecs() {
+        return millisecondsTime;
+    }
+
     public void makeLap() {
         int lap = (int) seconds + minutes * 60 - lastLapSec;
         lastLapSec = lap;
