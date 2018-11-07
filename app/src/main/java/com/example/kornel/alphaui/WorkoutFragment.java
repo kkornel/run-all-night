@@ -117,6 +117,9 @@ public class WorkoutFragment extends Fragment {
                 Log.d(TAG, "isSpotifyInstalled: " + isSpotifyInstalled());
                 Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
                 Log.d(TAG, "isInternetConnection: " + isInternetConnection());
+
+                Intent intent = new Intent(getContext(), StartGPSWorkoutActivity.class);
+                startActivity(intent);
             }
         });
 

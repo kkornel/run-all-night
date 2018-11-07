@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/D:/Software/AndroidStudio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_stop_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/D:/Software/AndroidStudio/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_format_color_reset_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,11 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="64" />
-                            <entry key="outputName" value="ic_stop_black_64dp" />
+                            <entry key="outputName" value="ic_drink_notification" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Kornel" />
-                            <entry key="width" value="64" />
                           </map>
                         </option>
                       </PersistentState>
