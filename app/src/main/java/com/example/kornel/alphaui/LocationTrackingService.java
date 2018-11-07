@@ -205,6 +205,7 @@ public class LocationTrackingService extends Service {
     }
 
     public void resumeSportActivity() {
+        Log.d(TAG, "resumeSportActivity: ");
         mIsTrainingPaused = false;
         mStopwatch.startStopwatch();
         startNotificationHandler();
@@ -219,6 +220,7 @@ public class LocationTrackingService extends Service {
     }
 
     public void pauseSportActivity() {
+        Log.d(TAG, "pauseSportActivity: ");
         mIsTrainingPaused = true;
         mStopwatch.pauseStopwatch();
         stopNotificationHandler();

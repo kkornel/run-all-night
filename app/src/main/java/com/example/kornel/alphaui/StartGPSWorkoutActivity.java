@@ -33,7 +33,7 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 public class StartGPSWorkoutActivity extends AppCompatActivity implements
         MapsFragment.OnFABClicked,
         LocationTrackingService.ServiceCallbacks {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "StartGPSWorkoutActivity";
 
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
 
@@ -78,11 +78,13 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
             mService = binder.getService();
             mBound = true;
 
+            mService.setServiceCallbacks(StartGPSWorkoutActivity.this);
+
+            Log.e(TAG, "onServiceConnected: " + mService.isServiceRunning() + "");
+            Log.e(TAG, "onServiceConnected: " + mService.isTrainingPaused() + "");
             if (mService.isServiceRunning()) {
                 updateButtons(mService.isTrainingPaused());
             }
-
-            mService.setServiceCallbacks(StartGPSWorkoutActivity.this);
         }
 
         @Override
@@ -239,6 +241,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
 
     @Override
     public void updateButtons(boolean isPaused) {
+        Log.d(TAG, "updateButtons: " + isPaused);
         if (isPaused) {
             mViewFlipper.setDisplayedChild(2);
         } else {
@@ -246,8 +249,6 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-
-    @SuppressLint("RestrictedApi")
     private void startTraining() {
         Log.d(TAG, "startTraining: ");
 
@@ -259,7 +260,6 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    @SuppressLint("RestrictedApi")
     private void pauseTraining() {
         Log.d(TAG, "pauseTraining: ");
         mService.pauseSportActivity();
