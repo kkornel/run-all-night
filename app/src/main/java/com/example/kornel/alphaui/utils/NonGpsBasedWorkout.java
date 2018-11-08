@@ -1,6 +1,6 @@
 package com.example.kornel.alphaui.utils;
 
-public enum NonGpsBasedActivity  {
+public enum NonGpsBasedWorkout {
     AEROBICS("Aerobics"),
     BADMINTON("Badminton"),
     BASKETBALL("Basketball"),
@@ -19,7 +19,7 @@ public enum NonGpsBasedActivity  {
 
     private String value;
 
-    NonGpsBasedActivity(final String value) {
+    NonGpsBasedWorkout(final String value) {
         this.value = value;
     }
 
