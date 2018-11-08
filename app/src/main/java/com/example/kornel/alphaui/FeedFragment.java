@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.kornel.alphaui.utils.GpsBasedActivity;
-import com.example.kornel.alphaui.utils.NonGpsBasedActivity;
+import com.example.kornel.alphaui.utils.GpsBasedWorkout;
+import com.example.kornel.alphaui.utils.NonGpsBasedWorkout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ public class FeedFragment extends Fragment {
 
     private ViewPager mViewPager;
 
-    private List<String> mGpsActivities;
-    private List<String> mNonGpsActivities;
+    private List<String> mGpsWorkouts;
+    private List<String> mNonGpsWorkouts;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -46,14 +46,14 @@ public class FeedFragment extends Fragment {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        mGpsActivities = new ArrayList<>();
-        mNonGpsActivities = new ArrayList<>();
+        mGpsWorkouts = new ArrayList<>();
+        mNonGpsWorkouts = new ArrayList<>();
 
-        for (GpsBasedActivity activity : GpsBasedActivity.values()) {
-            mGpsActivities.add(activity.toString());
+        for (GpsBasedWorkout activity : GpsBasedWorkout.values()) {
+            mGpsWorkouts.add(activity.toString());
         }
-        for (NonGpsBasedActivity activity : NonGpsBasedActivity.values()) {
-            mNonGpsActivities.add(activity.toString());
+        for (NonGpsBasedWorkout activity : NonGpsBasedWorkout.values()) {
+            mNonGpsWorkouts.add(activity.toString());
         }
 
         return rootView;
@@ -71,11 +71,11 @@ public class FeedFragment extends Fragment {
         public Fragment getItem(int position) {
             if (position == 0) {
                 FeedFriendsFragment feedFriendsFragment = new FeedFriendsFragment();
-                feedFriendsFragment.setFeedFriendsList(mNonGpsActivities);
+                feedFriendsFragment.setFeedFriendsList(mNonGpsWorkouts);
                 return feedFriendsFragment;
             } else {
                 FeedYouFragment feedYouFragment = new FeedYouFragment();
-                feedYouFragment.setFeedYouList(mGpsActivities);
+                feedYouFragment.setFeedYouList(mGpsWorkouts);
                 return feedYouFragment;
             }
         }

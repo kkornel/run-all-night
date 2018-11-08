@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChooseSportActivity"
+            android:name=".ChooseWorkoutActivity"
             android:label="@string/title_activity_choose_sport"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".RegisterActivity" />
@@ -51,7 +51,7 @@
 
         <activity android:name=".WorkoutSummary" />
         <activity
-            android:name=".StartGPSWorkoutActivity" />
+            android:name=".StartGpsWorkoutActivity" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

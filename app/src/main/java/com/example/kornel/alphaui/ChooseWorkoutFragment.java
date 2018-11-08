@@ -12,26 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.kornel.alphaui.utils.GpsBasedActivity;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-import static com.example.kornel.alphaui.WorkoutFragment.ACTIVITY_RESULT;
+import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_RESULT;
 
-public class GpsBasedFragment extends Fragment implements ListItemClickListener {
-    private static final String TAG = "GpsBasedFragment";
+public class ChooseWorkoutFragment extends Fragment implements ListItemClickListener {
+    private static final String TAG = "ChooseWorkoutFragment";
 
-    private ActivityAdapter mActivityAdapter;
+    private WorkoutAdapter mWorkoutAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mActivitiesList;
+    private List<String> mWorkoutsList;
 
-    public GpsBasedFragment() {
+    public ChooseWorkoutFragment() {
     }
 
-    public void setActivitiesList(List<String> activitiesList) {
-        mActivitiesList = activitiesList;
+    public void setWorkoutsList(List<String> workoutsList) {
+        mWorkoutsList = workoutsList;
     }
 
     @Override
@@ -46,8 +45,8 @@ public class GpsBasedFragment extends Fragment implements ListItemClickListener 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mActivityAdapter = new ActivityAdapter(this, mActivitiesList);
-        mRecyclerView.setAdapter(mActivityAdapter);
+        mWorkoutAdapter = new WorkoutAdapter(this, mWorkoutsList);
+        mRecyclerView.setAdapter(mWorkoutAdapter);
 
         return rootView;
     }
@@ -55,8 +54,8 @@ public class GpsBasedFragment extends Fragment implements ListItemClickListener 
     @Override
     public void onListItemClick(int clickedItemIndex) {
         Intent returnIntent = new Intent();
-        String activity = mActivitiesList.get(clickedItemIndex);
-        returnIntent.putExtra(ACTIVITY_RESULT, activity);
+        String activity = mWorkoutsList.get(clickedItemIndex);
+        returnIntent.putExtra(WORKOUT_RESULT, activity);
         getActivity().setResult(Activity.RESULT_OK, returnIntent);
         getActivity().finish();
     }

@@ -13,19 +13,19 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
-import com.example.kornel.alphaui.utils.GpsBasedActivity;
-import com.example.kornel.alphaui.utils.NonGpsBasedActivity;
+import com.example.kornel.alphaui.utils.GpsBasedWorkout;
+import com.example.kornel.alphaui.utils.NonGpsBasedWorkout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseSportActivity extends AppCompatActivity {
+public class ChooseWorkoutActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
 
-    private List<String> mGpsActivities;
-    private List<String> mNonGpsActivities;
+    private List<String> mGpsWorkouts;
+    private List<String> mNonGpsWorkouts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +48,14 @@ public class ChooseSportActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        mGpsActivities = new ArrayList<>();
-        mNonGpsActivities = new ArrayList<>();
+        mGpsWorkouts = new ArrayList<>();
+        mNonGpsWorkouts = new ArrayList<>();
 
-        for (GpsBasedActivity activity : GpsBasedActivity.values()) {
-            mGpsActivities.add(activity.toString());
+        for (GpsBasedWorkout workout : GpsBasedWorkout.values()) {
+            mGpsWorkouts.add(workout.toString());
         }
-        for (NonGpsBasedActivity activity : NonGpsBasedActivity.values()) {
-            mNonGpsActivities.add(activity.toString());
+        for (NonGpsBasedWorkout workout : NonGpsBasedWorkout.values()) {
+            mNonGpsWorkouts.add(workout.toString());
         }
     }
 
@@ -76,16 +76,16 @@ public class ChooseSportActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            GpsBasedFragment gpsBasedFragment = new GpsBasedFragment();
+            ChooseWorkoutFragment chooseWorkoutFragment = new ChooseWorkoutFragment();
 
             if (position == 0) {
-                gpsBasedFragment.setActivitiesList(mGpsActivities);
+                chooseWorkoutFragment.setWorkoutsList(mGpsWorkouts);
             } else {
-                gpsBasedFragment.setActivitiesList(mNonGpsActivities);
+                chooseWorkoutFragment.setWorkoutsList(mNonGpsWorkouts);
             }
 
             // return PlaceholderFragment.newInstance(position + 1);
-            return gpsBasedFragment;
+            return chooseWorkoutFragment;
         }
 
         @Override

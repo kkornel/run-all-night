@@ -4,13 +4,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.example.kornel.alphaui.utils.Lap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentActivity {
-    private static final String TAG = "CurrentActivity";
+public class CurrentWorkout {
+    private static final String TAG = "CurrentWorkout";
 
     // Type of current activity
     private String mWorkoutName;
@@ -29,7 +30,7 @@ public class CurrentActivity {
 
     private Stopwatch mStopWatch;
 
-    public CurrentActivity(String workout) {
+    public CurrentWorkout(String workout) {
         mWorkoutName = workout;
         mPath = new ArrayList<>();
         mLaps = new ArrayList<>();

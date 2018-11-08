@@ -1,7 +1,6 @@
 package com.example.kornel.alphaui;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -37,11 +35,11 @@ import java.util.List;
 
 import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 
-public class StartGPSWorkoutActivity extends AppCompatActivity implements
+public class StartGpsWorkoutActivity extends AppCompatActivity implements
         LocationTrackingService.ServiceCallbacks,
         MainDetailsFragment.OnDetailsChanged,
         MapsFragment.OnMapUpdate {
-    private static final String TAG = "StartGPSWorkoutActivity";
+    private static final String TAG = "StartGpsWorkoutActivity";
 
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
 
@@ -72,8 +70,6 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    private String mWorkoutName;
 
     @Override
     public List<LatLng> onMapUpdate() {
@@ -134,7 +130,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
             mService = binder.getService();
             mBound = true;
 
-            mService.setServiceCallbacks(StartGPSWorkoutActivity.this);
+            mService.setServiceCallbacks(StartGpsWorkoutActivity.this);
 
             Log.e(TAG, "onServiceConnected: " + mService.isServiceRunning() + "");
             Log.e(TAG, "onServiceConnected: " + mService.isTrainingPaused() + "");
@@ -171,7 +167,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                 if (!checkPermissions()) {
                     requestPermissions();
                 } else {
-                    startTraining();
+                    startWorkout();
                     mViewFlipper.showNext();
                 }
             }
@@ -179,22 +175,22 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pauseTraining();
+                pauseWorkout();
                 mViewFlipper.showNext();
             }
         });
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resumeTraining();
+                resumeWorkout();
                 mViewFlipper.showPrevious();
             }
         });
         mStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishTraining();
-                Toast.makeText(StartGPSWorkoutActivity.this, "Finished", Toast.LENGTH_LONG).show();
+                finishWorkout();
+                Toast.makeText(StartGpsWorkoutActivity.this, "Finished", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -250,7 +246,6 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
             requestPermissions();
         }
 
-        // mWorkoutName = getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
     }
 
     @Override
@@ -307,11 +302,11 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    private void startTraining() {
-        Log.d(TAG, "startTraining: ");
+    private void startWorkout() {
+        Log.d(TAG, "startWorkout: ");
 
         if (!mIsForegroundServiceRunning) {
-            Intent intent = new Intent(StartGPSWorkoutActivity.this, LocationTrackingService.class);
+            Intent intent = new Intent(StartGpsWorkoutActivity.this, LocationTrackingService.class);
             intent.setAction(LocationTrackingService.ACTION_START_FOREGROUND_SERVICE);
             intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT));
             startService(intent);
@@ -319,17 +314,17 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    private void pauseTraining() {
-        Log.d(TAG, "pauseTraining: ");
+    private void pauseWorkout() {
+        Log.d(TAG, "pauseWorkout: ");
         mService.pauseSportActivity();
     }
 
-    private void resumeTraining() {
-        Log.d(TAG, "resumeTraining: ");
+    private void resumeWorkout() {
+        Log.d(TAG, "resumeWorkout: ");
         mService.resumeSportActivity();
     }
 
-    private void finishTraining() {
+    private void finishWorkout() {
         // Stop service
         Intent intent = new Intent(this, LocationTrackingService.class);
         intent.setAction(LocationTrackingService.ACTION_STOP_FOREGROUND_SERVICE);
@@ -378,7 +373,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                             @Override
                             public void onClick(View view) {
                                 // Request permission
-                                ActivityCompat.requestPermissions(StartGPSWorkoutActivity.this,
+                                ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
                             }
@@ -394,7 +389,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                 // Request permission. It's possible this can be auto answered if device policy
                 // sets the permission in a given state or the user denied the permission
                 // previously and checked "Never ask again".
-                ActivityCompat.requestPermissions(StartGPSWorkoutActivity.this,
+                ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
             }
@@ -439,7 +434,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                                 public void onClick(View view) {
 
                                     boolean shouldProvideRationale =
-                                            ActivityCompat.shouldShowRequestPermissionRationale(StartGPSWorkoutActivity.this,
+                                            ActivityCompat.shouldShowRequestPermissionRationale(StartGpsWorkoutActivity.this,
                                                     Manifest.permission.ACCESS_FINE_LOCATION);
 
                                     // Provide an additional rationale to the user. This would happen if the user denied the
@@ -457,7 +452,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                                                     @Override
                                                     public void onClick(View view) {
                                                         // Request permission
-                                                        ActivityCompat.requestPermissions(StartGPSWorkoutActivity.this,
+                                                        ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
                                                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                                                 REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
                                                     }
@@ -496,7 +491,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
                 MapsFragment mapsFragment = new MapsFragment();
-                mapsFragment.setCallback(StartGPSWorkoutActivity.this);
+                mapsFragment.setCallback(StartGpsWorkoutActivity.this);
                 return mapsFragment;
             } else if (position == 1) {
                 MainDetailsFragment mainDetailsFragment = new MainDetailsFragment();
@@ -504,7 +499,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                 // mainDetailsFragment.setDistance("31:11");
                 // mainDetailsFragment.setCurrent("4:11");
                 // mainDetailsFragment.setAvg("3:11");
-                mainDetailsFragment.setCallBack(StartGPSWorkoutActivity.this);
+                mainDetailsFragment.setCallBack(StartGpsWorkoutActivity.this);
                 return mainDetailsFragment;
             } else {
                 PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();

@@ -17,11 +17,11 @@ import java.util.List;
 public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
-    private List<String> mActivities;
+    private List<String> mWorkouts;
 
-    public FeedYouAdapter(ListItemClickListener onClickListener, List<String> activities) {
+    public FeedYouAdapter(ListItemClickListener onClickListener, List<String> workouts) {
         mOnClickListener = onClickListener;
-        mActivities = activities;
+        mWorkouts = workouts;
     }
 
     @Override
@@ -33,19 +33,19 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        FeedYouViewHolder activityViewHolder = new FeedYouViewHolder(view);
+        FeedYouViewHolder workoutViewHolder = new FeedYouViewHolder(view);
 
-        return activityViewHolder;
+        return workoutViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FeedYouViewHolder activityViewHolder, int position) {
+    public void onBindViewHolder(@NonNull FeedYouViewHolder workoutViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mActivities == null) || (mActivities.size() == 0)) {
-            activityViewHolder.mDateTextView.setText("ERROR");
+        if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
+            workoutViewHolder.mDateTextView.setText("ERROR");
         } else {
-            activityViewHolder.mDateTextView.setText(mActivities.get(position));
+            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position));
         }
 
         // Googles way
@@ -54,26 +54,26 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
 
     @Override
     public int getItemCount() {
-        return ((mActivities != null) && (mActivities.size() !=0) ? mActivities.size() : 1);
+        return ((mWorkouts != null) && (mWorkouts.size() !=0) ? mWorkouts.size() : 1);
     }
 
     void loadNewData(List<String> newActivities) {
-        mActivities = newActivities;
+        mWorkouts = newActivities;
         notifyDataSetChanged();
     }
 
     class FeedYouViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private static final String TAG = "FeedYouViewHolder";
 
-        private ImageView mActivityImageView;
+        private ImageView mWorkoutImageView;
         private TextView mDateTextView;
         private TextView mDistanceTextView;
         private TextView mDuartionTextView;
 
         public FeedYouViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "ActivityViewHolder: ");
-            this.mActivityImageView = itemView.findViewById(R.id.activityImageView);
+            Log.d(TAG, "WorkoutViewHolder: ");
+            this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
             this.mDateTextView = itemView.findViewById(R.id.dateTextView);
             this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
             this.mDuartionTextView = itemView.findViewById(R.id.durationTextView);

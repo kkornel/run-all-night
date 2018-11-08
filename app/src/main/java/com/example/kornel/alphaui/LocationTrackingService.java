@@ -16,14 +16,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.NotificationUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,8 +29,8 @@ import java.util.List;
 import static com.example.kornel.alphaui.MapsFragment.ACTION_LOCATION_CHANGED;
 import static com.example.kornel.alphaui.MapsFragment.LocationBroadcastReceiver.LOCATION_EXTRA_BROADCAST_INTENT;
 import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
-import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_SPORT_ACTIVITY;
-import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_SPORT_ACTIVITY;
+import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_WORKOUT;
+import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_WORKOUT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
 
 
@@ -66,7 +63,7 @@ public class LocationTrackingService extends Service {
     private List<LatLng> mTestCoordinates;
     private List<LatLng> mTestCoordinates2;
 
-    private CurrentActivity mCurrentActivity;
+    private CurrentWorkout mCurrentWorkout;
 
     private int i = -1;
 
@@ -132,8 +129,8 @@ public class LocationTrackingService extends Service {
                 String ch187 = Character.toString((char) 187);
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
-                // String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
-                String message = mCurrentActivity.getWorkoutName() + " " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
+                // String message = "Run " + ch187 + "  " + mCurrentWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
+                String message = mCurrentWorkout.getWorkoutName() + " " + ch187 + "  " + mCurrentWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
@@ -142,15 +139,15 @@ public class LocationTrackingService extends Service {
     }
 
     public String getTime() {
-        if (mCurrentActivity != null) {
-            return mCurrentActivity.getTime();
+        if (mCurrentWorkout != null) {
+            return mCurrentWorkout.getTime();
         } else {
             return "00:00:00";
         }
     }
 
     public List<LatLng> getPath() {
-        return mCurrentActivity.getPath();
+        return mCurrentWorkout.getPath();
     }
 
     @Override
@@ -176,14 +173,14 @@ public class LocationTrackingService extends Service {
                 Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
                 break;
 
-            case ACTION_RESUME_SPORT_ACTIVITY:
+            case ACTION_RESUME_WORKOUT:
                 Log.d(TAG, "onStartCommand: You clicked RESUME button.");
 
                 mCameFromNotification = true;
                 resumeSportActivity();
                 break;
 
-            case ACTION_PAUSE_SPORT_ACTIVITY:
+            case ACTION_PAUSE_WORKOUT:
                 Log.d(TAG, "onStartCommand: You click PAUSE button.");
 
                 mCameFromNotification = true;
@@ -216,7 +213,7 @@ public class LocationTrackingService extends Service {
 
         // mStopwatch.startStopwatch();
 
-        mCurrentActivity = new CurrentActivity(workoutName);
+        mCurrentWorkout = new CurrentWorkout(workoutName);
 
         mLocationListener = new LocationListener() {
             @Override
@@ -272,7 +269,7 @@ public class LocationTrackingService extends Service {
         Log.d(TAG, "resumeSportActivity: ");
         mIsTrainingPaused = false;
         // mStopwatch.startStopwatch();
-        mCurrentActivity.startStopwatch();
+        mCurrentWorkout.startStopwatch();
         startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
         onNewLocation(null);
@@ -288,7 +285,7 @@ public class LocationTrackingService extends Service {
         Log.d(TAG, "pauseSportActivity: ");
         mIsTrainingPaused = true;
         // mStopwatch.pauseStopwatch();
-        mCurrentActivity.pauseStopwatch();
+        mCurrentWorkout.pauseStopwatch();
         stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
         onNewLocation(null);
@@ -325,10 +322,10 @@ public class LocationTrackingService extends Service {
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
 
         // Add new LatLng to the path
-        mCurrentActivity.addLatLngToPath(newLatLng);
+        mCurrentWorkout.addLatLngToPath(newLatLng);
 
         // Calculate distance between two previous locations
-        mCurrentActivity.calculateDistanceBetweenTwoLastLocations();
+        mCurrentWorkout.calculateDistanceBetweenTwoLastLocations();
 
         if (i < 1) {
             // mPolylineOptions = new PolylineOptions()
@@ -344,15 +341,15 @@ public class LocationTrackingService extends Service {
         i++;
 
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentActivity.getPath());
+        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentWorkout.getPath());
         sendBroadcast(intent);
 
-        // mDistanceTV.setText(String.valueOf(mCurrentActivity.getDistance()));
+        // mDistanceTV.setText(String.valueOf(mCurrentWorkout.getDistance()));
     }
 
     public double getDistance() {
-        if (mCurrentActivity != null) {
-            return mCurrentActivity.getDistance();
+        if (mCurrentWorkout != null) {
+            return mCurrentWorkout.getDistance();
         } else {
             return 0;
         }
@@ -369,8 +366,8 @@ public class LocationTrackingService extends Service {
 
     public String getDistanceString() {
         double distance = 0;
-        if (mCurrentActivity != null) {
-            distance = mCurrentActivity.getDistance();
+        if (mCurrentWorkout != null) {
+            distance = mCurrentWorkout.getDistance();
         }
         distance /= 1000;
         // String.format("%.5g%n", distance);

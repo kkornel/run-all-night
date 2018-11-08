@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.GpsBasedActivity;
+import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,8 +37,8 @@ public class WorkoutFragment extends Fragment {
 
     public static final String WORKOUT_NAME_EXTRA_INTENT = "workout_name";
 
-    public static final String ACTIVITY_RESULT = "activity_result";
-    public final int PICK_ACTIVITY_REQUEST = 1;
+    public static final String WORKOUT_RESULT = "workout_result";
+    public final int PICK_WORKOUT_REQUEST = 1;
 
     // Welcome CardView
     private TextView mWelcomeTextView;
@@ -51,17 +51,17 @@ public class WorkoutFragment extends Fragment {
     private TextView mWeatherInfoTextView;
     private TextView mTempTextView;
 
-    // Activity CardView
-    private CardView mActivityCardView;
-    private ImageView mActivityImageView;
-    private TextView mActivityNameTextView;
+    // Workout CardView
+    private CardView mWorkoutCardView;
+    private ImageView mWorkoutImageView;
+    private TextView mWorkoutNameTextView;
 
     // Music CardView
     private CardView mMusicCardView;
     private ImageView mMusicImageView;
     private TextView mSelectMusicTextView;
 
-    private Button mStartActivityButton;
+    private Button mStartWorkoutButton;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -85,16 +85,16 @@ public class WorkoutFragment extends Fragment {
         mWeatherInfoTextView = rootView.findViewById(R.id.weatherInfoTextView);
         mTempTextView = rootView.findViewById(R.id.tempTextView);
 
-        mActivityCardView = rootView.findViewById(R.id.activityCardView);
-        mActivityCardView.setOnClickListener(new View.OnClickListener() {
+        mWorkoutCardView = rootView.findViewById(R.id.activityCardView);
+        mWorkoutCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChooseSportActivity.class);
-                startActivityForResult(intent, PICK_ACTIVITY_REQUEST);
+                Intent intent = new Intent(getActivity(), ChooseWorkoutActivity.class);
+                startActivityForResult(intent, PICK_WORKOUT_REQUEST);
             }
         });
-        mActivityImageView = rootView.findViewById(R.id.activityImageView);
-        mActivityNameTextView = rootView.findViewById(R.id.activityNameTextView);
+        mWorkoutImageView = rootView.findViewById(R.id.activityImageView);
+        mWorkoutNameTextView = rootView.findViewById(R.id.activityNameTextView);
 
         mMusicCardView = rootView.findViewById(R.id.musicCardView);
         mMusicCardView.setOnClickListener(new View.OnClickListener() {
@@ -113,19 +113,19 @@ public class WorkoutFragment extends Fragment {
 
         mWeatherCardView = rootView.findViewById(R.id.weatherCardView);
 
-        mStartActivityButton = rootView.findViewById(R.id.startActivityButton);
-        mStartActivityButton.setOnClickListener(new View.OnClickListener() {
+        mStartWorkoutButton = rootView.findViewById(R.id.startActivityButton);
+        mStartWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "isSpotifyInstalled: " + isSpotifyInstalled());
                 Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
                 Log.d(TAG, "isInternetConnection: " + isInternetConnection());
 
-                String workout = mActivityNameTextView.getText().toString();
+                String workout = mWorkoutNameTextView.getText().toString();
                 boolean isGpsBased = isGpsBased(workout);
 
                 if (isGpsBased) {
-                    Intent intent = new Intent(getContext(), StartGPSWorkoutActivity.class);
+                    Intent intent = new Intent(getContext(), StartGpsWorkoutActivity.class);
                     intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, workout);
                     startActivity(intent);
                 } else {
@@ -134,8 +134,6 @@ public class WorkoutFragment extends Fragment {
                     // startActivity(intent);
                     Log.d(TAG, "onClick: non");
                 }
-
-
             }
         });
 
@@ -176,10 +174,10 @@ public class WorkoutFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_ACTIVITY_REQUEST) {
+        if (requestCode == PICK_WORKOUT_REQUEST) {
             if(resultCode == Activity.RESULT_OK){
-                String result = data.getStringExtra(ACTIVITY_RESULT);
-                mActivityNameTextView.setText(result);
+                String result = data.getStringExtra(WORKOUT_RESULT);
+                mWorkoutNameTextView.setText(result);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result
@@ -188,7 +186,7 @@ public class WorkoutFragment extends Fragment {
     }
 
     private boolean isGpsBased(String workout) {
-        for (GpsBasedActivity gpsWorkout : GpsBasedActivity.values()) {
+        for (GpsBasedWorkout gpsWorkout : GpsBasedWorkout.values()) {
             if (gpsWorkout.toString().equals(workout)) {
                 return true;
             }

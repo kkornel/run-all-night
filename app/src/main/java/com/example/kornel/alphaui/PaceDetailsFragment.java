@@ -30,10 +30,6 @@ public class PaceDetailsFragment extends Fragment implements
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
 
-    private String mTime;
-    private String mAvg;
-    private String mCurrent;
-
     private List<String> mPaceList;
 
     private Toast mToast;
@@ -67,10 +63,6 @@ public class PaceDetailsFragment extends Fragment implements
         testPace();
         mPaceAdapter = new PaceAdapter(this, mPaceList);
         mRecyclerView.setAdapter(mPaceAdapter);
-
-        mTimeTextView.setText(mTime);
-        mAvgTextView.setText(mAvg);
-        mCurrentTextView.setText(mCurrent);
 
         return rootView;
 
@@ -118,15 +110,15 @@ public class PaceDetailsFragment extends Fragment implements
     }
 
     public void setTime(String time) {
-        mTime = time;
+        mTimeTextView.setText(time);
     }
 
     public void setAvg(String avg) {
-        mAvg = avg;
+        mAvgTextView.setText(avg);
     }
 
     public void setCurrent(String current) {
-        mCurrent = current;
+        mCurrentTextView.setText(current);
     }
 
     void testPace() {

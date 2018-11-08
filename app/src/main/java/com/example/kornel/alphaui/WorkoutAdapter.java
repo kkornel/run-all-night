@@ -14,18 +14,18 @@ import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder> {
+public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
-    private List<String> mActivities;
+    private List<String> mWorkouts;
 
-    public ActivityAdapter(ListItemClickListener onClickListener, List<String> activities) {
+    public WorkoutAdapter(ListItemClickListener onClickListener, List<String> activities) {
         mOnClickListener = onClickListener;
-        mActivities = activities;
+        mWorkouts = activities;
     }
 
     @Override
-    public ActivityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WorkoutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.workout_list_item;
@@ -33,19 +33,19 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        ActivityViewHolder activityViewHolder = new ActivityViewHolder(view);
+        WorkoutViewHolder workoutViewHolder = new WorkoutViewHolder(view);
 
-        return activityViewHolder;
+        return workoutViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ActivityViewHolder activityViewHolder, int position) {
+    public void onBindViewHolder(@NonNull WorkoutViewHolder workoutViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mActivities == null) || (mActivities.size() == 0)) {
-            activityViewHolder.mActivityTextView.setText("ERROR");
+        if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
+            workoutViewHolder.mWorkoutTextView.setText("ERROR");
         } else {
-            activityViewHolder.mActivityTextView.setText(mActivities.get(position));
+            workoutViewHolder.mWorkoutTextView.setText(mWorkouts.get(position));
         }
 
         // Googles way
@@ -54,22 +54,22 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
 
     @Override
     public int getItemCount() {
-        return ((mActivities != null) && (mActivities.size() !=0) ? mActivities.size() : 1);
+        return ((mWorkouts != null) && (mWorkouts.size() !=0) ? mWorkouts.size() : 1);
     }
 
     void loadNewData(List<String> newActivities) {
-        mActivities = newActivities;
+        mWorkouts = newActivities;
         notifyDataSetChanged();
     }
 
-    class ActivityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mActivityImageView;
-        private TextView mActivityTextView;
+    class WorkoutViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ImageView mWorkoutImageView;
+        private TextView mWorkoutTextView;
 
-        public ActivityViewHolder(View itemView) {
+        public WorkoutViewHolder(View itemView) {
             super(itemView);
-            this.mActivityImageView = itemView.findViewById(R.id.activityImageView);
-            this.mActivityTextView = itemView.findViewById(R.id.activityTextView);
+            this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
+            this.mWorkoutTextView = itemView.findViewById(R.id.activityTextView);
             itemView.setOnClickListener(this);
         }
 

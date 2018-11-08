@@ -15,7 +15,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.example.kornel.alphaui.LocationTrackingService;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.StartGPSWorkoutActivity;
+import com.example.kornel.alphaui.StartGpsWorkoutActivity;
 
 public class NotificationUtils {
     public static final int LOCATION_TRACKING_NOTIFICATION_ID = 1138;
@@ -24,10 +24,10 @@ public class NotificationUtils {
     private static final String LOCATION_TRACKING_CHANNEL_ID = "tracking_notification_channel_01";
 
     private static final int ACTION_RESUME_PENDING_INTENT_ID = 3418;
-    public static final String ACTION_RESUME_SPORT_ACTIVITY = "resume_sport_activity";
+    public static final String ACTION_RESUME_WORKOUT = "resume_sport_activity";
 
     private static final int ACTION_PAUSE_PENDING_INTENT_ID = 3419;
-    public static final String ACTION_PAUSE_SPORT_ACTIVITY = "pause_sport_activity";
+    public static final String ACTION_PAUSE_WORKOUT = "pause_sport_activity";
 
     private static NotificationManager mNotificationManager;
     private static NotificationCompat.Builder mNotificationBuilder;
@@ -39,8 +39,8 @@ public class NotificationUtils {
         mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mResumeAction = resumeSportActivity(context);
-        mPauseAction = pauseSportActivity(context);
+        mResumeAction = resumeWorkout(context);
+        mPauseAction = pauseWorkout(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
@@ -120,9 +120,9 @@ public class NotificationUtils {
         notificationManager.cancelAll();
     }
 
-    private static NotificationCompat.Action resumeSportActivity(Context context) {
+    private static NotificationCompat.Action resumeWorkout(Context context) {
         Intent resumeSportActivityIntent = new Intent(context, LocationTrackingService.class);
-        resumeSportActivityIntent.setAction(ACTION_RESUME_SPORT_ACTIVITY);
+        resumeSportActivityIntent.setAction(ACTION_RESUME_WORKOUT);
 
         PendingIntent resumeSportActivityPendingIntent = PendingIntent.getService(
                 context,
@@ -138,9 +138,9 @@ public class NotificationUtils {
         return resumeAction;
     }
 
-    private static NotificationCompat.Action pauseSportActivity(Context context) {
+    private static NotificationCompat.Action pauseWorkout(Context context) {
         Intent pauseSportActivityIntent = new Intent(context, LocationTrackingService.class);
-        pauseSportActivityIntent.setAction(ACTION_PAUSE_SPORT_ACTIVITY);
+        pauseSportActivityIntent.setAction(ACTION_PAUSE_WORKOUT);
 
         PendingIntent pauseSportActivityPendingIntent = PendingIntent.getService(
                 context,
@@ -161,7 +161,7 @@ public class NotificationUtils {
     // the notification is pressed. This pending intent should open up the MainActivity.
     private static PendingIntent contentIntent(Context context) {
         // Create an intent that opens up the MainActivity
-        Intent startActivityIntent = new Intent(context, StartGPSWorkoutActivity.class);
+        Intent startActivityIntent = new Intent(context, StartGpsWorkoutActivity.class);
 
         // Create a PendingIntent using getActivity that:
         // - Take the context passed in as a parameter
@@ -230,8 +230,8 @@ public class NotificationUtils {
                         .setContentText(context.getString(R.string.location_tracking_notification_body))
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(
                                 context.getString(R.string.location_tracking_notification_body)))
-                        .addAction(resumeSportActivity(context))
-                        .addAction(pauseSportActivity(context))
+                        .addAction(resumeWorkout(context))
+                        .addAction(pauseWorkout(context))
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setContentIntent(contentIntent(context));
 

@@ -63,7 +63,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
     }
 
     class FeedFriendsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final String TAG = "ActivityViewHolder";
+        private static final String TAG = "WorkoutViewHolder";
 
         private ImageView mAvatarImageView;
         private TextView mNameTextView;
@@ -74,7 +74,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
         public FeedFriendsViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "ActivityViewHolder: ");
+            Log.d(TAG, "WorkoutViewHolder: ");
             mAvatarImageView = itemView.findViewById(R.id.avatarImageView);
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             mDateTextView = itemView.findViewById(R.id.dateTextView);
