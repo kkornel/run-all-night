@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mBottomNavigationView.setSelectedItemId(R.id.navigation_workout);
 
-        if (savedInstanceState != null) {
-            mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
-        }
+        // if (savedInstanceState != null) {
+            // mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
+        // }
     }
 
     @Override

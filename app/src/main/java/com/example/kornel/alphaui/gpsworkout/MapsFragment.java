@@ -176,10 +176,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onMapLoaded() {
                 if (mCallback != null) {
-                    Location lastKnowLocation = mCallback.getLastLocation();
-                    if (lastKnowLocation != null) {
-                        centerMapOnTheLocationZoom(mCallback.getLastLocation(), ZOOM_VALUE);
-                    }
+                    // Location lastKnowLocation = mCallback.getLastLocation();
+                    // if (lastKnowLocation != null) {
+                    //     centerMapOnTheLocationZoom(mCallback.getLastLocation(), ZOOM_VALUE);
+                    // }
                 }
             }
         });

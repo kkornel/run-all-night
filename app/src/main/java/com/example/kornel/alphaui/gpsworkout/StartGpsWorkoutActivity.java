@@ -100,10 +100,11 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
             if (mService.isServiceRunning()) {
                 Log.d(TAG, "onServiceConnected: " + mService.isTrainingPaused());
+                mTimeHandler.postDelayed(mTimeRunnable, 0);
                 updateButtons(mService.isTrainingPaused());
             }
             // updateButtons(mService.isTrainingPaused());
-            mTimeHandler.postDelayed(mTimeRunnable, 0);
+
         }
 
         @Override
@@ -214,6 +215,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         if (!checkPermissions()) {
             requestPermissions();
         }
+        
 
         mTimeHandler = new Handler();
         mTimeRunnable = new Runnable() {
@@ -260,9 +262,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         Log.d(TAG, "onResume: ");
         super.onResume();
 
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
+        // if (!checkPermissions()) {
+        //     requestPermissions();
+        // }
     }
 
     @Override
@@ -422,10 +424,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     private void requestPermissions() {
-        Log.d(TAG, "requestPermissions: ");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "requestPermissions: 1) NOT GRANTED");
             // Permission is not granted
             // Should we show an explanation?
 
@@ -439,7 +439,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                Log.d(TAG, "requestPermissions: 2) NOT GRANTED + shouldProvideRationale");
                 Snackbar.make(
                         mViewFlipper,
                         R.string.permission_rationale,
@@ -460,7 +459,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
-                Log.d(TAG, "requestPermissions: 3) NOT GRANTED + NOT shouldProvideRationale");
                 // Request permission. It's possible this can be auto answered if device policy
                 // sets the permission in a given state or the user denied the permission
                 // previously and checked "Never ask again".
@@ -470,36 +468,22 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             }
         } else {
             // Permission has already been granted
-            Log.d(TAG, "requestPermissions: 4) GRANTED");
-            // Log.d("kurcze", "onMapReady    GRANTED");
-            //
-            // mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-            //
-            // Location lastKnowLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            //
-            // if (lastKnowLocation != null) {
-            //     updateMap(lastKnowLocation);
-            // }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionResult");
-
         switch (requestCode) {
             case REQUEST_CODE_PERMISSIONS_FINE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
                         // permission was granted, yay! Do the
-                        // contacts-related task you need to do.
-                        Log.d(TAG, "onRequestPermissionsResult: GRANTED");
+                        // location-related task you need to do.
                     }
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Log.d(TAG, "onRequestPermissionsResult: NOT GRANTED");
                     Snackbar.make(
                             mViewFlipper,
                             R.string.permission_denied_explanation,
@@ -518,23 +502,10 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                                         // Show an explanation to the user *asynchronously* -- don't block
                                         // this thread waiting for the user's response! After the user
                                         // sees the explanation, try again to request the permission.
-                                        Log.d(TAG, "onRequestPermissionsResult: 6) NOT GRANTED + shouldProvideRationale");
-                                        Snackbar.make(
-                                                mViewFlipper,
-                                                R.string.permission_rationale,
-                                                Snackbar.LENGTH_INDEFINITE)
-                                                .setAction(R.string.ok, new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-                                                        // Request permission
-                                                        ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
-                                                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                                                REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
-                                                    }
-                                                })
-                                                .show();
+                                        ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
+                                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                                REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
                                     } else {
-                                        Log.d(TAG, "onRequestPermissionsResult: 7) NOT GRANTED + NOT shouldProvideRationale");
                                         // Build intent that displays the App settings screen.
                                         Intent intent = new Intent();
                                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -549,4 +520,71 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 }
         }
     }
+
+    // @Override
+    // public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    //     Log.i(TAG, "onRequestPermissionResult");
+    //
+    //     switch (requestCode) {
+    //         case REQUEST_CODE_PERMISSIONS_FINE_LOCATION:
+    //             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    //                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+    //                         == PackageManager.PERMISSION_GRANTED) {
+    //                     // permission was granted, yay! Do the
+    //                     // contacts-related task you need to do.
+    //                     Log.d(TAG, "onRequestPermissionsResult: GRANTED");
+    //                 }
+    //             } else {
+    //                 // permission denied, boo! Disable the
+    //                 // functionality that depends on this permission.
+    //                 Log.d(TAG, "onRequestPermissionsResult: NOT GRANTED");
+    //                 Snackbar.make(
+    //                         mViewFlipper,
+    //                         R.string.permission_denied_explanation,
+    //                         Snackbar.LENGTH_INDEFINITE)
+    //                         .setAction(R.string.settings, new View.OnClickListener() {
+    //                             @Override
+    //                             public void onClick(View view) {
+    //
+    //                                 boolean shouldProvideRationale =
+    //                                         ActivityCompat.shouldShowRequestPermissionRationale(StartGpsWorkoutActivity.this,
+    //                                                 Manifest.permission.ACCESS_FINE_LOCATION);
+    //
+    //                                 // Provide an additional rationale to the user. This would happen if the user denied the
+    //                                 // request previously, but didn't check the "Don't ask again" checkbox.
+    //                                 if (shouldProvideRationale) {
+    //                                     // Show an explanation to the user *asynchronously* -- don't block
+    //                                     // this thread waiting for the user's response! After the user
+    //                                     // sees the explanation, try again to request the permission.
+    //                                     Log.d(TAG, "onRequestPermissionsResult: 6) NOT GRANTED + shouldProvideRationale");
+    //                                     Snackbar.make(
+    //                                             mViewFlipper,
+    //                                             R.string.permission_rationale,
+    //                                             Snackbar.LENGTH_INDEFINITE)
+    //                                             .setAction(R.string.ok, new View.OnClickListener() {
+    //                                                 @Override
+    //                                                 public void onClick(View view) {
+    //                                                     // Request permission
+    //                                                     ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
+    //                                                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+    //                                                             REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
+    //                                                 }
+    //                                             })
+    //                                             .show();
+    //                                 } else {
+    //                                     Log.d(TAG, "onRequestPermissionsResult: 7) NOT GRANTED + NOT shouldProvideRationale");
+    //                                     // Build intent that displays the App settings screen.
+    //                                     Intent intent = new Intent();
+    //                                     intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+    //                                     Uri uri = Uri.fromParts("package",
+    //                                             BuildConfig.APPLICATION_ID, null);
+    //                                     intent.setData(uri);
+    //                                     startActivity(intent);
+    //                                 }
+    //                             }
+    //                         })
+    //                         .show();
+    //             }
+    //     }
+    // }
 }
