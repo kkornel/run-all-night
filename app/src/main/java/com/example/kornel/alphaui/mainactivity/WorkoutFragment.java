@@ -158,8 +158,9 @@ public class WorkoutFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                User user = dataSnapshot.getValue(User.class);
-                mWelcomeTextView.setText(user.getFirstName());
+                // TODO: it's broken cause I've overwritten database
+                // User user = dataSnapshot.getValue(User.class);
+                // mWelcomeTextView.setText(user.getFirstName());
             }
 
             @Override

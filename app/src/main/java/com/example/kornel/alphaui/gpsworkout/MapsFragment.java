@@ -52,9 +52,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     interface OnMapUpdate {
         Location getLastLocation();
+
         List<LatLng> onMapUpdate();
+
         void onFabClicked();
     }
+
     public void setCallback(OnMapUpdate mCallback) {
         this.mCallback = mCallback;
     }
@@ -67,7 +70,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             // getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
 
         } else {
-            if (getActivity() != null && mLocationReceiver != null ) {
+            if (getActivity() != null && mLocationReceiver != null) {
                 // getActivity().unregisterReceiver(mLocationReceiver);
             }
         }
@@ -83,7 +86,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
 
-        View rootView = inflater.inflate(R.layout.maps_fragment, container, false);;
+        View rootView = inflater.inflate(R.layout.maps_fragment, container, false);
+        ;
 
         SupportMapFragment map = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
         map.getMapAsync(this);
@@ -194,7 +198,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public class LocationBroadcastReceiver extends BroadcastReceiver {
         private static final String TAG = "LocationBroadcastReceiv";
 
-        public static final String LOCATION_EXTRA_BROADCAST_INTENT = "ArrayPath";
+        public static final String LOCATION_EXTRA_BROADCAST_INTENT = "array_path";
 
         private final Handler handler;
 
@@ -220,11 +224,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     } else {
                         mPolyline.setPoints(path);
                     }
-                    LatLng newLatLng = path.get(path.size()-1);
+                    int idx = path.size() - 1;
+                    LatLng newLatLng = path.get(idx);
+
                     // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
                     Location newLocation = new Location(LocationManager.GPS_PROVIDER);
                     newLocation.setLatitude(newLatLng.latitude);
                     newLocation.setLongitude(newLatLng.longitude);
+
                     centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
                 }
             });

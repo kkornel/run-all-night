@@ -129,7 +129,7 @@ public class LocationTrackingService extends Service {
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
                 // String message = "Run " + ch187 + "  " + mCurrentGpsWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
-                String message = mCurrentGpsWorkout.getWorkoutName() + " " + ch187 + "  " + mCurrentGpsWorkout.getTimeString() + "  " + ch187 + "  " + getDistanceString() + "km";
+                String message = mCurrentGpsWorkout.getWorkoutName() + "  " + ch187 + "  " + mCurrentGpsWorkout.getTimeString() + "  " + ch187 + "  " + getDistanceString() + "km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
@@ -195,7 +195,8 @@ public class LocationTrackingService extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Log.d(TAG, "onLocationChanged: ");
-                onNewLocation(location);
+                // onNewLocation(location);
+                onNewLocation_X(location);
             }
 
             @Override
@@ -265,7 +266,52 @@ public class LocationTrackingService extends Service {
         }
     }
 
+    public WorkoutGpsSummary getWorkOutSummary() {
+
+        // Type of current activity
+        String mWorkoutName = mCurrentGpsWorkout.getWorkoutName();
+
+        // Array of all LatLng on path
+        ArrayList<LatLng> mPath = mCurrentGpsWorkout.getTestLatLng();
+
+        // Total distance since started tracking in meters
+        double mDistance = mCurrentGpsWorkout.getDistance();
+
+        // Total time since started tracking in milliseconds
+        String mDuration = mCurrentGpsWorkout.getTimeString();
+
+        return new WorkoutGpsSummary(mWorkoutName, mDuration, mDistance, mPath);
+    }
+
+    private int mLocationUpdateNumber = 1;
+    private Location mPreviousLocation;
+
     private void onNewLocation(Location newLocation) {
+        // I have a new Location
+        // Create LatLng based on new Location
+        LatLng newLatLng = new LatLng(newLocation.getLatitude(), newLocation.getLongitude());
+
+        // Calculate new distance
+        if (mPreviousLocation != null) {
+            mCurrentGpsWorkout.calculateDistanceBetweenTwoLocations(mPreviousLocation, newLocation);
+        }
+
+        if (mLocationUpdateNumber == 1) {
+            mCurrentGpsWorkout.addLatLngToPath(newLatLng);
+
+            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+            intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+            sendBroadcast(intent);
+        }
+
+        mLocationUpdateNumber++;
+        if (mLocationUpdateNumber >= 11) {
+            mLocationUpdateNumber = 1;
+        }
+        mPreviousLocation = newLocation;
+    }
+
+    public void onNewLocation_X(Location newLocation) {
         // TODO calculate everything
         Log.d(TAG, "onNewLocation: " + newLocation);
 

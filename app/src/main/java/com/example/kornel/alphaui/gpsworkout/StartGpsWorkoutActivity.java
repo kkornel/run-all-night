@@ -44,6 +44,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         MapsFragment.OnMapUpdate {
     private static final String TAG = "StartGpsWorkoutActivity";
 
+    public static final String WORKOUT_DETAILS_EXTRA_INTENT = "workout_summary";
+
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
 
     private static final int START_BUTTON_INDEX_IN_VIEW_FLIPPER = 0;
@@ -71,7 +73,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private Button mStartButton;
     private ImageButton mPauseButton;
     private Button mResumeButton;
-    private Button mStopButton;
+    private Button mFinishButton;
 
     // The ViewPager that will host the section contents.
     private ViewPager mViewPager;
@@ -98,8 +100,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
             if (mService.isServiceRunning()) {
                 updateButtons(mService.isTrainingPaused());
-
             }
+            // updateButtons(mService.isTrainingPaused());
             mTimeHandler.postDelayed(mTimeRunnable, 0);
         }
 
@@ -126,7 +128,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mStartButton = findViewById(R.id.startButton);
         mPauseButton = findViewById(R.id.pauseButton);
         mResumeButton = findViewById(R.id.resumeButton);
-        mStopButton = findViewById(R.id.stopButton);
+        mFinishButton = findViewById(R.id.stopButton);
 
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +158,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
             }
         });
-        mStopButton.setOnClickListener(new View.OnClickListener() {
+        mFinishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finishWorkout();
@@ -241,7 +243,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mTimeHandler.postDelayed(this, 500);
             }
         };
-
+        mViewFlipper.setDisplayedChild(START_BUTTON_INDEX_IN_VIEW_FLIPPER);
     }
 
     @Override
@@ -327,7 +329,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mIsForegroundServiceRunning = false;
 
         Intent summaryActivity = new Intent(this, WorkoutSummary.class);
-        summaryActivity.putExtra("summary", "31:31");
+        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, mService.getWorkOutSummary());
         startActivity(summaryActivity);
     }
 
@@ -361,7 +363,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         } else {
             return "0:00";
         }
-
     }
 
     @Override
