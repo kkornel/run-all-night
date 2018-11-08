@@ -4,7 +4,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.example.kornel.alphaui.utils.LatLon;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -14,11 +13,10 @@ public class CurrentActivity {
     private static final String TAG = "CurrentActivity";
 
     // Type of current activity
-    private String activityType;
+    private String mWorkoutName;
 
     // Array of all LatLng on path
-    private List<LatLng> mPath;
-    private ArrayList<LatLng> myPath;
+    private ArrayList<LatLng> mPath;
 
     // Array of all laps. Lap = 1 km
     private List<Lap> mLaps;
@@ -31,10 +29,9 @@ public class CurrentActivity {
 
     private Stopwatch mStopWatch;
 
-    public CurrentActivity() {
-        activityType = "Running";
+    public CurrentActivity(String workout) {
+        mWorkoutName = workout;
         mPath = new ArrayList<>();
-        myPath = new ArrayList<>();
         mLaps = new ArrayList<>();
         mDistance = 0.00;
         mDuration = 0;
@@ -54,11 +51,12 @@ public class CurrentActivity {
         return mStopWatch.getTimeString();
     }
 
-    public List<LatLng> getPath() {
+    public ArrayList<LatLng> getPath() {
         return mPath;
     }
-    public ArrayList<LatLng> getMyPath() {
-        return myPath;
+
+    public String getWorkoutName() {
+        return mWorkoutName;
     }
 
     public void calculateDistanceBetweenTwoLastLocations() {
@@ -112,10 +110,6 @@ public class CurrentActivity {
         mPath.add(newLatLng);
     }
 
-    public void addLatLonToPath(LatLng newLatLng) {
-        Log.d(TAG, "Adding newLatLng to path: " + newLatLng);
-        myPath.add(newLatLng);
-    }
 
     public double getDistance() {
         return mDistance;

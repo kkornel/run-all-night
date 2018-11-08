@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kornel.alphaui.utils.GpsBasedActivity;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;

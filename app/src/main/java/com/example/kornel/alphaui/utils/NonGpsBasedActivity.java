@@ -5,7 +5,7 @@ public enum NonGpsBasedActivity  {
     BADMINTON("Badminton"),
     BASKETBALL("Basketball"),
     BOXING("Boxing"),
-    CROSSFIR("Crossfit"),
+    CROSSFIT("Crossfit"),
     DANCING("Dancing"),
     ELLIPTICAL("Elliptical"),
     GYMNASTICS("Gymnastics"),

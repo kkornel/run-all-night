@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.GpsBasedActivity;
 import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 public class WorkoutFragment extends Fragment {
     private static final String TAG = "WorkoutFragment";
 
-    public static final String ACTIVITY_RESULT = "result";
+    public static final String WORKOUT_NAME_EXTRA_INTENT = "workout_name";
+
+    public static final String ACTIVITY_RESULT = "activity_result";
     public final int PICK_ACTIVITY_REQUEST = 1;
 
     // Welcome CardView
@@ -118,8 +121,21 @@ public class WorkoutFragment extends Fragment {
                 Log.d(TAG, "isGpsEnabled: " + isGpsEnabled());
                 Log.d(TAG, "isInternetConnection: " + isInternetConnection());
 
-                Intent intent = new Intent(getContext(), StartGPSWorkoutActivity.class);
-                startActivity(intent);
+                String workout = mActivityNameTextView.getText().toString();
+                boolean isGpsBased = isGpsBased(workout);
+
+                if (isGpsBased) {
+                    Intent intent = new Intent(getContext(), StartGPSWorkoutActivity.class);
+                    intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, workout);
+                    startActivity(intent);
+                } else {
+                    // Intent intent = new Intent(getContext(), StartNonWorkoutActivity.class);
+                    // intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, workout);
+                    // startActivity(intent);
+                    Log.d(TAG, "onClick: non");
+                }
+
+
             }
         });
 
@@ -166,9 +182,18 @@ public class WorkoutFragment extends Fragment {
                 mActivityNameTextView.setText(result);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
+                // Write your code if there's no result
             }
         }
+    }
+
+    private boolean isGpsBased(String workout) {
+        for (GpsBasedActivity gpsWorkout : GpsBasedActivity.values()) {
+            if (gpsWorkout.toString().equals(workout)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isSpotifyInstalled() {

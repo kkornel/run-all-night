@@ -35,6 +35,8 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import java.util.List;
 
+import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
+
 public class StartGPSWorkoutActivity extends AppCompatActivity implements
         LocationTrackingService.ServiceCallbacks,
         MainDetailsFragment.OnDetailsChanged,
@@ -70,6 +72,8 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private String mWorkoutName;
 
     @Override
     public List<LatLng> onMapUpdate() {
@@ -246,7 +250,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
             requestPermissions();
         }
 
-
+        // mWorkoutName = getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
     }
 
     @Override
@@ -309,6 +313,7 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
         if (!mIsForegroundServiceRunning) {
             Intent intent = new Intent(StartGPSWorkoutActivity.this, LocationTrackingService.class);
             intent.setAction(LocationTrackingService.ACTION_START_FOREGROUND_SERVICE);
+            intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT));
             startService(intent);
             mIsForegroundServiceRunning = true;
         }
@@ -495,10 +500,10 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
                 return mapsFragment;
             } else if (position == 1) {
                 MainDetailsFragment mainDetailsFragment = new MainDetailsFragment();
-                mainDetailsFragment.setTime("12:12");
-                mainDetailsFragment.setDistance("31:11");
-                mainDetailsFragment.setCurrent("4:11");
-                mainDetailsFragment.setAvg("3:11");
+                // mainDetailsFragment.setTime("12:12");
+                // mainDetailsFragment.setDistance("31:11");
+                // mainDetailsFragment.setCurrent("4:11");
+                // mainDetailsFragment.setAvg("3:11");
                 mainDetailsFragment.setCallBack(StartGPSWorkoutActivity.this);
                 return mainDetailsFragment;
             } else {

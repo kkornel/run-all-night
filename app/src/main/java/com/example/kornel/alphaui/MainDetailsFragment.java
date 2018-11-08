@@ -14,10 +14,10 @@ import android.widget.TextView;
 public class MainDetailsFragment extends Fragment {
     private static final String TAG = "MainDetailsFragment";
 
-    String time;
-    String distance;
-    String avg;
-    String current;
+    private TextView mTimeTextView;
+    private TextView mDistanceTextView;
+    private TextView mCurrentTextView;
+    private TextView mAvgTextView;
 
     private Handler mTimeHandler;
     private Runnable mTimeRunnable;
@@ -51,15 +51,10 @@ public class MainDetailsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.main_training_details_fragment, container, false);
 
-        final TextView timeTextView = (TextView) rootView.findViewById(R.id.timeTextView);
-        final TextView distanceTextView = (TextView) rootView.findViewById(R.id.distanceTextView);
-        TextView currentTextView = (TextView) rootView.findViewById(R.id.currentPaceTextView);
-        TextView avgTextView = (TextView) rootView.findViewById(R.id.avgTextView);
-
-        timeTextView.setText(time);
-        distanceTextView.setText(distance);
-        currentTextView.setText(avg);
-        avgTextView.setText(current);
+        mTimeTextView = rootView.findViewById(R.id.timeTextView);
+        mDistanceTextView = rootView.findViewById(R.id.distanceTextView);
+        mCurrentTextView = rootView.findViewById(R.id.currentPaceTextView);
+        mAvgTextView = rootView.findViewById(R.id.avgTextView);
 
         mTimeHandler = new Handler();
         mTimeRunnable = new Runnable() {
@@ -67,8 +62,8 @@ public class MainDetailsFragment extends Fragment {
             public void run() {
                 String time = mCallBack.getTimeString();
                 String distance = mCallBack.getDistanceString();
-                distanceTextView.setText(distance);
-                timeTextView.setText(time);
+                mDistanceTextView.setText(distance);
+                mTimeTextView.setText(time);
                 mTimeHandler.postDelayed(this, 500);
             }
         };
@@ -108,18 +103,18 @@ public class MainDetailsFragment extends Fragment {
     }
 
     public void setTime(String time) {
-        this.time = time;
+        mTimeTextView.setText(time);
     }
 
     public void setDistance(String distance) {
-        this.distance = distance;
+        mDistanceTextView.setText(distance);
     }
 
     public void setAvg(String avg) {
-        this.avg = avg;
+        mCurrentTextView.setText(avg);
     }
 
     public void setCurrent(String current) {
-        this.current = current;
+        mAvgTextView.setText(current);
     }
 }

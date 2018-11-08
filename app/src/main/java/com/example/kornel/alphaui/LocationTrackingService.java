@@ -31,6 +31,7 @@ import java.util.List;
 
 import static com.example.kornel.alphaui.MapsFragment.ACTION_LOCATION_CHANGED;
 import static com.example.kornel.alphaui.MapsFragment.LocationBroadcastReceiver.LOCATION_EXTRA_BROADCAST_INTENT;
+import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_SPORT_ACTIVITY;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_SPORT_ACTIVITY;
 import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
@@ -131,7 +132,8 @@ public class LocationTrackingService extends Service {
                 String ch187 = Character.toString((char) 187);
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
-                String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
+                // String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
+                String message = mCurrentActivity.getWorkoutName() + " " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
@@ -160,8 +162,8 @@ public class LocationTrackingService extends Service {
         switch (action) {
             case ACTION_START_FOREGROUND_SERVICE:
                 Log.d(TAG, "onStartCommand: Starting service.");
-
-                startForegroundService();
+                String workoutName = intent.getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
+                startForegroundService(workoutName);
 
                 Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
                 break;
@@ -209,12 +211,12 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    private void startForegroundService() {
+    private void startForegroundService(String workoutName) {
         Log.d(TAG, "startForegroundService: ");
 
         // mStopwatch.startStopwatch();
 
-        mCurrentActivity = new CurrentActivity();
+        mCurrentActivity = new CurrentActivity(workoutName);
 
         mLocationListener = new LocationListener() {
             @Override
@@ -324,7 +326,6 @@ public class LocationTrackingService extends Service {
 
         // Add new LatLng to the path
         mCurrentActivity.addLatLngToPath(newLatLng);
-        mCurrentActivity.addLatLonToPath(newLatLng);
 
         // Calculate distance between two previous locations
         mCurrentActivity.calculateDistanceBetweenTwoLastLocations();
@@ -343,7 +344,7 @@ public class LocationTrackingService extends Service {
         i++;
 
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentActivity.getMyPath());
+        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentActivity.getPath());
         sendBroadcast(intent);
 
         // mDistanceTV.setText(String.valueOf(mCurrentActivity.getDistance()));

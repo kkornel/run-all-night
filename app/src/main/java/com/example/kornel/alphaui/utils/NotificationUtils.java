@@ -14,7 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.example.kornel.alphaui.LocationTrackingService;
-import com.example.kornel.alphaui.MainActivity;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.StartGPSWorkoutActivity;
 
