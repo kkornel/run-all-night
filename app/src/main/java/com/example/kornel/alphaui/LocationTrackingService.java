@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.NotificationUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -24,10 +25,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.kornel.alphaui.MapsFragment.ACTION_LOCATION_CHANGED;
+import static com.example.kornel.alphaui.MapsFragment.LocationBroadcastReceiver.LOCATION_EXTRA_BROADCAST_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_SPORT_ACTIVITY;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_SPORT_ACTIVITY;
 import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
@@ -75,7 +78,6 @@ public class LocationTrackingService extends Service {
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
-    private Stopwatch mStopwatch;
     private Handler mNotificationHandler;
     private Runnable mNotificationRunnable;
     private ServiceCallbacks mServiceCallbacks;
@@ -118,7 +120,6 @@ public class LocationTrackingService extends Service {
         mLocationManager = (LocationManager)
                 getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        mStopwatch = new Stopwatch();
         mCoordinates = new ArrayList<>();
 
         mNotificationHandler = new Handler();
@@ -130,7 +131,7 @@ public class LocationTrackingService extends Service {
                 String ch187 = Character.toString((char) 187);
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
-                String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  3.54km";
+                String message = "Run " + ch187 + "  " + mCurrentActivity.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
@@ -197,6 +198,14 @@ public class LocationTrackingService extends Service {
         if (mLocationManager != null && mLocationListener != null) {
             Log.d(TAG, "onDestroy: ");
             mLocationManager.removeUpdates(mLocationListener);
+        }
+    }
+
+    public Location getLastLocation() {
+        try {
+            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException unlikely) {
+            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         }
     }
 
@@ -315,6 +324,7 @@ public class LocationTrackingService extends Service {
 
         // Add new LatLng to the path
         mCurrentActivity.addLatLngToPath(newLatLng);
+        mCurrentActivity.addLatLonToPath(newLatLng);
 
         // Calculate distance between two previous locations
         mCurrentActivity.calculateDistanceBetweenTwoLastLocations();
@@ -333,10 +343,19 @@ public class LocationTrackingService extends Service {
         i++;
 
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra("arr", mCurrentActivity.getPath());
-
+        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentActivity.getMyPath());
+        sendBroadcast(intent);
 
         // mDistanceTV.setText(String.valueOf(mCurrentActivity.getDistance()));
+    }
+
+    public double getDistance() {
+        if (mCurrentActivity != null) {
+            return mCurrentActivity.getDistance();
+        } else {
+            return 0;
+        }
+
     }
 
     private void startNotificationHandler() {
@@ -347,6 +366,16 @@ public class LocationTrackingService extends Service {
         mNotificationHandler.removeCallbacks(mNotificationRunnable);
     }
 
+    public String getDistanceString() {
+        double distance = 0;
+        if (mCurrentActivity != null) {
+            distance = mCurrentActivity.getDistance();
+        }
+        distance /= 1000;
+        // String.format("%.5g%n", distance);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(distance);
+    }
 
     /**
      * Class used for the client Binder.  Because we know this service always

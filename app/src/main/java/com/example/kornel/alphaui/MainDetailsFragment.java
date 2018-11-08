@@ -28,7 +28,9 @@ public class MainDetailsFragment extends Fragment {
     }
 
     interface OnDetailsChanged {
-        String onTimeChanged();
+        String getTimeString();
+        double getDistance();
+        String getDistanceString();
     }
 
     public void setCallBack(OnDetailsChanged callBack) {
@@ -50,7 +52,7 @@ public class MainDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.main_training_details_fragment, container, false);
 
         final TextView timeTextView = (TextView) rootView.findViewById(R.id.timeTextView);
-        TextView distanceTextView = (TextView) rootView.findViewById(R.id.distanceTextView);
+        final TextView distanceTextView = (TextView) rootView.findViewById(R.id.distanceTextView);
         TextView currentTextView = (TextView) rootView.findViewById(R.id.currentPaceTextView);
         TextView avgTextView = (TextView) rootView.findViewById(R.id.avgTextView);
 
@@ -63,7 +65,9 @@ public class MainDetailsFragment extends Fragment {
         mTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                String time = mCallBack.onTimeChanged();
+                String time = mCallBack.getTimeString();
+                String distance = mCallBack.getDistanceString();
+                distanceTextView.setText(distance);
                 timeTextView.setText(time);
                 mTimeHandler.postDelayed(this, 500);
             }

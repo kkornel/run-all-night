@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -80,13 +81,40 @@ public class StartGPSWorkoutActivity extends AppCompatActivity implements
     }
 
     @Override
-    public String onTimeChanged() {
+    public Location getLastLocation() {
+        if (mService != null) {
+            return mService.getLastLocation();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public double getDistance() {
+        if (mService != null) {
+            return mService.getDistance();
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public String getTimeString() {
         if (mService != null) {
             return mService.getTime();
         } else {
             return "00:00:00";
         }
 
+    }
+
+    @Override
+    public String getDistanceString() {
+        if (mService != null) {
+            return mService.getDistanceString();
+        } else {
+            return "00:00:00";
+        }
     }
 
     // Monitors the state of the connection to the service.

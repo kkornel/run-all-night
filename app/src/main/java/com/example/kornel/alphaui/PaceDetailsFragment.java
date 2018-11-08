@@ -17,6 +17,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.kornel.alphaui.MainDetailsFragment.OnDetailsChanged;
+
 public class PaceDetailsFragment extends Fragment implements
         PaceAdapter.ListItemClickListener {
     private static final String TAG = "PaceDetailsFragment";
@@ -37,6 +39,12 @@ public class PaceDetailsFragment extends Fragment implements
     private Toast mToast;
 
     public PaceDetailsFragment() {
+    }
+
+    private OnDetailsChanged mCallBack;
+
+    public void setCallBack(OnDetailsChanged callBack) {
+        mCallBack = callBack;
     }
 
     @Nullable
