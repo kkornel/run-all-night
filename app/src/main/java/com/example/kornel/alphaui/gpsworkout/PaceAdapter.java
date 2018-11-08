@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.kornel.alphaui.R;
 
 import java.util.List;
 

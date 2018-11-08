@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;

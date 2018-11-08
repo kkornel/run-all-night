@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 import android.location.Location;
 import android.location.LocationManager;
@@ -10,8 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentWorkout {
-    private static final String TAG = "CurrentWorkout";
+public class CurrentGpsWorkout {
+    private static final String TAG = "CurrentGpsWorkout";
 
     // Type of current activity
     private String mWorkoutName;
@@ -30,7 +30,7 @@ public class CurrentWorkout {
 
     private Stopwatch mStopWatch;
 
-    public CurrentWorkout(String workout) {
+    public CurrentGpsWorkout(String workout) {
         mWorkoutName = workout;
         mPath = new ArrayList<>();
         mLaps = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,42 +10,43 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
+public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
     private List<String> mWorkouts;
 
-    public WorkoutAdapter(ListItemClickListener onClickListener, List<String> activities) {
+    public FeedYouAdapter(ListItemClickListener onClickListener, List<String> workouts) {
         mOnClickListener = onClickListener;
-        mWorkouts = activities;
+        mWorkouts = workouts;
     }
 
     @Override
-    public WorkoutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FeedYouViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.workout_list_item;
+        int layoutIdForListItem = R.layout.feed_you_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        WorkoutViewHolder workoutViewHolder = new WorkoutViewHolder(view);
+        FeedYouViewHolder workoutViewHolder = new FeedYouViewHolder(view);
 
         return workoutViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkoutViewHolder workoutViewHolder, int position) {
+    public void onBindViewHolder(@NonNull FeedYouViewHolder workoutViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
         if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
-            workoutViewHolder.mWorkoutTextView.setText("ERROR");
+            workoutViewHolder.mDateTextView.setText("ERROR");
         } else {
-            workoutViewHolder.mWorkoutTextView.setText(mWorkouts.get(position));
+            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position));
         }
 
         // Googles way
@@ -62,20 +63,27 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
         notifyDataSetChanged();
     }
 
-    class WorkoutViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mWorkoutImageView;
-        private TextView mWorkoutTextView;
+    class FeedYouViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private static final String TAG = "FeedYouViewHolder";
 
-        public WorkoutViewHolder(View itemView) {
+        private ImageView mWorkoutImageView;
+        private TextView mDateTextView;
+        private TextView mDistanceTextView;
+        private TextView mDuartionTextView;
+
+        public FeedYouViewHolder(View itemView) {
             super(itemView);
+            Log.d(TAG, "WorkoutViewHolder: ");
             this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
-            this.mWorkoutTextView = itemView.findViewById(R.id.activityTextView);
+            this.mDateTextView = itemView.findViewById(R.id.dateTextView);
+            this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
+            this.mDuartionTextView = itemView.findViewById(R.id.durationTextView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d("s", "onClick: ");
+            Log.d(TAG, "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

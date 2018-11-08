@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.kornel.alphaui.R;
 
 public class MainDetailsFragment extends Fragment {
     private static final String TAG = "MainDetailsFragment";

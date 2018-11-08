@@ -1,5 +1,7 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -10,23 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.mainactivity.WorkoutAdapter;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
-    private static final String TAG = "FeedFriendsFragment";
-    
-    private FeedFriendsAdapter mFeedFriendsAdapter;
+import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_RESULT;
+
+public class ChooseWorkoutFragment extends Fragment implements ListItemClickListener {
+    private static final String TAG = "ChooseWorkoutFragment";
+
+    private WorkoutAdapter mWorkoutAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mFeedFriendsList;
+    private List<String> mWorkoutsList;
 
-    public FeedFriendsFragment() {
+    public ChooseWorkoutFragment() {
     }
-    
-    public void setFeedFriendsList(List<String> feedFriendsList) {
-        mFeedFriendsList = feedFriendsList;
+
+    public void setWorkoutsList(List<String> workoutsList) {
+        mWorkoutsList = workoutsList;
     }
 
     @Override
@@ -34,7 +40,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         Log.d(TAG, "onCreateView: ");
-        
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -42,14 +47,18 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mFeedFriendsAdapter = new FeedFriendsAdapter(this, mFeedFriendsList);
-        mRecyclerView.setAdapter(mFeedFriendsAdapter);
+        mWorkoutAdapter = new WorkoutAdapter(this, mWorkoutsList);
+        mRecyclerView.setAdapter(mWorkoutAdapter);
 
         return rootView;
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: ");
+        Intent returnIntent = new Intent();
+        String activity = mWorkoutsList.get(clickedItemIndex);
+        returnIntent.putExtra(WORKOUT_RESULT, activity);
+        getActivity().setResult(Activity.RESULT_OK, returnIntent);
+        getActivity().finish();
     }
 }

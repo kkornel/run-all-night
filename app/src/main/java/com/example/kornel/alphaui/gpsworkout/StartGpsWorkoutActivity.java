@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -28,12 +28,14 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.example.kornel.alphaui.BuildConfig;
+import com.example.kornel.alphaui.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import java.util.List;
 
-import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
+import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 
 public class StartGpsWorkoutActivity extends AppCompatActivity implements
         LocationTrackingService.ServiceCallbacks,
@@ -503,9 +505,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 return mainDetailsFragment;
             } else {
                 PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();
-                paceDetailsFragment.setTime("12:12");
-                paceDetailsFragment.setAvg("3:32");
-                paceDetailsFragment.setCurrent("2:11");
+                // paceDetailsFragment.setTime("12:12");
+                // paceDetailsFragment.setAvg("3:32");
+                // paceDetailsFragment.setCurrent("2:11");
                 return paceDetailsFragment;
             }
         }

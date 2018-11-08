@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_FIREBASE_USER;

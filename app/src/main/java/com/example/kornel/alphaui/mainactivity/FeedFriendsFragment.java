@@ -1,7 +1,5 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,25 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
-import static com.example.kornel.alphaui.WorkoutFragment.WORKOUT_RESULT;
-
-public class ChooseWorkoutFragment extends Fragment implements ListItemClickListener {
-    private static final String TAG = "ChooseWorkoutFragment";
-
-    private WorkoutAdapter mWorkoutAdapter;
+public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
+    private static final String TAG = "FeedFriendsFragment";
+    
+    private FeedFriendsAdapter mFeedFriendsAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mWorkoutsList;
+    private List<String> mFeedFriendsList;
 
-    public ChooseWorkoutFragment() {
+    public FeedFriendsFragment() {
     }
-
-    public void setWorkoutsList(List<String> workoutsList) {
-        mWorkoutsList = workoutsList;
+    
+    public void setFeedFriendsList(List<String> feedFriendsList) {
+        mFeedFriendsList = feedFriendsList;
     }
 
     @Override
@@ -38,6 +35,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         Log.d(TAG, "onCreateView: ");
+        
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -45,18 +43,14 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mWorkoutAdapter = new WorkoutAdapter(this, mWorkoutsList);
-        mRecyclerView.setAdapter(mWorkoutAdapter);
+        mFeedFriendsAdapter = new FeedFriendsAdapter(this, mFeedFriendsList);
+        mRecyclerView.setAdapter(mFeedFriendsAdapter);
 
         return rootView;
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Intent returnIntent = new Intent();
-        String activity = mWorkoutsList.get(clickedItemIndex);
-        returnIntent.putExtra(WORKOUT_RESULT, activity);
-        getActivity().setResult(Activity.RESULT_OK, returnIntent);
-        getActivity().finish();
+        Log.d(TAG, "onListItemClick: ");
     }
 }

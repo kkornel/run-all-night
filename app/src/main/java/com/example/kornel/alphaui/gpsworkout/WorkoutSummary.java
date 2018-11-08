@@ -1,9 +1,11 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.example.kornel.alphaui.R;
 
 public class WorkoutSummary extends AppCompatActivity {
     private static final String TAG = "WorkoutSummary";

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.gpsworkout;
 
 
 import android.os.Bundle;
@@ -17,7 +17,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.kornel.alphaui.MainDetailsFragment.OnDetailsChanged;
+import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.MainDetailsFragment.OnDetailsChanged;
+import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
 
 public class PaceDetailsFragment extends Fragment implements
         PaceAdapter.ListItemClickListener {

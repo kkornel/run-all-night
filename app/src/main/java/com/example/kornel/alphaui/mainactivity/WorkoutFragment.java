@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;

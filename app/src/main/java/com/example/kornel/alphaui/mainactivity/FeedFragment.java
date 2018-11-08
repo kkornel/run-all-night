@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.mainactivity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.NonGpsBasedWorkout;
 
