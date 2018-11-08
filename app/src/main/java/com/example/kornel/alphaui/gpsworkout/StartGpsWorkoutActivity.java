@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -49,7 +50,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
     private static final int RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER = 2;
 
+    private static final int MAPS_FRAGMENT_INDEX_IN_VIEW_PAGER = 0;
     private static final int MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 1;
+    private static final int PACE_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 2;
 
     // A reference to the service used to get location updates.
     private LocationTrackingService mService;
@@ -95,7 +98,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
             if (mService.isServiceRunning()) {
                 updateButtons(mService.isTrainingPaused());
+
             }
+            mTimeHandler.postDelayed(mTimeRunnable, 0);
         }
 
         @Override
@@ -104,6 +109,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             mBound = false;
         }
     };
+
+    private Handler mTimeHandler;
+    private Runnable mTimeRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,13 +204,43 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
 
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
 
         // requestPermissions();
 
         if (!checkPermissions()) {
             requestPermissions();
         }
+
+        mTimeHandler = new Handler();
+        mTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                int currentActiveFragmentIdx = mViewPager.getCurrentItem();
+
+                // switch (currentActiveFragmentIdx) {
+                //     case MAPS_FRAGMENT_INDEX_IN_VIEW_PAGER:
+                //         break;
+                //
+                //     case MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER:
+                //         mMainDetailsFragment.setTime(mService.getTimeString());
+                //         mMainDetailsFragment.setDistance(mService.getDistanceString());
+                //
+                //         break;
+                //
+                //     case PACE_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER:
+                //         mPaceDetailsFragment.setTime(mService.getTimeString());
+                //
+                //         break;
+                // }
+
+                mMainDetailsFragment.setTime(mService.getTimeString());
+                mMainDetailsFragment.setDistance(mService.getDistanceString());
+                mPaceDetailsFragment.setTime(mService.getTimeString());
+
+                mTimeHandler.postDelayed(this, 500);
+            }
+        };
 
     }
 
@@ -239,6 +277,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             mService.setCallback(null);
             unbindService(mConnection);
             mBound = false;
+            mTimeHandler.removeCallbacks(mTimeRunnable);
         }
     }
 

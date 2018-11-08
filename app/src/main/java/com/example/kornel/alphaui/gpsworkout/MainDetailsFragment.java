@@ -61,11 +61,11 @@ public class MainDetailsFragment extends Fragment {
         mTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                String time = mCallBack.getTimeString();
-                String distance = mCallBack.getDistanceString();
-                mDistanceTextView.setText(distance);
-                mTimeTextView.setText(time);
-                mTimeHandler.postDelayed(this, 500);
+                // String time = mCallBack.getTimeString();
+                // String distance = mCallBack.getDistanceString();
+                // mDistanceTextView.setText(distance);
+                // mTimeTextView.setText(time);
+                // mTimeHandler.postDelayed(this, 500);
             }
         };
 

@@ -53,15 +53,8 @@ public class NotificationUtils {
         mNotificationBuilder =
                 new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
                         .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                        // .setSmallIcon(R.drawable.ic_directions_bike_black_24dp)
                         .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
                         .setLargeIcon(largeIcon(context))
-                        // .setContentTitle(context.getString(R.string.location_tracking_notification_body))
-                        // .setContentTitle(context.getString(R.string.location_tracking_notification_title))
-                        // .setContentText(context.getString(R.string.location_tracking_notification_body))
-                        // .setStyle(new NotificationCompat.BigTextStyle().bigText(
-                        //         context.getString(R.string.location_tracking_notification_body)))
-                        // .addAction(mResumeAction)
                         .addAction(mPauseAction)
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setOnlyAlertOnce(true)
@@ -98,19 +91,19 @@ public class NotificationUtils {
         mNotificationManager.notify(LOCATION_TRACKING_NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
-    public static void addResumeAction() {
+    private static void addResumeAction() {
         mNotificationBuilder.addAction(mResumeAction);
     }
 
-    public static void addPauseAction() {
+    private static void addPauseAction() {
         mNotificationBuilder.addAction(mPauseAction);
     }
 
-    public static void removeResumeAction() {
+    private static void removeResumeAction() {
         mNotificationBuilder.mActions.remove(mResumeAction);
     }
 
-    public static void removePauseAction() {
+    private static void removePauseAction() {
         mNotificationBuilder.mActions.remove(mPauseAction);
     }
 
