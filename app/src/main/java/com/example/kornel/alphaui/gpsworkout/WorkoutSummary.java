@@ -1,13 +1,16 @@
 package com.example.kornel.alphaui.gpsworkout;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,6 +56,11 @@ public class WorkoutSummary extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveWorkout(workoutSummary);
+
+                Toast.makeText(WorkoutSummary.this, "Workout saved", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -72,6 +80,8 @@ public class WorkoutSummary extends AppCompatActivity {
         // result.put("time", workoutSummary.getDuration());
         // result.put("distance", workoutSummary.getDistance());
         // result.put("path", workoutSummary.g);
+
+        userRef.child(userUid).child("lastWorkout").setValue(key);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/workouts/" + userUid + "/" + key, workoutSummary);

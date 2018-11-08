@@ -99,6 +99,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             mService.setCallback(StartGpsWorkoutActivity.this);
 
             if (mService.isServiceRunning()) {
+                Log.d(TAG, "onServiceConnected: " + mService.isTrainingPaused());
                 updateButtons(mService.isTrainingPaused());
             }
             // updateButtons(mService.isTrainingPaused());

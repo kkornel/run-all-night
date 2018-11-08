@@ -220,6 +220,7 @@ public class LocationTrackingService extends Service {
         startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification);
 
         mIsServiceRunning = true;
+        mIsTrainingPaused = false;
 
         startNotificationHandler();
     }

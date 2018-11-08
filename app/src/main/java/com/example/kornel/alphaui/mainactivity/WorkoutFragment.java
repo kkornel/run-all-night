@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
@@ -149,7 +150,7 @@ public class WorkoutFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
-        String userUid = mUser.getUid();
+        final String userUid = mUser.getUid();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference usersRef = database.getReference(Database.USERS);
@@ -159,8 +160,23 @@ public class WorkoutFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                 // TODO: it's broken cause I've overwritten database
-                // User user = dataSnapshot.getValue(User.class);
-                // mWelcomeTextView.setText(user.getFirstName());
+                User user = dataSnapshot.getValue(User.class);
+                mWelcomeTextView.setText(user.getFirstName());
+
+                // database.getReference().child("workouts").child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
+                //     @Override
+                //     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //         Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                //         mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDate().toString());
+                //     }
+                //
+                //     @Override
+                //     public void onCancelled(@NonNull DatabaseError databaseError) {
+                //
+                //     }
+                // });
+
+
             }
 
             @Override
