@@ -48,7 +48,7 @@ public class CurrentGpsWorkout {
         mStopWatch.pauseStopwatch();
     }
 
-    public String getTime() {
+    public String getTimeString() {
         return mStopWatch.getTimeString();
     }
 

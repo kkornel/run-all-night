@@ -3,14 +3,9 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Stopwatch {
-    private static final String TAG = "Stopwatch";
-
     // total ms elapsed since start
     private long millisecondsTime;
 
@@ -21,19 +16,17 @@ public class Stopwatch {
     private long timeBuff;
     private long updateTime;
 
+    // actual values
     private int milliseconds;
     private int seconds;
     private int minutes;
-
-    private List<Integer> laps;
-    private int lastLapSec;
+    private int hours;
 
     private Handler handler;
     private Runnable runnable;
 
     public Stopwatch() {
         resetStopwatch();
-        laps = new ArrayList<>();
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -41,6 +34,8 @@ public class Stopwatch {
                 millisecondsTime = SystemClock.uptimeMillis() - startTime;
                 updateTime = timeBuff + millisecondsTime;
                 seconds = (int) (updateTime / 1000);
+
+                hours = seconds / 3600;
 
                 minutes = seconds / 60;
 
@@ -55,13 +50,11 @@ public class Stopwatch {
 
     public void startStopwatch() {
         startTime = SystemClock.uptimeMillis();
-        Log.d(TAG, "startStopwatch: " + startTime);
         handler.postDelayed(runnable, 0);
     }
 
     public void pauseStopwatch() {
         timeBuff += millisecondsTime;
-        Log.d(TAG, "pauseStopwatch: " + timeBuff);
         handler.removeCallbacks(runnable);
     }
 
@@ -73,30 +66,19 @@ public class Stopwatch {
         seconds = 0;
         minutes = 0;
         milliseconds = 0;
-        lastLapSec = 0;
     }
 
     public long getTotalMilliSecs() {
         return millisecondsTime;
     }
 
-    public void makeLap() {
-        int lap = (int) seconds + minutes * 60 - lastLapSec;
-        lastLapSec = lap;
-        laps.add(lap);
-        Log.d(TAG, "makeLap: " + lap);
-    }
-
     public String getTimeString() {
-        String time = minutes + ":" + String.format("%02d", seconds);
+        String time;
+        if (hours == 0) {
+            time = minutes + ":" + String.format("%02d", seconds);
+        } else {
+            time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+        }
         return time;
-    }
-
-    public int getSeconds() {
-        return seconds;
-    }
-
-    public int getMinutes() {
-        return minutes;
     }
 }

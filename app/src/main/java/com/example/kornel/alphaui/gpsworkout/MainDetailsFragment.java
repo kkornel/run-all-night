@@ -31,7 +31,6 @@ public class MainDetailsFragment extends Fragment {
 
     interface OnDetailsChanged {
         String getTimeString();
-        double getDistance();
         String getDistanceString();
     }
 

@@ -38,12 +38,18 @@ import java.util.List;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 
 public class StartGpsWorkoutActivity extends AppCompatActivity implements
-        LocationTrackingService.ServiceCallbacks,
+        LocationTrackingService.OnNewActivityState,
         MainDetailsFragment.OnDetailsChanged,
         MapsFragment.OnMapUpdate {
     private static final String TAG = "StartGpsWorkoutActivity";
 
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
+
+    private static final int START_BUTTON_INDEX_IN_VIEW_FLIPPER = 0;
+    private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
+    private static final int RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER = 2;
+
+    private static final int MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 1;
 
     // A reference to the service used to get location updates.
     private LocationTrackingService mService;
@@ -53,71 +59,24 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
     private boolean mIsForegroundServiceRunning = false;
 
+    private MapsFragment mMapsFragment;
+    private MainDetailsFragment mMainDetailsFragment;
+    private PaceDetailsFragment mPaceDetailsFragment;
+
     // UI elements
     private ViewFlipper mViewFlipper;
     private Button mStartButton;
     private ImageButton mPauseButton;
     private Button mResumeButton;
     private Button mStopButton;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+
+    // The ViewPager that will host the section contents.
     private ViewPager mViewPager;
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
+    // The PagerAdapter that will provide fragments for each of the sections.
+    // We use a FragmentPagerAdapter derivative, which will keep every loaded fragment in memory.
+    // If this becomes too memory intensive, it may be best to switch to a FragmentStatePagerAdapter.
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    @Override
-    public List<LatLng> onMapUpdate() {
-        if (mService != null) {
-            return mService.getPath();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Location getLastLocation() {
-        if (mService != null) {
-            return mService.getLastLocation();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public double getDistance() {
-        if (mService != null) {
-            return mService.getDistance();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public String getTimeString() {
-        if (mService != null) {
-            return mService.getTime();
-        } else {
-            return "00:00:00";
-        }
-
-    }
-
-    @Override
-    public String getDistanceString() {
-        if (mService != null) {
-            return mService.getDistanceString();
-        } else {
-            return "00:00:00";
-        }
-    }
 
     // Monitors the state of the connection to the service.
     // Defines callbacks for service binding, passed to bindService()
@@ -132,10 +91,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             mService = binder.getService();
             mBound = true;
 
-            mService.setServiceCallbacks(StartGpsWorkoutActivity.this);
+            mService.setCallback(StartGpsWorkoutActivity.this);
 
-            Log.e(TAG, "onServiceConnected: " + mService.isServiceRunning() + "");
-            Log.e(TAG, "onServiceConnected: " + mService.isTrainingPaused() + "");
             if (mService.isServiceRunning()) {
                 updateButtons(mService.isTrainingPaused());
             }
@@ -156,7 +113,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         getSupportActionBar().hide();
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager  = findViewById(R.id.viewPager);
+        mViewPager = findViewById(R.id.viewPager);
         mViewFlipper = findViewById(R.id.viewFlipper);
         mStartButton = findViewById(R.id.startButton);
         mPauseButton = findViewById(R.id.pauseButton);
@@ -170,7 +127,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                     requestPermissions();
                 } else {
                     startWorkout();
-                    mViewFlipper.showNext();
+                    // mViewFlipper.showNext();
+                    mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
                 }
             }
         });
@@ -178,14 +136,16 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 pauseWorkout();
-                mViewFlipper.showNext();
+                // mViewFlipper.showNext();
+                mViewFlipper.setDisplayedChild(RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER);
             }
         });
         mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resumeWorkout();
-                mViewFlipper.showPrevious();
+                // mViewFlipper.showPrevious();
+                mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
             }
         });
         mStopButton.setOnClickListener(new View.OnClickListener() {
@@ -202,11 +162,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // final PageIndicatorView pageIndicatorView = findViewById(R.id.pageIndicatorView);
-        // pageIndicatorView.setCount(3); // specify total count of indicators
-        // pageIndicatorView.setSelection(2);
-
-        InkPageIndicator pageIndicatorView = (InkPageIndicator) findViewById(R.id.pageIndicatorView);
+        InkPageIndicator pageIndicatorView = findViewById(R.id.pageIndicatorView);
         pageIndicatorView.setViewPager(mViewPager);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -219,14 +175,14 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
                 if (position == 0 || position == 2) {
                     Log.d(TAG, "onPageSelected: ");
-                    TranslateAnimation animate = new TranslateAnimation(0,0,0,mViewFlipper.getHeight());
+                    TranslateAnimation animate = new TranslateAnimation(0, 0, 0, mViewFlipper.getHeight());
                     animate.setDuration(100);
                     animate.setFillAfter(true);
                     mViewFlipper.startAnimation(animate);
                     mViewFlipper.setVisibility(View.GONE);
                 } else {
                     if (mViewFlipper.getVisibility() == View.GONE) {
-                        TranslateAnimation animate = new TranslateAnimation(mViewFlipper.getWidth(),0, 0,0);
+                        TranslateAnimation animate = new TranslateAnimation(mViewFlipper.getWidth(), 0, 0, 0);
                         // TranslateAnimation animate = new TranslateAnimation(0,0,0,(float)(-mViewFlipper.getHeight()/2.3));
                         animate.setDuration(300);
                         // animate.setFillAfter(true);
@@ -272,16 +228,15 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        //unregisterReceiver(mLocationReceiver);
     }
 
     @Override
     protected void onStop() {
         Log.d(TAG, "onStop: ");
         super.onStop();
-        if(mBound) {
+        if (mBound) {
             // unregister
-            mService.setServiceCallbacks(null);
+            mService.setCallback(null);
             unbindService(mConnection);
             mBound = false;
         }
@@ -291,16 +246,15 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
-        // unregisterReceiver(mLocationReceiver);
     }
 
     @Override
     public void updateButtons(boolean isPaused) {
         Log.d(TAG, "updateButtons: " + isPaused);
         if (isPaused) {
-            mViewFlipper.setDisplayedChild(2);
+            mViewFlipper.setDisplayedChild(RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER);
         } else {
-            mViewFlipper.setDisplayedChild(1);
+            mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
         }
     }
 
@@ -318,12 +272,12 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
     private void pauseWorkout() {
         Log.d(TAG, "pauseWorkout: ");
-        mService.pauseSportActivity();
+        mService.pauseWorkout();
     }
 
     private void resumeWorkout() {
         Log.d(TAG, "resumeWorkout: ");
-        mService.resumeSportActivity();
+        mService.resumeWorkout();
     }
 
     private void finishWorkout() {
@@ -340,7 +294,85 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
     @Override
     public void onFabClicked() {
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
+    }
+
+    @Override
+    public List<LatLng> onMapUpdate() {
+        if (mService != null) {
+            return mService.getPath();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Location getLastLocation() {
+        if (mService != null) {
+            return mService.getLastLocation();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String getTimeString() {
+        if (mService != null) {
+            return mService.getTimeString();
+        } else {
+            return "0:00";
+        }
+
+    }
+
+    @Override
+    public String getDistanceString() {
+        if (mService != null) {
+            return mService.getDistanceString();
+        } else {
+            return "0.00";
+        }
+    }
+
+    // A FragmentPagerAdapter that returns a fragment corresponding to one of the sections/tabs/pages.
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            if (position == 0) {
+                // MapsFragment mapsFragment = new MapsFragment();
+                mMapsFragment = new MapsFragment();
+                mMapsFragment.setCallback(StartGpsWorkoutActivity.this);
+                return mMapsFragment;
+            } else if (position == 1) {
+                // MainDetailsFragment mainDetailsFragment = new MainDetailsFragment();
+                mMainDetailsFragment = new MainDetailsFragment();
+                // mainDetailsFragment.setTime("12:12");
+                // mainDetailsFragment.setDistance("31:11");
+                // mainDetailsFragment.setCurrent("4:11");
+                // mainDetailsFragment.setAvg("3:11");
+                mMainDetailsFragment.setCallBack(StartGpsWorkoutActivity.this);
+                return mMainDetailsFragment;
+            } else {
+                // PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();
+                mPaceDetailsFragment = new PaceDetailsFragment();
+                // paceDetailsFragment.setTime("12:12");
+                // paceDetailsFragment.setAvg("3:32");
+                // paceDetailsFragment.setCurrent("2:11");
+                return mPaceDetailsFragment;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
     }
 
     private boolean checkPermissions() {
@@ -476,47 +508,4 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 }
         }
     }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    private class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position == 0) {
-                MapsFragment mapsFragment = new MapsFragment();
-                mapsFragment.setCallback(StartGpsWorkoutActivity.this);
-                return mapsFragment;
-            } else if (position == 1) {
-                MainDetailsFragment mainDetailsFragment = new MainDetailsFragment();
-                // mainDetailsFragment.setTime("12:12");
-                // mainDetailsFragment.setDistance("31:11");
-                // mainDetailsFragment.setCurrent("4:11");
-                // mainDetailsFragment.setAvg("3:11");
-                mainDetailsFragment.setCallBack(StartGpsWorkoutActivity.this);
-                return mainDetailsFragment;
-            } else {
-                PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();
-                // paceDetailsFragment.setTime("12:12");
-                // paceDetailsFragment.setAvg("3:32");
-                // paceDetailsFragment.setCurrent("2:11");
-                return paceDetailsFragment;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-    }
-
 }

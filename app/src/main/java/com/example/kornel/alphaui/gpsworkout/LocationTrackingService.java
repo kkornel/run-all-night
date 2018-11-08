@@ -40,8 +40,6 @@ public class LocationTrackingService extends Service {
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-
     // The desired interval for location updates. Inexact. Updates may be more or less frequent.
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
@@ -58,18 +56,6 @@ public class LocationTrackingService extends Service {
     // Callback for changes in location.
     private LocationCallback mLocationCallback;
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-
-    private List<LatLng> mTestCoordinates;
-    private List<LatLng> mTestCoordinates2;
-
-    private CurrentGpsWorkout mCurrentGpsWorkout;
-
-    private int i = -1;
-
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-
     // Binder given to clients
     private final IBinder mBinder = new LocationTrackingBinder();
 
@@ -78,7 +64,11 @@ public class LocationTrackingService extends Service {
 
     private Handler mNotificationHandler;
     private Runnable mNotificationRunnable;
-    private ServiceCallbacks mServiceCallbacks;
+
+    // For button state update
+    private OnNewActivityState mButtonCallback;
+
+    private CurrentGpsWorkout mCurrentGpsWorkout;
 
     private List<LatLng> mCoordinates;
 
@@ -86,7 +76,16 @@ public class LocationTrackingService extends Service {
     private boolean mCameFromNotification;
     private boolean mIsServiceRunning;
 
-    public interface ServiceCallbacks {
+    // ////////////////////////////////////////////////////////////////////////////////////////////X
+
+    private List<LatLng> mTestCoordinates;
+    private List<LatLng> mTestCoordinates2;
+
+    private int i = -1;
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    public interface OnNewActivityState {
         void updateButtons(boolean isPaused);
     }
 
@@ -130,24 +129,12 @@ public class LocationTrackingService extends Service {
 
                 // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
                 // String message = "Run " + ch187 + "  " + mCurrentGpsWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
-                String message = mCurrentGpsWorkout.getWorkoutName() + " " + ch187 + "  " + mCurrentGpsWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
+                String message = mCurrentGpsWorkout.getWorkoutName() + " " + ch187 + "  " + mCurrentGpsWorkout.getTimeString() + "  " + ch187 + "  " + getDistanceString() + "km";
 
                 NotificationUtils.updateNotification(message);
                 mNotificationHandler.postDelayed(this, 500);
             }
         };
-    }
-
-    public String getTime() {
-        if (mCurrentGpsWorkout != null) {
-            return mCurrentGpsWorkout.getTime();
-        } else {
-            return "00:00:00";
-        }
-    }
-
-    public List<LatLng> getPath() {
-        return mCurrentGpsWorkout.getPath();
     }
 
     @Override
@@ -159,9 +146,9 @@ public class LocationTrackingService extends Service {
         switch (action) {
             case ACTION_START_FOREGROUND_SERVICE:
                 Log.d(TAG, "onStartCommand: Starting service.");
+
                 String workoutName = intent.getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
                 startForegroundService(workoutName);
-
                 Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
                 break;
 
@@ -169,7 +156,6 @@ public class LocationTrackingService extends Service {
                 Log.d(TAG, "onStartCommand: Stopping service.");
 
                 stopForegroundService();
-
                 Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
                 break;
 
@@ -177,14 +163,14 @@ public class LocationTrackingService extends Service {
                 Log.d(TAG, "onStartCommand: You clicked RESUME button.");
 
                 mCameFromNotification = true;
-                resumeSportActivity();
+                resumeWorkout();
                 break;
 
             case ACTION_PAUSE_WORKOUT:
                 Log.d(TAG, "onStartCommand: You click PAUSE button.");
 
                 mCameFromNotification = true;
-                pauseSportActivity();
+                pauseWorkout();
                 break;
         }
         return super.onStartCommand(intent, flags, startId);
@@ -200,18 +186,8 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    public Location getLastLocation() {
-        try {
-            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        } catch (SecurityException unlikely) {
-            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-    }
-
     private void startForegroundService(String workoutName) {
         Log.d(TAG, "startForegroundService: ");
-
-        // mStopwatch.startStopwatch();
 
         mCurrentGpsWorkout = new CurrentGpsWorkout(workoutName);
 
@@ -219,21 +195,15 @@ public class LocationTrackingService extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Log.d(TAG, "onLocationChanged: ");
-
                 onNewLocation(location);
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
             @Override
-            public void onProviderEnabled(String provider) {
-            }
-
+            public void onProviderEnabled(String provider) {}
             @Override
-            public void onProviderDisabled(String provider) {
-            }
+            public void onProviderDisabled(String provider) {}
         };
 
         try {
@@ -265,34 +235,31 @@ public class LocationTrackingService extends Service {
         mIsServiceRunning = false;
     }
 
-    public void resumeSportActivity() {
-        Log.d(TAG, "resumeSportActivity: ");
-        mIsTrainingPaused = false;
-        // mStopwatch.startStopwatch();
-        mCurrentGpsWorkout.startStopwatch();
-        startNotificationHandler();
+    public void pauseWorkout() {
+        Log.d(TAG, "pauseWorkout: ");
+        mIsTrainingPaused = true;
+        mCurrentGpsWorkout.pauseStopwatch();
+        stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
-        onNewLocation(null);
+
         if (mCameFromNotification) {
-            if (mServiceCallbacks != null) {
-                mServiceCallbacks.updateButtons(false);
+            if (mButtonCallback != null) {
+                mButtonCallback.updateButtons(true);
             }
             mCameFromNotification = false;
         }
     }
 
-    public void pauseSportActivity() {
-        Log.d(TAG, "pauseSportActivity: ");
-        mIsTrainingPaused = true;
-        // mStopwatch.pauseStopwatch();
-        mCurrentGpsWorkout.pauseStopwatch();
-        stopNotificationHandler();
+    public void resumeWorkout() {
+        Log.d(TAG, "resumeWorkout: ");
+        mIsTrainingPaused = false;
+        mCurrentGpsWorkout.startStopwatch();
+        startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
-        onNewLocation(null);
 
         if (mCameFromNotification) {
-            if (mServiceCallbacks != null) {
-                mServiceCallbacks.updateButtons(true);
+            if (mButtonCallback != null) {
+                mButtonCallback.updateButtons(false);
             }
             mCameFromNotification = false;
         }
@@ -343,17 +310,6 @@ public class LocationTrackingService extends Service {
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
         intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
         sendBroadcast(intent);
-
-        // mDistanceTV.setText(String.valueOf(mCurrentGpsWorkout.getDistance()));
-    }
-
-    public double getDistance() {
-        if (mCurrentGpsWorkout != null) {
-            return mCurrentGpsWorkout.getDistance();
-        } else {
-            return 0;
-        }
-
     }
 
     private void startNotificationHandler() {
@@ -364,21 +320,8 @@ public class LocationTrackingService extends Service {
         mNotificationHandler.removeCallbacks(mNotificationRunnable);
     }
 
-    public String getDistanceString() {
-        double distance = 0;
-        if (mCurrentGpsWorkout != null) {
-            distance = mCurrentGpsWorkout.getDistance();
-        }
-        distance /= 1000;
-        // String.format("%.5g%n", distance);
-        DecimalFormat df = new DecimalFormat("#.##");
-        return df.format(distance);
-    }
-
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
+    // Class used for the client Binder. Because we know this service always runs
+    // in the same process as its clients, we don't need to deal with IPC.
     public class LocationTrackingBinder extends Binder {
         private static final String TAG = "LocationTrackingBinder";
 
@@ -389,16 +332,43 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    public void setServiceCallbacks(ServiceCallbacks serviceCallbacks) {
-        mServiceCallbacks = serviceCallbacks;
+    public void setCallback(OnNewActivityState callback) {
+        mButtonCallback = callback;
     }
 
     /**
-     * method for clients
+     * Methods for clients.
      */
-    public List<LatLng> getLatLngArray() {
-        Log.d(TAG, "getLatLngArray: ");
-        return mCoordinates;
+
+    public Location getLastLocation() {
+        try {
+            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException unlikely) {
+            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+    }
+
+    public List<LatLng> getPath() {
+        return mCurrentGpsWorkout.getPath();
+    }
+
+    public String getTimeString() {
+        if (mCurrentGpsWorkout != null) {
+            return mCurrentGpsWorkout.getTimeString();
+        } else {
+            return "0:00";
+        }
+    }
+
+    public String getDistanceString() {
+        if (mCurrentGpsWorkout == null) {
+            return "0.00";
+        }
+        double distance = mCurrentGpsWorkout.getDistance();
+        distance /= 1000;
+        // String.format("%.5g%n", distance);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(distance);
     }
 
     public boolean isTrainingPaused() {
@@ -409,7 +379,7 @@ public class LocationTrackingService extends Service {
         return mIsServiceRunning;
     }
 
-    public void createTest() {
+    private void createTest() {
         mTestCoordinates = new ArrayList<>();
         mTestCoordinates.add(new LatLng(52.416042, 16.939496));
         mTestCoordinates.add(new LatLng(52.415358, 16.939367));
