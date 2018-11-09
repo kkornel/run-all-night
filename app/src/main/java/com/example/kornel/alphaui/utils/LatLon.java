@@ -3,9 +3,17 @@ package com.example.kornel.alphaui.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class LatLon implements Parcelable {
     private double latitude;
     private double longitude;
+
+    public LatLon() {
+    }
 
     public LatLon(double latitude, double longitude) {
         this.latitude = latitude;
@@ -26,6 +34,15 @@ public class LatLon implements Parcelable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public static ArrayList<LatLng> latLonToLatLng(List<LatLon> latlons) {
+        ArrayList<LatLng> arrayList = new ArrayList<>();
+        for (LatLon latLon : latlons) {
+            LatLng latLng = new LatLng(latLon.latitude, latLon.longitude);
+            arrayList.add(latLng);
+        }
+        return arrayList;
     }
 
     // Parcelling part

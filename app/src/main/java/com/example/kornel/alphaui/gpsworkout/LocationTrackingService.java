@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.NotificationUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -81,7 +82,7 @@ public class LocationTrackingService extends Service {
 
     private CurrentGpsWorkout mCurrentGpsWorkout;
 
-    private List<LatLng> mCoordinates;
+    private List<LatLon> mCoordinates;
 
     private boolean mIsTrainingPaused;
     private boolean mCameFromNotification;
@@ -89,8 +90,8 @@ public class LocationTrackingService extends Service {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////X
 
-    private List<LatLng> mTestCoordinates;
-    private List<LatLng> mTestCoordinates2;
+    private List<LatLon> mTestCoordinates;
+    private List<LatLon> mTestCoordinates2;
 
     private int i = -1;
 
@@ -289,7 +290,7 @@ public class LocationTrackingService extends Service {
         String mWorkoutName = mCurrentGpsWorkout.getWorkoutName();
 
         // Array of all LatLng on path
-        ArrayList<LatLng> mPath = mCurrentGpsWorkout.getTestLatLng();
+        ArrayList<LatLon> mPath = mCurrentGpsWorkout.getTestLatLng();
 
         // Total distance since started tracking in meters
         double mDistance = mCurrentGpsWorkout.getDistance();
@@ -306,7 +307,7 @@ public class LocationTrackingService extends Service {
     private void onNewLocation(Location newLocation) {
         // I have a new Location
         // Create LatLng based on new Location
-        LatLng newLatLng = new LatLng(newLocation.getLatitude(), newLocation.getLongitude());
+        LatLon newLatLng = new LatLon(newLocation.getLatitude(), newLocation.getLongitude());
 
         // Calculate new distance
         if (mPreviousLocation != null) {
@@ -341,12 +342,12 @@ public class LocationTrackingService extends Service {
             return;
 
         newLocation = new Location(LocationManager.GPS_PROVIDER);
-        newLocation.setLatitude(mTestCoordinates.get(i).latitude);
-        newLocation.setLongitude(mTestCoordinates.get(i).longitude);
+        newLocation.setLatitude(mTestCoordinates.get(i).getLatitude());
+        newLocation.setLongitude(mTestCoordinates.get(i).getLongitude());
 
         // I have a new Location
         // Create LatLng based on new Location
-        LatLng newLatLng = new LatLng(newLocation.getLatitude(), newLocation.getLongitude());
+        LatLon newLatLng = new LatLon(newLocation.getLatitude(), newLocation.getLongitude());
 
         // Move camera to new position
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
@@ -453,7 +454,7 @@ public class LocationTrackingService extends Service {
 
 
 
-    public List<LatLng> getPath() {
+    public List<LatLon> getPath() {
         return mCurrentGpsWorkout.getPath();
     }
 
@@ -486,39 +487,39 @@ public class LocationTrackingService extends Service {
 
     private void createTest() {
         mTestCoordinates = new ArrayList<>();
-        mTestCoordinates.add(new LatLng(52.416042, 16.939496));
-        mTestCoordinates.add(new LatLng(52.415358, 16.939367));
-        mTestCoordinates.add(new LatLng(52.414553, 16.939206));
-        mTestCoordinates.add(new LatLng(52.413627, 16.939072));
-        mTestCoordinates.add(new LatLng(52.412538, 16.938852));
-        mTestCoordinates.add(new LatLng(52.411671, 16.938482));
-        mTestCoordinates.add(new LatLng(52.410830, 16.938246));
-        mTestCoordinates.add(new LatLng(52.409943, 16.938353));
-        mTestCoordinates.add(new LatLng(52.409449, 16.938267));
-        mTestCoordinates.add(new LatLng(52.409010, 16.938155));
-        mTestCoordinates.add(new LatLng(52.408706, 16.938106));
-        mTestCoordinates.add(new LatLng(52.408238, 16.938047));
-        mTestCoordinates.add(new LatLng(52.407708, 16.937945));
-        mTestCoordinates.add(new LatLng(52.407407, 16.937881));
-        mTestCoordinates.add(new LatLng(52.407138, 16.937838));
-        mTestCoordinates.add(new LatLng(52.406863, 16.937801));
-        mTestCoordinates.add(new LatLng(52.406340, 16.937704));
-        mTestCoordinates.add(new LatLng(52.405842, 16.937591));
-        mTestCoordinates.add(new LatLng(52.405430, 16.937559));
-        mTestCoordinates.add(new LatLng(52.405083, 16.937490));
-        mTestCoordinates.add(new LatLng(52.404573, 16.937345));
-        mTestCoordinates.add(new LatLng(52.403615, 16.936963));
-        mTestCoordinates.add(new LatLng(52.403060, 16.936833));
-        mTestCoordinates.add(new LatLng(52.402435, 16.936616));
-        mTestCoordinates.add(new LatLng(52.401926, 16.936400));
-        mTestCoordinates.add(new LatLng(52.401483, 16.936255));
-        mTestCoordinates.add(new LatLng(52.401002, 16.936043));
-        mTestCoordinates.add(new LatLng(52.400829, 16.936231));
-        mTestCoordinates.add(new LatLng(52.400959, 16.936802));
-        mTestCoordinates.add(new LatLng(52.401138, 16.937424));
-        mTestCoordinates.add(new LatLng(52.401352, 16.937919));
-        mTestCoordinates.add(new LatLng(52.401457, 16.938247));
-        mTestCoordinates.add(new LatLng(52.401613, 16.938716));
+        mTestCoordinates.add(new LatLon(52.416042, 16.939496));
+        mTestCoordinates.add(new LatLon(52.415358, 16.939367));
+        mTestCoordinates.add(new LatLon(52.414553, 16.939206));
+        mTestCoordinates.add(new LatLon(52.413627, 16.939072));
+        mTestCoordinates.add(new LatLon(52.412538, 16.938852));
+        mTestCoordinates.add(new LatLon(52.411671, 16.938482));
+        mTestCoordinates.add(new LatLon(52.410830, 16.938246));
+        mTestCoordinates.add(new LatLon(52.409943, 16.938353));
+        mTestCoordinates.add(new LatLon(52.409449, 16.938267));
+        mTestCoordinates.add(new LatLon(52.409010, 16.938155));
+        mTestCoordinates.add(new LatLon(52.408706, 16.938106));
+        mTestCoordinates.add(new LatLon(52.408238, 16.938047));
+        mTestCoordinates.add(new LatLon(52.407708, 16.937945));
+        mTestCoordinates.add(new LatLon(52.407407, 16.937881));
+        mTestCoordinates.add(new LatLon(52.407138, 16.937838));
+        mTestCoordinates.add(new LatLon(52.406863, 16.937801));
+        mTestCoordinates.add(new LatLon(52.406340, 16.937704));
+        mTestCoordinates.add(new LatLon(52.405842, 16.937591));
+        mTestCoordinates.add(new LatLon(52.405430, 16.937559));
+        mTestCoordinates.add(new LatLon(52.405083, 16.937490));
+        mTestCoordinates.add(new LatLon(52.404573, 16.937345));
+        mTestCoordinates.add(new LatLon(52.403615, 16.936963));
+        mTestCoordinates.add(new LatLon(52.403060, 16.936833));
+        mTestCoordinates.add(new LatLon(52.402435, 16.936616));
+        mTestCoordinates.add(new LatLon(52.401926, 16.936400));
+        mTestCoordinates.add(new LatLon(52.401483, 16.936255));
+        mTestCoordinates.add(new LatLon(52.401002, 16.936043));
+        mTestCoordinates.add(new LatLon(52.400829, 16.936231));
+        mTestCoordinates.add(new LatLon(52.400959, 16.936802));
+        mTestCoordinates.add(new LatLon(52.401138, 16.937424));
+        mTestCoordinates.add(new LatLon(52.401352, 16.937919));
+        mTestCoordinates.add(new LatLon(52.401457, 16.938247));
+        mTestCoordinates.add(new LatLon(52.401613, 16.938716));
     }
 
     // Framework location APIs - Not recommended

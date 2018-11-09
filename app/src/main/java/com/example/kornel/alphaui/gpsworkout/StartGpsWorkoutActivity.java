@@ -32,6 +32,7 @@ import android.widget.ViewFlipper;
 
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.LatLon;
 import com.google.android.gms.maps.model.LatLng;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
@@ -349,7 +350,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     @Override
-    public List<LatLng> onMapUpdate() {
+    public List<LatLon> onMapUpdate() {
         if (mService != null) {
             return mService.getPath();
         } else {

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.LatLon;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,7 +54,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     interface OnMapUpdate {
 
-        List<LatLng> onMapUpdate();
+        List<LatLon> onMapUpdate();
 
         void onFabClicked();
     }
@@ -194,7 +195,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     break;
 
                 case ACTION_LOCATION_CHANGED:
-                    final ArrayList<LatLng> path = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
 
                     handler.post(new Runnable() {
                         @Override

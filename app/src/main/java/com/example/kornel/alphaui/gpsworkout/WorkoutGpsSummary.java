@@ -3,6 +3,7 @@ package com.example.kornel.alphaui.gpsworkout;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.kornel.alphaui.utils.LatLon;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
@@ -15,13 +16,13 @@ public class WorkoutGpsSummary implements Parcelable {
     private String workoutName;
     private String duration;
     private double distance;
-    private ArrayList<LatLng> path;
+    private ArrayList<LatLon> path;
 
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
     }
 
-    public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLng> path) {
+    public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLon> path) {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
         this.date = sdf.format(new Date());
         // this.date = new Date();
@@ -51,7 +52,7 @@ public class WorkoutGpsSummary implements Parcelable {
         return distance;
     }
 
-    public ArrayList<LatLng> getPath() {
+    public ArrayList<LatLon> getPath() {
         return path;
     }
 
@@ -64,7 +65,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.duration = in.readString();
         this.distance = in.readDouble();
         path = new ArrayList<>();
-        in.readList(this.path, LatLng.class.getClassLoader());
+        in.readList(this.path, LatLon.class.getClassLoader());
     }
 
     @Override

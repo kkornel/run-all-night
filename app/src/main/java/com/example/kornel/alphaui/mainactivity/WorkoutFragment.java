@@ -163,18 +163,18 @@ public class WorkoutFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 mWelcomeTextView.setText(user.getFirstName());
 
-                // database.getReference().child("workouts").child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
-                //     @Override
-                //     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //         Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                //         mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDate().toString());
-                //     }
-                //
-                //     @Override
-                //     public void onCancelled(@NonNull DatabaseError databaseError) {
-                //
-                //     }
-                // });
+                database.getReference().child("workouts").child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                        mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDate().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
             }
