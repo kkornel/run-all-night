@@ -34,6 +34,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsFragment";
 
     public static final String ACTION_LOCATION_CHANGED = "location_changed_intent_filter";
+    public static final String ACTION_LAST_LOCATION = "last_location_intent_filter";
 
     private static final int ZOOM_VALUE = 17;
 
@@ -51,7 +52,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Polyline mPolyline;
 
     interface OnMapUpdate {
-        Location getLastLocation();
 
         List<LatLng> onMapUpdate();
 
@@ -87,7 +87,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         Log.d(TAG, "onCreateView: ");
 
         View rootView = inflater.inflate(R.layout.maps_fragment, container, false);
-        ;
 
         SupportMapFragment map = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
         map.getMapAsync(this);
@@ -100,11 +99,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        // mLocationIntentFilter = new IntentFilter();
-        // mLocationIntentFilter.addAction(ACTION_LOCATION_CHANGED);
-        // mLocationReceiver = new LocationBroadcastReceiver(new Handler());
-        // getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
-
         return rootView;
     }
 
@@ -112,11 +106,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: ");
-        // getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
         mLocationIntentFilter = new IntentFilter();
         mLocationIntentFilter.addAction(ACTION_LOCATION_CHANGED);
+        mLocationIntentFilter.addAction(ACTION_LAST_LOCATION);
         mLocationReceiver = new LocationBroadcastReceiver(new Handler());
-        // getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
     }
 
     @Override
@@ -125,8 +118,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         Log.d(TAG, "onResume: ");
         getActivity().registerReceiver(mLocationReceiver, mLocationIntentFilter);
         Log.d(TAG, "onResume: " + mLocationReceiver);
-        // Google Location Services API
-        // Log.d(TAG, "onCreate: " + (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS));
+
     }
 
     @Override
@@ -141,10 +133,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: ");
-        // if (mLocationManager != null && mLocationListener != null) {
-        //     Log.d(TAG, "onDestroy: ");
-        //     mLocationManager.removeUpdates(mLocationListener);
-        // }
     }
 
     @Override
@@ -172,26 +160,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                if (mCallback != null) {
-                    // Location lastKnowLocation = mCallback.getLastLocation();
-                    // if (lastKnowLocation != null) {
-                    //     centerMapOnTheLocationZoom(mCallback.getLastLocation(), ZOOM_VALUE);
-                    // }
-                }
-            }
-        });
-
-        Log.d(TAG, "onMapReady: ");
-
-        // Google Location Services API
-        // createLocationRequest();
-        // startLocationUpdates();
-
-        // Not Google
-        // mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mLocationListener);
     }
 
     // TODO: Przesyłać całą tablice? Czy tylko pojedyncze LatLng?
@@ -199,6 +167,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         private static final String TAG = "LocationBroadcastReceiv";
 
         public static final String LOCATION_EXTRA_BROADCAST_INTENT = "array_path";
+        public static final String LAST_LOCATION_EXTRA_BROADCAST_INTENT = "last_location";
 
         private final Handler handler;
 
@@ -212,75 +181,46 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             Log.d(TAG, "onReceive: " + action);
 
-            final ArrayList<LatLng> path = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+            switch (action) {
+                case ACTION_LAST_LOCATION:
+                    final Location lastLocation = intent.getParcelableExtra(LAST_LOCATION_EXTRA_BROADCAST_INTENT);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            centerMapOnTheLocationZoom(lastLocation, ZOOM_VALUE);
+                        }
+                    });
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mPolylineOptions == null) {
-                        mPolylineOptions = new PolylineOptions();
-                        // .add(newLatLng);
-                        mPolyline = mMap.addPolyline(mPolylineOptions);
-                    } else {
-                        mPolyline.setPoints(path);
-                    }
-                    int idx = path.size() - 1;
-                    LatLng newLatLng = path.get(idx);
+                    break;
 
-                    // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
-                    Location newLocation = new Location(LocationManager.GPS_PROVIDER);
-                    newLocation.setLatitude(newLatLng.latitude);
-                    newLocation.setLongitude(newLatLng.longitude);
+                case ACTION_LOCATION_CHANGED:
+                    final ArrayList<LatLng> path = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
 
-                    centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
-                }
-            });
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mPolylineOptions == null) {
+                                mPolylineOptions = new PolylineOptions();
+                                // .add(newLatLng);
+                                mPolyline = mMap.addPolyline(mPolylineOptions);
+                            } else {
+                                mPolyline.setPoints(path);
+                            }
+                            int idx = path.size() - 1;
+                            LatLng newLatLng = path.get(idx);
+
+                            Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+                            newLocation.setLatitude(newLatLng.latitude);
+                            newLocation.setLongitude(newLatLng.longitude);
+
+                            centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
+                        }
+                    });
+
+                    break;
+            }
+
+
         }
     }
-
-    // Google Location Services API
-    // private void startLocationUpdates() {
-    //     try {
-    //         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-    //                 mLocationCallback,
-    //                 null /* Looper */);
-    //     } catch (SecurityException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-    //
-    // private void stopLocationUpdates() {
-    //     mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-    // }
-    //
-    //
-    // private void createLocationRequest() {
-    //     Log.d(TAG, "createLocationRequest: ");
-    //     mLocationRequest = new LocationRequest();
-    //     mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-    //     mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-    //     mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    // }
-    //
-    // private void getLastLocationGoogle() {
-    //     try {
-    //         mFusedLocationClient.getLastLocation()
-    //                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-    //                     @Override
-    //                     public void onSuccess(Location location) {
-    //                         Log.d(TAG, "getLastLocation: ");
-    //                         // Got last known location. In some rare situations this can be null.
-    //                         if (location != null) {
-    //                             // Logic to handle location object
-    //                             Log.d(TAG, "getLastLocation: " + location);
-    //                             centerMapOnTheLocationZoom(location);
-    //                         }
-    //                     }
-    //                 });
-    //
-    //     } catch (SecurityException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
 }

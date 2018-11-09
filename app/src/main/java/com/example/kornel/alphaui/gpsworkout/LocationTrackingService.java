@@ -3,10 +3,8 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.app.Notification;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
@@ -17,16 +15,23 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.NotificationUtils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.kornel.alphaui.gpsworkout.MapsFragment.ACTION_LAST_LOCATION;
 import static com.example.kornel.alphaui.gpsworkout.MapsFragment.ACTION_LOCATION_CHANGED;
+import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadcastReceiver.LAST_LOCATION_EXTRA_BROADCAST_INTENT;
 import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadcastReceiver.LOCATION_EXTRA_BROADCAST_INTENT;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_WORKOUT;
@@ -43,14 +48,19 @@ public class LocationTrackingService extends Service {
     // The desired interval for location updates. Inexact. Updates may be more or less frequent.
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
-    // The fastest rate for active location updates. Updates will never be more frequent than this value.
+    // The fastest rate for active location updates.
+    // Updates will never be more frequent than this value.
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    // The priority of the request, which gives the Google Play services location services
+    // a strong hint about which location sources to use.
+    private static final int LOCATION_UPDATES_PRIORITY = LocationRequest.PRIORITY_HIGH_ACCURACY;
 
     // Provides access to the Fused Location Provider API.
     private FusedLocationProviderClient mFusedLocationClient;
 
-    // Contains parameters used by {@link com.google.android.gms.location.FusedLocationProviderApi}.
+    // Contains parameters used by FusedLocationProviderApi.
     private LocationRequest mLocationRequest;
 
     // Callback for changes in location.
@@ -59,8 +69,9 @@ public class LocationTrackingService extends Service {
     // Binder given to clients
     private final IBinder mBinder = new LocationTrackingBinder();
 
-    private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+    // Framework location APIs - Not recommended
+    // private LocationManager mLocationManager;
+    // private LocationListener mLocationListener;
 
     private Handler mNotificationHandler;
     private Runnable mNotificationRunnable;
@@ -114,8 +125,25 @@ public class LocationTrackingService extends Service {
         mCameFromNotification = false;
         mIsServiceRunning = false;
 
-        mLocationManager = (LocationManager)
-                getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        // Framework location APIs - Not recommended
+        // mLocationManager = (LocationManager)
+        //         getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        // Google Location Services API
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        createLocationRequest();
+
+        // Google Location Services API
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                onNewLocation_X(locationResult.getLastLocation());
+            }
+        };
 
         mCoordinates = new ArrayList<>();
 
@@ -135,6 +163,9 @@ public class LocationTrackingService extends Service {
                 mNotificationHandler.postDelayed(this, 500);
             }
         };
+
+        // Google Location Services API
+        Log.d(TAG, "onCreate: " + (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS));
     }
 
     @Override
@@ -180,10 +211,11 @@ public class LocationTrackingService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: ");
-        if (mLocationManager != null && mLocationListener != null) {
-            Log.d(TAG, "onDestroy: ");
-            mLocationManager.removeUpdates(mLocationListener);
-        }
+        // Framework location APIs - Not recommended
+        // if (mLocationManager != null && mLocationListener != null) {
+        //     Log.d(TAG, "onDestroy: ");
+        //     mLocationManager.removeUpdates(mLocationListener);
+        // }
     }
 
     private void startForegroundService(String workoutName) {
@@ -191,27 +223,7 @@ public class LocationTrackingService extends Service {
 
         mCurrentGpsWorkout = new CurrentGpsWorkout(workoutName);
 
-        mLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d(TAG, "onLocationChanged: ");
-                // onNewLocation(location);
-                onNewLocation_X(location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
-
-        try {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1500, 0, mLocationListener);
-        } catch (SecurityException unlikely) {
-            Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
-        }
+        startLocationUpdates();
 
         // Build the notification.
         Notification notification = NotificationUtils.createNotification(getApplicationContext());
@@ -235,6 +247,10 @@ public class LocationTrackingService extends Service {
         stopSelf();
 
         mIsServiceRunning = false;
+
+        // Google Location Services API
+        stopLocationUpdates();
+
     }
 
     public void pauseWorkout() {
@@ -383,17 +399,59 @@ public class LocationTrackingService extends Service {
         mButtonCallback = callback;
     }
 
+    // Google Location Services API
+    protected void createLocationRequest() {
+        Log.d("kurde", "createLocationRequest: ");
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LOCATION_UPDATES_PRIORITY);
+    }
+
+    // Google Location Services API
+    private void startLocationUpdates() {
+        try {
+            Log.d("kurde", "startLocationUpdates: ");
+
+            getLastLocation();
+
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback,
+                    null /* Looper */);
+        } catch (SecurityException unlikely) {
+            Log.e(TAG, "startLocationUpdates: ", unlikely);
+        }
+    }
+
+    // Google Location Services API
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
     /**
      * Methods for clients.
      */
-
-    public Location getLastLocation() {
+    // Google Location Services API
+    public void getLastLocation() {
         try {
-            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.d("kurde", "getLastLocation: ");
+
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    Log.d("kurde", "addOnSuccessListener: ");
+
+                    Intent intent = new Intent(ACTION_LAST_LOCATION);
+                    intent.putExtra(LAST_LOCATION_EXTRA_BROADCAST_INTENT, location);
+                    sendBroadcast(intent);
+                }
+            });
         } catch (SecurityException unlikely) {
-            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.e(TAG, "getLastLocation: ", unlikely);
         }
     }
+
+
 
     public List<LatLng> getPath() {
         return mCurrentGpsWorkout.getPath();
@@ -462,4 +520,40 @@ public class LocationTrackingService extends Service {
         mTestCoordinates.add(new LatLng(52.401457, 16.938247));
         mTestCoordinates.add(new LatLng(52.401613, 16.938716));
     }
+
+    // Framework location APIs - Not recommended
+    // public Location getLastLocation() {
+    //     try {
+    //         return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    //     } catch (SecurityException unlikely) {
+    //         return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    //     }
+    // }
+
+    // Framework location APIs - Not recommended
+    // public void setUpFrameworkLocationApis() {
+    //     Framework location APIs - Not recommended
+    //     mLocationListener = new LocationListener() {
+    //         @Override
+    //         public void onLocationChanged(Location location) {
+    //             Log.d(TAG, "onLocationChanged: ");
+    //             // onNewLocation(location);
+    //             onNewLocation_X(location);
+    //         }
+    //
+    //         @Override
+    //         public void onStatusChanged(String provider, int status, Bundle extras) {}
+    //         @Override
+    //         public void onProviderEnabled(String provider) {}
+    //         @Override
+    //         public void onProviderDisabled(String provider) {}
+    //     };
+    //
+    //     Framework location APIs - Not recommended
+    //     try {
+    //         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1500, 0, mLocationListener);
+    //     } catch (SecurityException unlikely) {
+    //         Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+    //     }
+    // }
 }

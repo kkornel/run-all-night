@@ -358,15 +358,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Location getLastLocation() {
-        if (mService != null) {
-            return mService.getLastLocation();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public String getTimeString() {
         if (mService != null) {
             return mService.getTimeString();

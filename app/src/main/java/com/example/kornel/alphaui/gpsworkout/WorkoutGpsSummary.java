@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -20,6 +21,8 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLng> path) {
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        // address += sdf.format(new Date());
         this.date = new Date();
         this.workoutName = workoutName;
         this.duration = duration;
