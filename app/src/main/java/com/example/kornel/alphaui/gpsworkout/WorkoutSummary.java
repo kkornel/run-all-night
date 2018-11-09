@@ -37,7 +37,6 @@ public class WorkoutSummary extends AppCompatActivity {
     private Button mSaveButton;
     private Button mDontSaveButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");

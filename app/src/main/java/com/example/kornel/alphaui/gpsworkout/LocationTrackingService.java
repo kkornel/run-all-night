@@ -419,7 +419,13 @@ public class LocationTrackingService extends Service {
             return "0.00";
         }
         double distance = mCurrentGpsWorkout.getDistance();
+
+        if (distance == 0) {
+            return "0.00";
+        }
+
         distance /= 1000;
+
         // String.format("%.5g%n", distance);
         DecimalFormat df = new DecimalFormat("#.##");
         return df.format(distance);
