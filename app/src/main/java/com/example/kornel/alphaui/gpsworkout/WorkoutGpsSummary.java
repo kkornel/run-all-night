@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class WorkoutGpsSummary implements Parcelable {
-    private Date date;
+    // private Date date;
+    private String date;
     private String workoutName;
     private String duration;
     private double distance;
@@ -21,18 +22,22 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLng> path) {
-        // SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        // address += sdf.format(new Date());
-        this.date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+        this.date = sdf.format(new Date());
+        // this.date = new Date();
         this.workoutName = workoutName;
         this.duration = duration;
         this.distance = distance;
         this.path = path;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
+
+    // public Date getDate() {
+    //     return date;
+    // }
 
     public String getWorkoutName() {
         return workoutName;
@@ -53,7 +58,8 @@ public class WorkoutGpsSummary implements Parcelable {
     // Parcelable Part
 
     public WorkoutGpsSummary(Parcel in){
-        this.date = new Date(in.readLong());
+        // this.date = new Date(in.readLong());
+        this.date = in.readString();
         this.workoutName = in.readString();
         this.duration = in.readString();
         this.distance = in.readDouble();
@@ -68,7 +74,8 @@ public class WorkoutGpsSummary implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.date.getTime());
+        // dest.writeLong(this.date.getTime());
+        dest.writeString(this.date);
         dest.writeString(this.workoutName);
         dest.writeString(this.duration);
         dest.writeDouble(this.distance);

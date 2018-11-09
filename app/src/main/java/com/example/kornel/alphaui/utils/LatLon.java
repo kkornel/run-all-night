@@ -4,16 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class LatLon implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public LatLon createFromParcel(Parcel in) {
-            return new LatLon(in);
-        }
-
-        public LatLon[] newArray(int size) {
-            return new LatLon[size];
-        }
-    };
-
     private double latitude;
     private double longitude;
 
@@ -43,6 +33,16 @@ public class LatLon implements Parcelable {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
     }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public LatLon createFromParcel(Parcel in) {
+            return new LatLon(in);
+        }
+
+        public LatLon[] newArray(int size) {
+            return new LatLon[size];
+        }
+    };
 
     @Override
     public int describeContents() {
