@@ -1,12 +1,12 @@
 package com.example.kornel.alphaui.gpsworkout;
 
+
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -33,16 +33,15 @@ import android.widget.ViewFlipper;
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.LatLon;
-import com.google.android.gms.maps.model.LatLng;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import java.util.List;
 
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 
+
 public class StartGpsWorkoutActivity extends AppCompatActivity implements
         LocationTrackingService.OnNewActivityState,
-        MainDetailsFragment.OnDetailsChanged,
         MapsFragment.OnMapUpdate {
     private static final String TAG = "StartGpsWorkoutActivity";
 
@@ -66,6 +65,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
     private boolean mIsForegroundServiceRunning = false;
 
+    // Fragments
     private MapsFragment mMapsFragment;
     private MainDetailsFragment mMainDetailsFragment;
     private PaceDetailsFragment mPaceDetailsFragment;
@@ -89,10 +89,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     // Defines callbacks for service binding, passed to bindService()
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            Log.d(TAG, "onServiceConnected: ");
-
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             LocationTrackingService.LocationTrackingBinder binder = (LocationTrackingService.LocationTrackingBinder) service;
             mService = binder.getService();
@@ -101,17 +98,13 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             mService.setCallback(StartGpsWorkoutActivity.this);
 
             if (mService.isServiceRunning()) {
-                Log.d(TAG, "onServiceConnected: " + mService.isTrainingPaused());
-                mTimeHandler.postDelayed(mTimeRunnable, 0);
                 updateButtons(mService.isTrainingPaused());
             }
-            // updateButtons(mService.isTrainingPaused());
-
+            mTimeHandler.postDelayed(mTimeRunnable, 0);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.d(TAG, "onServiceDisconnected: ");
             mBound = false;
         }
     };
@@ -143,7 +136,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                     requestGpsEnabled();
                 } else {
                     startWorkout();
-                    // mViewFlipper.showNext();
                     mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
                 }
             }
@@ -152,7 +144,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 pauseWorkout();
-                // mViewFlipper.showNext();
                 mViewFlipper.setDisplayedChild(RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER);
             }
         });
@@ -160,7 +151,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 resumeWorkout();
-                // mViewFlipper.showPrevious();
                 mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
             }
         });
@@ -187,8 +177,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
             @Override
             public void onPageSelected(int position) {
-                // pageIndicatorView.setSelection(position);
-
                 if (position == 0 || position == 2) {
                     Log.d(TAG, "onPageSelected: ");
                     TranslateAnimation animate = new TranslateAnimation(0, 0, 0, mViewFlipper.getHeight());
@@ -214,39 +202,10 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
 
-        // requestPermissions();
-
-        if (!hasLocationPermissions()) {
-            requestPermissions();
-        } else if (!isGpsEnabled()) {
-            requestGpsEnabled();
-        }
-
-
-
-
         mTimeHandler = new Handler();
         mTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                int currentActiveFragmentIdx = mViewPager.getCurrentItem();
-
-                // switch (currentActiveFragmentIdx) {
-                //     case MAPS_FRAGMENT_INDEX_IN_VIEW_PAGER:
-                //         break;
-                //
-                //     case MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER:
-                //         mMainDetailsFragment.setTime(mService.getTimeString());
-                //         mMainDetailsFragment.setDistance(mService.getDistanceString());
-                //
-                //         break;
-                //
-                //     case PACE_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER:
-                //         mPaceDetailsFragment.setTime(mService.getTimeString());
-                //
-                //         break;
-                // }
-
                 mMainDetailsFragment.setTime(mService.getTimeString());
                 mMainDetailsFragment.setDistance(mService.getDistanceString());
                 mPaceDetailsFragment.setTime(mService.getTimeString());
@@ -254,39 +213,28 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mTimeHandler.postDelayed(this, 500);
             }
         };
+
         mViewFlipper.setDisplayedChild(START_BUTTON_INDEX_IN_VIEW_FLIPPER);
+
+        if (!hasLocationPermissions()) {
+            requestPermissions();
+        } else if (!isGpsEnabled()) {
+            requestGpsEnabled();
+        }
     }
 
     @Override
     protected void onStart() {
-        Log.d(TAG, "onStart: ");
         super.onStart();
         Intent intent = new Intent(this, LocationTrackingService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume: ");
-        super.onResume();
-
-        // if (!hasLocationPermissions()) {
-        //     requestPermissions();
-        // }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-    }
-
-    @Override
     protected void onStop() {
-        Log.d(TAG, "onStop: ");
         super.onStop();
         if (mBound) {
-            // unregister
+            // Unregister
             mService.setCallback(null);
             unbindService(mConnection);
             mBound = false;
@@ -295,14 +243,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-    }
-
-    @Override
     public void updateButtons(boolean isPaused) {
-        Log.d(TAG, "updateButtons: " + isPaused);
         if (isPaused) {
             mViewFlipper.setDisplayedChild(RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER);
         } else {
@@ -311,8 +252,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     private void startWorkout() {
-        Log.d(TAG, "startWorkout: ");
-
         if (!mIsForegroundServiceRunning) {
             Intent intent = new Intent(StartGpsWorkoutActivity.this, LocationTrackingService.class);
             intent.setAction(LocationTrackingService.ACTION_START_FOREGROUND_SERVICE);
@@ -323,12 +262,10 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     }
 
     private void pauseWorkout() {
-        Log.d(TAG, "pauseWorkout: ");
         mService.pauseWorkout();
     }
 
     private void resumeWorkout() {
-        Log.d(TAG, "resumeWorkout: ");
         mService.resumeWorkout();
     }
 
@@ -349,32 +286,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
     }
 
-    @Override
-    public List<LatLon> onMapUpdate() {
-        if (mService != null) {
-            return mService.getPath();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public String getTimeString() {
-        if (mService != null) {
-            return mService.getTimeString();
-        } else {
-            return "0:00";
-        }
-    }
-
-    @Override
-    public String getDistanceString() {
-        if (mService != null) {
-            return mService.getDistanceString();
-        } else {
-            return "0.00";
-        }
-    }
 
     // A FragmentPagerAdapter that returns a fragment corresponding to one of the sections/tabs/pages.
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -387,25 +298,14 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
-                // MapsFragment mapsFragment = new MapsFragment();
                 mMapsFragment = new MapsFragment();
                 mMapsFragment.setCallback(StartGpsWorkoutActivity.this);
                 return mMapsFragment;
             } else if (position == 1) {
-                // MainDetailsFragment mainDetailsFragment = new MainDetailsFragment();
                 mMainDetailsFragment = new MainDetailsFragment();
-                // mainDetailsFragment.setTime("12:12");
-                // mainDetailsFragment.setDistance("31:11");
-                // mainDetailsFragment.setCurrent("4:11");
-                // mainDetailsFragment.setAvg("3:11");
-                mMainDetailsFragment.setCallBack(StartGpsWorkoutActivity.this);
                 return mMainDetailsFragment;
             } else {
-                // PaceDetailsFragment paceDetailsFragment = new PaceDetailsFragment();
                 mPaceDetailsFragment = new PaceDetailsFragment();
-                // paceDetailsFragment.setTime("12:12");
-                // paceDetailsFragment.setAvg("3:32");
-                // paceDetailsFragment.setCurrent("2:11");
                 return mPaceDetailsFragment;
             }
         }
@@ -426,7 +326,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         Snackbar.make(
                 mViewFlipper,
                 R.string.enable_gps,
-                Snackbar.LENGTH_INDEFINITE)
+                Snackbar.LENGTH_LONG)
                 .setAction(R.string.settings, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -472,7 +372,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                             }
                         })
                         .show();
-
             } else {
                 // No explanation needed; request the permission
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
@@ -539,6 +438,4 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 }
         }
     }
-
-
 }

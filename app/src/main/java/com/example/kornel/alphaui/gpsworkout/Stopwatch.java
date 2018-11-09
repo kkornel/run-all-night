@@ -72,7 +72,7 @@ public class Stopwatch {
         return millisecondsTime;
     }
 
-    public String getTimeString() {
+    public String getDurationString() {
         String time;
         if (hours == 0) {
             time = minutes + ":" + String.format("%02d", seconds);

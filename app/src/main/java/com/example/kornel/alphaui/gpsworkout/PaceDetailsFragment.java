@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.MainDetailsFragment.OnDetailsChanged;
-import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
+
 
 public class PaceDetailsFragment extends Fragment implements
         PaceAdapter.ListItemClickListener {
@@ -37,19 +36,12 @@ public class PaceDetailsFragment extends Fragment implements
     private Toast mToast;
 
     public PaceDetailsFragment() {
-    }
 
-    private OnDetailsChanged mCallBack;
-
-    public void setCallBack(OnDetailsChanged callBack) {
-        mCallBack = callBack;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
-
         View rootView = inflater.inflate(R.layout.laps_details_fragment, container, false);
 
         mTimeTextView = rootView.findViewById(R.id.timeTextViewPace);
@@ -67,37 +59,6 @@ public class PaceDetailsFragment extends Fragment implements
         mRecyclerView.setAdapter(mPaceAdapter);
 
         return rootView;
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: ");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
     }
 
     @Override

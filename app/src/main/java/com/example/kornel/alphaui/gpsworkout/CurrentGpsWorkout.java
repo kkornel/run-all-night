@@ -1,15 +1,16 @@
 package com.example.kornel.alphaui.gpsworkout;
 
+
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CurrentGpsWorkout {
     private static final String TAG = "CurrentGpsWorkout";
@@ -38,7 +39,7 @@ public class CurrentGpsWorkout {
         mDistance = 0.00;
         mDuration = 0;
         mStopWatch = new Stopwatch();
-        mStopWatch.startStopwatch();
+        startStopwatch();
     }
 
     public void startStopwatch() {
@@ -47,18 +48,6 @@ public class CurrentGpsWorkout {
 
     public void pauseStopwatch() {
         mStopWatch.pauseStopwatch();
-    }
-
-    public String getTimeString() {
-        return mStopWatch.getTimeString();
-    }
-
-    public ArrayList<LatLon> getPath() {
-        return mPath;
-    }
-
-    public String getWorkoutName() {
-        return mWorkoutName;
     }
 
     public void calculateDistanceBetweenTwoLocations(Location previous, Location newLocation) {
@@ -112,10 +101,20 @@ public class CurrentGpsWorkout {
     }
 
     public void addLatLngToPath(LatLon newLatLng) {
-        Log.d(TAG, "Adding newLatLng to path: " + newLatLng);
         mPath.add(newLatLng);
     }
 
+    public String getDurationString() {
+        return mStopWatch.getDurationString();
+    }
+
+    public ArrayList<LatLon> getPath() {
+        return mPath;
+    }
+
+    public String getWorkoutName() {
+        return mWorkoutName;
+    }
 
     public double getDistance() {
         return mDistance;

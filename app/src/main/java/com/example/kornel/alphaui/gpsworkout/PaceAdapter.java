@@ -13,6 +13,7 @@ import com.example.kornel.alphaui.R;
 
 import java.util.List;
 
+
 public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder> {
 
     private final ListItemClickListener mOnClickListener;

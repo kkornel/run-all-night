@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -23,7 +22,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
@@ -82,10 +80,8 @@ public class LocationTrackingService extends Service {
 
     private CurrentGpsWorkout mCurrentGpsWorkout;
 
-    private List<LatLon> mCoordinates;
-
     private boolean mIsTrainingPaused;
-    private boolean mCameFromNotification;
+    private boolean mDidComeFromNotification;
     private boolean mIsServiceRunning;
 
     // ////////////////////////////////////////////////////////////////////////////////////////////X
@@ -111,120 +107,58 @@ public class LocationTrackingService extends Service {
         // Called when a client (MainActivity in case of this sample) comes to the foreground
         // and binds with this service. The service should cease to be a foreground service
         // when that happens.
-        Log.d(TAG, "onBind: ");
         return mBinder;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: ");
-
-        createTest();
 
         mIsTrainingPaused = true;
-        mCameFromNotification = false;
+        mDidComeFromNotification = false;
         mIsServiceRunning = false;
 
         // Framework location APIs - Not recommended
         // mLocationManager = (LocationManager)
         //         getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        // Google Location Services API
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        createLocationRequest();
-
-        // Google Location Services API
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                onNewLocation_X(locationResult.getLastLocation());
-            }
-        };
-
-        mCoordinates = new ArrayList<>();
-
-        mNotificationHandler = new Handler();
-        mNotificationRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // TODO replace with activity name
-                String ch183 = Character.toString((char) 183);
-                String ch187 = Character.toString((char) 187);
-
-                // String message = "Run " + ch183 + " 2:57 "  + ch183 + " 3.54km";
-                // String message = "Run " + ch187 + "  " + mCurrentGpsWorkout.getTime() + "  " + ch187 + "  " + getDistanceString() + "km";
-                String message = mCurrentGpsWorkout.getWorkoutName() + "  " + ch187 + "  " + mCurrentGpsWorkout.getTimeString() + "  " + ch187 + "  " + getDistanceString() + "km";
-
-                NotificationUtils.updateNotification(message);
-                mNotificationHandler.postDelayed(this, 500);
-            }
-        };
-
-        // Google Location Services API
-        Log.d(TAG, "onCreate: " + (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS));
+        createTest();
+        setupGoogleLocationServicesApi();
+        setupNotifications();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
 
-        Log.d(TAG, "onStartCommand: " + action);
-
         switch (action) {
             case ACTION_START_FOREGROUND_SERVICE:
-                Log.d(TAG, "onStartCommand: Starting service.");
-
                 String workoutName = intent.getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
                 startForegroundService(workoutName);
                 Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
                 break;
 
             case ACTION_STOP_FOREGROUND_SERVICE:
-                Log.d(TAG, "onStartCommand: Stopping service.");
-
                 stopForegroundService();
                 Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
                 break;
 
             case ACTION_RESUME_WORKOUT:
-                Log.d(TAG, "onStartCommand: You clicked RESUME button.");
-
-                mCameFromNotification = true;
+                mDidComeFromNotification = true;
                 resumeWorkout();
                 break;
 
             case ACTION_PAUSE_WORKOUT:
-                Log.d(TAG, "onStartCommand: You click PAUSE button.");
-
-                mCameFromNotification = true;
+                mDidComeFromNotification = true;
                 pauseWorkout();
                 break;
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-        // Framework location APIs - Not recommended
-        // if (mLocationManager != null && mLocationListener != null) {
-        //     Log.d(TAG, "onDestroy: ");
-        //     mLocationManager.removeUpdates(mLocationListener);
-        // }
-    }
-
     private void startForegroundService(String workoutName) {
-        Log.d(TAG, "startForegroundService: ");
-
+        // Create new workout
         mCurrentGpsWorkout = new CurrentGpsWorkout(workoutName);
-
-        startLocationUpdates();
 
         // Build the notification.
         Notification notification = NotificationUtils.createNotification(getApplicationContext());
@@ -235,12 +169,12 @@ public class LocationTrackingService extends Service {
         mIsServiceRunning = true;
         mIsTrainingPaused = false;
 
+        // Google Location Services API
+        startLocationUpdates();
         startNotificationHandler();
     }
 
     private void stopForegroundService() {
-        Log.d(TAG, "stopForegroundService: ");
-
         // Stop foreground service and remove the notification.
         stopForeground(true);
 
@@ -251,54 +185,42 @@ public class LocationTrackingService extends Service {
 
         // Google Location Services API
         stopLocationUpdates();
-
     }
 
     public void pauseWorkout() {
-        Log.d(TAG, "pauseWorkout: ");
         mIsTrainingPaused = true;
         mCurrentGpsWorkout.pauseStopwatch();
         stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
 
-        if (mCameFromNotification) {
+        if (mDidComeFromNotification) {
             if (mButtonCallback != null) {
                 mButtonCallback.updateButtons(true);
             }
-            mCameFromNotification = false;
+            mDidComeFromNotification = false;
         }
     }
 
     public void resumeWorkout() {
-        Log.d(TAG, "resumeWorkout: ");
         mIsTrainingPaused = false;
         mCurrentGpsWorkout.startStopwatch();
         startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
 
-        if (mCameFromNotification) {
+        if (mDidComeFromNotification) {
             if (mButtonCallback != null) {
                 mButtonCallback.updateButtons(false);
             }
-            mCameFromNotification = false;
+            mDidComeFromNotification = false;
         }
     }
 
     public WorkoutGpsSummary getWorkOutSummary() {
-
-        // Type of current activity
-        String mWorkoutName = mCurrentGpsWorkout.getWorkoutName();
-
-        // Array of all LatLng on path
-        ArrayList<LatLon> mPath = mCurrentGpsWorkout.getTestLatLng();
-
-        // Total distance since started tracking in meters
-        double mDistance = mCurrentGpsWorkout.getDistance();
-
-        // Total time since started tracking in milliseconds
-        String mDuration = mCurrentGpsWorkout.getTimeString();
-
-        return new WorkoutGpsSummary(mWorkoutName, mDuration, mDistance, mPath);
+        return new WorkoutGpsSummary(
+                mCurrentGpsWorkout.getWorkoutName(),
+                mCurrentGpsWorkout.getDurationString(),
+                mCurrentGpsWorkout.getDistance(),
+                mCurrentGpsWorkout.getTestLatLng());
     }
 
     private int mLocationUpdateNumber = 1;
@@ -376,33 +298,38 @@ public class LocationTrackingService extends Service {
         sendBroadcast(intent);
     }
 
-    private void startNotificationHandler() {
-        mNotificationHandler.postDelayed(mNotificationRunnable, 0);
-    }
-
-    private void stopNotificationHandler() {
-        mNotificationHandler.removeCallbacks(mNotificationRunnable);
-    }
-
     // Class used for the client Binder. Because we know this service always runs
     // in the same process as its clients, we don't need to deal with IPC.
     public class LocationTrackingBinder extends Binder {
-        private static final String TAG = "LocationTrackingBinder";
-
         LocationTrackingService getService() {
-            Log.d(TAG, "getService: ");
             // Return this instance of LocationTrackingBinder so clients can call public methods
             return LocationTrackingService.this;
         }
     }
 
-    public void setCallback(OnNewActivityState callback) {
-        mButtonCallback = callback;
+    private void setupGoogleLocationServicesApi() {
+        // Google Location Services API
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        createLocationRequest();
+
+        // Google Location Services API
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                onNewLocation_X(locationResult.getLastLocation());
+            }
+        };
+
+        // Google Location Services API
+        Log.d(TAG, "onCreate: " + (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS));
     }
 
     // Google Location Services API
     protected void createLocationRequest() {
-        Log.d("kurde", "createLocationRequest: ");
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
@@ -412,8 +339,6 @@ public class LocationTrackingService extends Service {
     // Google Location Services API
     private void startLocationUpdates() {
         try {
-            Log.d("kurde", "startLocationUpdates: ");
-
             getLastLocation();
 
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
@@ -429,19 +354,44 @@ public class LocationTrackingService extends Service {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
+    private void setupNotifications() {
+        mNotificationHandler = new Handler();
+        mNotificationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                String ch187 = Character.toString((char) 187);
+
+                String message = mCurrentGpsWorkout.getWorkoutName() + "  "
+                        + ch187 + "  " + mCurrentGpsWorkout.getDurationString() + "  "
+                        + ch187 + "  " + getDistanceString() + "km";
+
+                NotificationUtils.updateNotification(message);
+                mNotificationHandler.postDelayed(this, 500);
+            }
+        };
+    }
+
+    private void startNotificationHandler() {
+        mNotificationHandler.postDelayed(mNotificationRunnable, 0);
+    }
+
+    private void stopNotificationHandler() {
+        mNotificationHandler.removeCallbacks(mNotificationRunnable);
+    }
+
+    public void setCallback(OnNewActivityState callback) {
+        mButtonCallback = callback;
+    }
+
     /**
      * Methods for clients.
      */
     // Google Location Services API
     public void getLastLocation() {
         try {
-            Log.d("kurde", "getLastLocation: ");
-
             mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    Log.d("kurde", "addOnSuccessListener: ");
-
                     Intent intent = new Intent(ACTION_LAST_LOCATION);
                     intent.putExtra(LAST_LOCATION_EXTRA_BROADCAST_INTENT, location);
                     sendBroadcast(intent);
@@ -452,15 +402,13 @@ public class LocationTrackingService extends Service {
         }
     }
 
-
-
     public List<LatLon> getPath() {
         return mCurrentGpsWorkout.getPath();
     }
 
     public String getTimeString() {
         if (mCurrentGpsWorkout != null) {
-            return mCurrentGpsWorkout.getTimeString();
+            return mCurrentGpsWorkout.getDurationString();
         } else {
             return "0:00";
         }
@@ -555,6 +503,17 @@ public class LocationTrackingService extends Service {
     //         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1500, 0, mLocationListener);
     //     } catch (SecurityException unlikely) {
     //         Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+    //     }
+    // }
+
+    // @Override
+    // public void onDestroy() {
+    //     super.onDestroy();
+    //     Log.d(TAG, "onDestroy: ");
+    //     Framework location APIs - Not recommended
+    //     if (mLocationManager != null && mLocationListener != null) {
+    //         Log.d(TAG, "onDestroy: ");
+    //         mLocationManager.removeUpdates(mLocationListener);
     //     }
     // }
 }
