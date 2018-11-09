@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -135,8 +136,10 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!checkPermissions()) {
+                if (!hasLocationPermissions()) {
                     requestPermissions();
+                } else if (!isGpsEnabled()) {
+                    requestGpsEnabled();
                 } else {
                     startWorkout();
                     // mViewFlipper.showNext();
@@ -212,10 +215,14 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         // requestPermissions();
 
-        if (!checkPermissions()) {
+        if (!hasLocationPermissions()) {
             requestPermissions();
+        } else if (!isGpsEnabled()) {
+            requestGpsEnabled();
         }
-        
+
+
+
 
         mTimeHandler = new Handler();
         mTimeRunnable = new Runnable() {
@@ -262,7 +269,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         Log.d(TAG, "onResume: ");
         super.onResume();
 
-        // if (!checkPermissions()) {
+        // if (!hasLocationPermissions()) {
         //     requestPermissions();
         // }
     }
@@ -418,7 +425,27 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean checkPermissions() {
+    private boolean isGpsEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private void requestGpsEnabled() {
+        Snackbar.make(
+                mViewFlipper,
+                R.string.enable_gps,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.settings, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent viewIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(viewIntent);
+                    }
+                })
+                .show();
+    }
+
+    private boolean hasLocationPermissions() {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
@@ -521,70 +548,5 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    // @Override
-    // public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    //     Log.i(TAG, "onRequestPermissionResult");
-    //
-    //     switch (requestCode) {
-    //         case REQUEST_CODE_PERMISSIONS_FINE_LOCATION:
-    //             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-    //                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-    //                         == PackageManager.PERMISSION_GRANTED) {
-    //                     // permission was granted, yay! Do the
-    //                     // contacts-related task you need to do.
-    //                     Log.d(TAG, "onRequestPermissionsResult: GRANTED");
-    //                 }
-    //             } else {
-    //                 // permission denied, boo! Disable the
-    //                 // functionality that depends on this permission.
-    //                 Log.d(TAG, "onRequestPermissionsResult: NOT GRANTED");
-    //                 Snackbar.make(
-    //                         mViewFlipper,
-    //                         R.string.permission_denied_explanation,
-    //                         Snackbar.LENGTH_INDEFINITE)
-    //                         .setAction(R.string.settings, new View.OnClickListener() {
-    //                             @Override
-    //                             public void onClick(View view) {
-    //
-    //                                 boolean shouldProvideRationale =
-    //                                         ActivityCompat.shouldShowRequestPermissionRationale(StartGpsWorkoutActivity.this,
-    //                                                 Manifest.permission.ACCESS_FINE_LOCATION);
-    //
-    //                                 // Provide an additional rationale to the user. This would happen if the user denied the
-    //                                 // request previously, but didn't check the "Don't ask again" checkbox.
-    //                                 if (shouldProvideRationale) {
-    //                                     // Show an explanation to the user *asynchronously* -- don't block
-    //                                     // this thread waiting for the user's response! After the user
-    //                                     // sees the explanation, try again to request the permission.
-    //                                     Log.d(TAG, "onRequestPermissionsResult: 6) NOT GRANTED + shouldProvideRationale");
-    //                                     Snackbar.make(
-    //                                             mViewFlipper,
-    //                                             R.string.permission_rationale,
-    //                                             Snackbar.LENGTH_INDEFINITE)
-    //                                             .setAction(R.string.ok, new View.OnClickListener() {
-    //                                                 @Override
-    //                                                 public void onClick(View view) {
-    //                                                     // Request permission
-    //                                                     ActivityCompat.requestPermissions(StartGpsWorkoutActivity.this,
-    //                                                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-    //                                                             REQUEST_CODE_PERMISSIONS_FINE_LOCATION);
-    //                                                 }
-    //                                             })
-    //                                             .show();
-    //                                 } else {
-    //                                     Log.d(TAG, "onRequestPermissionsResult: 7) NOT GRANTED + NOT shouldProvideRationale");
-    //                                     // Build intent that displays the App settings screen.
-    //                                     Intent intent = new Intent();
-    //                                     intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-    //                                     Uri uri = Uri.fromParts("package",
-    //                                             BuildConfig.APPLICATION_ID, null);
-    //                                     intent.setData(uri);
-    //                                     startActivity(intent);
-    //                                 }
-    //                             }
-    //                         })
-    //                         .show();
-    //             }
-    //     }
-    // }
+
 }
