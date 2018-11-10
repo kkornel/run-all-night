@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -102,10 +103,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         getActivity().unregisterReceiver(mLocationReceiver);
     }
 
+    private Marker mCurrentMarker;
+
     private void centerMapOnTheLocationZoom(Location location, int zoom) {
+        if (mCurrentMarker != null) {
+            mCurrentMarker.remove();
+        }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(latLng));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        mCurrentMarker = mMap.addMarker(new MarkerOptions().position(latLng));
+    }
+
+    private void updatePath(ArrayList<LatLng> path) {
+        if (mPolylineOptions == null) {
+            mPolylineOptions = new PolylineOptions();
+            // .add(newLatLng);
+            mPolyline = mMap.addPolyline(mPolylineOptions);
+        } else {
+            mPolyline.setPoints(path);
+        }
     }
 
     @Override
@@ -115,6 +131,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     public void setCallback(OnMapUpdate mCallback) {
         this.mCallback = mCallback;
+    }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint();
     }
 
     // TODO: Przesyłać całą tablice? Czy tylko pojedyncze LatLng?
@@ -153,21 +174,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mPolylineOptions == null) {
-                                mPolylineOptions = new PolylineOptions();
-                                // .add(newLatLng);
-                                mPolyline = mMap.addPolyline(mPolylineOptions);
-                            } else {
-                                mPolyline.setPoints(path);
+                            // If user is looking and map do not move camera, just update path.
+                            // Otherwise move and zoom camera to the new location.
+                            updatePath(path);
+
+                            if (!getUserVisibleHint()) {
+                                int idxOfNewLocation = path.size() - 1;
+                                LatLng newLatLng = path.get(idxOfNewLocation);
+
+                                Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+                                newLocation.setLatitude(newLatLng.latitude);
+                                newLocation.setLongitude(newLatLng.longitude);
+
+                                centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
                             }
-                            int idx = path.size() - 1;
-                            LatLng newLatLng = path.get(idx);
-
-                            Location newLocation = new Location(LocationManager.GPS_PROVIDER);
-                            newLocation.setLatitude(newLatLng.latitude);
-                            newLocation.setLongitude(newLatLng.longitude);
-
-                            centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
                         }
                     });
 

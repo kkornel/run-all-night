@@ -192,6 +192,7 @@ public class LocationTrackingService extends Service {
         mCurrentGpsWorkout.pauseStopwatch();
         stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
+        stopLocationUpdates();
 
         if (mDidComeFromNotification) {
             if (mButtonCallback != null) {
@@ -206,6 +207,7 @@ public class LocationTrackingService extends Service {
         mCurrentGpsWorkout.startStopwatch();
         startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
+        startLocationUpdates();
 
         if (mDidComeFromNotification) {
             if (mButtonCallback != null) {
