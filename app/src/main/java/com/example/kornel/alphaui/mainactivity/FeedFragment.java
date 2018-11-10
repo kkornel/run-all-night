@@ -71,14 +71,16 @@ public class FeedFragment extends Fragment {
         final DatabaseReference workoutRef = database.getReference("workouts");
         DatabaseReference userRef = database.getReference(Database.USERS);
 
-        final List<WorkoutGpsSummary> myWorkouts = new ArrayList<>();
+
 
         workoutRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
                     myWorkouts.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
-                    // Log.d(TAG, "onDataChange: " + workoutSnapshot.toString());
+                    if (mFeedYouFragment!= null) {
+                        mFeedYouFragment.setFeedYouList(myWorkouts);
+                    }
                 }
             }
 
@@ -98,6 +100,9 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
+    private List<WorkoutGpsSummary> myWorkouts = new ArrayList<>();
+    private FeedYouFragment mFeedYouFragment;
+
     // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
     // one of the sections/tabs/pages.
     public class FeedPagerAdapter extends FragmentPagerAdapter {
@@ -113,9 +118,9 @@ public class FeedFragment extends Fragment {
                 feedFriendsFragment.setFeedFriendsList(mNonGpsWorkouts);
                 return feedFriendsFragment;
             } else {
-                FeedYouFragment feedYouFragment = new FeedYouFragment();
-                feedYouFragment.setFeedYouList(mGpsWorkouts);
-                return feedYouFragment;
+                mFeedYouFragment = new FeedYouFragment();
+                mFeedYouFragment.setFeedYouList(myWorkouts);
+                return mFeedYouFragment;
             }
         }
 

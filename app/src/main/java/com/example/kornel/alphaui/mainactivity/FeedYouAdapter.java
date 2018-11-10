@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
@@ -18,9 +19,9 @@ import java.util.List;
 public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
-    private List<String> mWorkouts;
+    private List<WorkoutGpsSummary> mWorkouts;
 
-    public FeedYouAdapter(ListItemClickListener onClickListener, List<String> workouts) {
+    public FeedYouAdapter(ListItemClickListener onClickListener, List<WorkoutGpsSummary> workouts) {
         mOnClickListener = onClickListener;
         mWorkouts = workouts;
     }
@@ -46,7 +47,9 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
             workoutViewHolder.mDateTextView.setText("ERROR");
         } else {
-            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position));
+            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position).getDate());
+            workoutViewHolder.mDistanceTextView.setText(String.valueOf(mWorkouts.get(position).getDistance()));
+            workoutViewHolder.mDuartionTextView.setText(mWorkouts.get(position).getDuration());
         }
 
         // Googles way
@@ -58,7 +61,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         return ((mWorkouts != null) && (mWorkouts.size() !=0) ? mWorkouts.size() : 1);
     }
 
-    void loadNewData(List<String> newActivities) {
+    void loadNewData(List<WorkoutGpsSummary> newActivities) {
         mWorkouts = newActivities;
         notifyDataSetChanged();
     }

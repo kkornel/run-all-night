@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
@@ -21,13 +22,16 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private FeedYouAdapter mFeedYouAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mFeedYouList;
+    private List<WorkoutGpsSummary> mFeedYouList;
 
     public FeedYouFragment() {
     }
 
-    public void setFeedYouList(List<String> feedYouList) {
+    public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
         mFeedYouList = feedYouList;
+        if (mFeedYouAdapter != null) {
+            mFeedYouAdapter.loadNewData(feedYouList);
+        }
     }
 
     @Override
