@@ -50,8 +50,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".gpsworkout.WorkoutSummary" />
-        <activity
-            android:name=".gpsworkout.StartGpsWorkoutActivity" />
+        <activity android:name=".gpsworkout.StartGpsWorkoutActivity" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -70,7 +69,11 @@
             android:required="false" />
 
         <service android:name=".gpsworkout.LocationTrackingService" />
-        <!--<receiver android:name=".MapsFragment$LocationBroadcastReceiver"></receiver>-->
+        <!-- <receiver android:name=".MapsFragment$LocationBroadcastReceiver"></receiver> -->
+        <activity
+            android:name=".FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
