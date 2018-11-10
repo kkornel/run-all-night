@@ -1,23 +1,38 @@
 package com.example.kornel.alphaui.mainactivity;
 
+
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.NonGpsBasedWorkout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FeedFragment extends Fragment {
+    private static final String TAG = "FeedFragment";
+
     private FeedPagerAdapter mFeedPagerAdapter;
 
     private ViewPager mViewPager;
@@ -49,6 +64,29 @@ public class FeedFragment extends Fragment {
 
         mGpsWorkouts = new ArrayList<>();
         mNonGpsWorkouts = new ArrayList<>();
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference workoutRef = database.getReference("workouts");
+        DatabaseReference userRef = database.getReference(Database.USERS);
+
+        final List<WorkoutGpsSummary> myWorkouts = new ArrayList<>();
+
+        workoutRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
+                    myWorkouts.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
+                    // Log.d(TAG, "onDataChange: " + workoutSnapshot.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         for (GpsBasedWorkout activity : GpsBasedWorkout.values()) {
             mGpsWorkouts.add(activity.toString());
