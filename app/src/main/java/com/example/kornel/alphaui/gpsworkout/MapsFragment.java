@@ -106,12 +106,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Marker mCurrentMarker;
 
     private void centerMapOnTheLocationZoom(Location location, int zoom) {
-        if (mCurrentMarker != null) {
-            mCurrentMarker.remove();
-        }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        mCurrentMarker = mMap.addMarker(new MarkerOptions().position(latLng));
     }
 
     private void updatePath(ArrayList<LatLng> path) {
@@ -122,6 +118,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } else {
             mPolyline.setPoints(path);
         }
+        if (mCurrentMarker != null) {
+            mCurrentMarker.remove();
+        }
+
+        mCurrentMarker = mMap.addMarker(new MarkerOptions()
+                .position(path.get(path.size() - 1)));
     }
 
     @Override
@@ -177,6 +179,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             // If user is looking and map do not move camera, just update path.
                             // Otherwise move and zoom camera to the new location.
                             updatePath(path);
+
+                            Log.d(TAG, "run: " + getUserVisibleHint());
 
                             if (!getUserVisibleHint()) {
                                 int idxOfNewLocation = path.size() - 1;

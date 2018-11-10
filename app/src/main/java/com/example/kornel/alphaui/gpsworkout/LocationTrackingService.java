@@ -387,6 +387,9 @@ public class LocationTrackingService extends Service {
             mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
+                    if (location == null) {
+                        return;
+                    }
                     Intent intent = new Intent(ACTION_LAST_LOCATION);
                     intent.putExtra(LAST_LOCATION_EXTRA_BROADCAST_INTENT, location);
                     sendBroadcast(intent);
