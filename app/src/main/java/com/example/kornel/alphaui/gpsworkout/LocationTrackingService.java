@@ -227,6 +227,11 @@ public class LocationTrackingService extends Service {
 
     private Location mPreviousLocation;
 
+    private double mPreviousDistance = 0.0;
+    private double mCurrentDistance = 0.0;
+    private static final int DISTANCE_MIN_DIFF_METERS = 15;
+    private static final int DISTANCE_MAX_DIFF_METERS = 20;
+
     private void onNewLocation_X(Location newLocation) {
         // I have a new Location
         // Create LatLng based on new Location
@@ -237,13 +242,24 @@ public class LocationTrackingService extends Service {
             mCurrentGpsWorkout.calculateDistanceBetweenTwoLocations(mPreviousLocation, newLocation);
         }
 
-        mCurrentGpsWorkout.addLatLngToPath(newLatLng);
+        mCurrentDistance = mCurrentGpsWorkout.getDistance();
 
-        Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-        sendBroadcast(intent);
+        if (mPreviousDistance == 0.0) {
+            mCurrentGpsWorkout.addLatLngToPath(newLatLng);
+
+            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+            intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+            sendBroadcast(intent);
+        } else if ((mCurrentDistance - mPreviousDistance >= DISTANCE_MAX_DIFF_METERS)) {
+            mCurrentGpsWorkout.addLatLngToPath(newLatLng);
+
+            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+            intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+            sendBroadcast(intent);
+        }
 
         mPreviousLocation = newLocation;
+        mPreviousDistance = mCurrentDistance;
     }
 
     public void onNewLocation_Y(Location newLocation) {
