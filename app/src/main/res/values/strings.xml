@@ -108,6 +108,9 @@
 
     <string name="edit_profile_activity_title">Edytuj profil</string>
     <string name="edit_profile_new_password_hint">Nowe hasło</string>
+    <string name="edit_profile_chooser_title">Wybierz zdjęcie</string>
+    <string name="verification_email_sent">Wysłano email weryfikacyjny</string>
+    <string name="profile_detaile_activity_title">Profil</string>
 
 
 </resources>

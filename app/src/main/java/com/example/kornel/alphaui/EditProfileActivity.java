@@ -1,11 +1,13 @@
 package com.example.kornel.alphaui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Parcel;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,8 @@ import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -35,12 +39,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class EditProfileActivity extends AppCompatActivity {
     private static final String TAG = "EditProfileActivity";
-    
+
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private Button mBrowseButton;
@@ -53,9 +61,19 @@ public class EditProfileActivity extends AppCompatActivity {
     private Button mSaveButton;
 
     private FirebaseAuth mAuth;
+    private String mUserUid;
     private FirebaseUser mUser;
-
     private DatabaseReference mUserRef;
+
+    private String mAvatarName;
+    private Bitmap mAvatarBitmap;
+    private String mFirstName;
+    private String mSurname;
+    private String mEmail;
+    private String mPassword;
+    private String mConfirmPassword;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,19 +109,17 @@ public class EditProfileActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         mUserRef = firebaseDatabase.getReference(Database.USERS);
-        final String userUid = mUser.getUid();
-        
-        mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        mUserUid = mUser.getUid();
+
+        mUserRef.child(mUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot usersSnapShot : dataSnapshot.getChildren()) {
-                    if (usersSnapShot.getKey().equals(userUid)) {
-                        User user = usersSnapShot.getValue(User.class);
-                        mFirstNameEditText.setHint(user.getFirstName());
-                        mSurnameEditText.setHint(user.getSurname());
-                        mEmailEditText.setHint(user.getEmail());
-                    }
-                }
+
+                User user = dataSnapshot.getValue(User.class);
+                mFirstNameEditText.setHint(user.getFirstName());
+                mSurnameEditText.setHint(user.getSurname());
+                mEmailEditText.setHint(user.getEmail());
+
             }
 
             @Override
@@ -111,21 +127,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
             }
         });
-    }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    private void browseForImage() {
-        // Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        // startActivityForResult(intent, 1);
+        mAvatarName = null;
+        mAvatarBitmap = null;
     }
 
     @Override
@@ -137,33 +141,101 @@ public class EditProfileActivity extends AppCompatActivity {
 
             Uri uri = data.getData();
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
+            mAvatarName = getFileName(uri);
 
-                mAvatarImageView.setImageBitmap(bitmap);
+            try {
+                mAvatarBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+                mAvatarImageView.setImageBitmap(mAvatarBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            mAvatarName = null;
+            mAvatarBitmap = null;
         }
     }
 
     private void onSaveClicked() {
+        Utils.hideKeyboard(this);
+
         if (!validateForm()) {
             return;
         }
 
         showConfirmPasswordDialog();
-
-        String firstName = mFirstNameEditText.getText().toString();
-        String surname = mSurnameEditText.getText().toString();
-        String email = mEmailEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
-
-        // createAccount(firstName, surname, email, password);
-        Utils.hideKeyboard(this);
     }
 
+    private void uploadChanges() {
+        if (!mFirstName.equals("")) {
+            mUserRef.child(mUserUid).child(Database.FIRST_NAME).setValue(mFirstName);
+        }
+
+        if (!mSurname.equals("")) {
+            mUserRef.child(mUserUid).child(Database.SURNAME).setValue(mSurname);
+        }
+
+        if (!mEmail.equals("")) {
+            mUserRef.child(mUserUid).child(Database.EMAIL).setValue(mEmail);
+            mUser.updateEmail(mEmail)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                mUser.sendEmailVerification();
+                                Toast.makeText(
+                                        EditProfileActivity.this,
+                                        getString(R.string.verification_email_sent),
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }
+                    });
+        }
+
+        if (!mPassword.equals("")) {
+            mUser.updatePassword(mPassword)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User password updated.");
+                            }
+                        }
+                    });
+        }
+
+        if (mAvatarName != null && mAvatarBitmap != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference avatarsRef = storageRef.child(Database.AVATARS);
+
+            String[] separated = mAvatarName.split("\\.");
+
+            String newAvatarName = mUserUid + "." + separated[separated.length - 1];
+
+            StorageReference newAvatarRef = avatarsRef.child(Database.AVATARS + "/" + newAvatarName);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            mAvatarBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = newAvatarRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+        }
+
+    }
 
     public void showConfirmPasswordDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -208,6 +280,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            showProgressDialog();
+                            uploadChanges();
+                            hideProgressDialog();
                             Toast.makeText(EditProfileActivity.this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         } else {
@@ -219,65 +294,112 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.register_progress_dialog));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
     private boolean validateForm() {
         boolean valid = true;
 
-        String firstName = mFirstNameEditText.getText().toString();
-        // Pattern namePattern = Pattern.compile(NAME_REGEX);
-        if (TextUtils.isEmpty(firstName)) {
-            mFirstNameEditText.setError(getString(R.string.register_required));
-            valid = false;
-        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
-            // } else if (!namePattern.matcher(firstName).find()) {
-            mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
-            valid = false;
-        } else {
-            mFirstNameEditText.setError(null);
+        mFirstName = mFirstNameEditText.getText().toString();
+        if (!TextUtils.isEmpty(mFirstName)) {
+            if (!ProfileInfoValidator.isNameValid(mFirstName)) {
+                mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
+                valid = false;
+            } else {
+                mFirstNameEditText.setError(null);
+            }
         }
 
-        String surname = mSurnameEditText.getText().toString();
-        if (TextUtils.isEmpty(surname)) {
-            mSurnameEditText.setError(getString(R.string.register_required));
-            valid = false;
-            // } else if (!namePattern.matcher(surname).find()) {
-        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
-            mSurnameEditText.setError(getString(R.string.register_not_valid_name));
-            valid = false;
-        } else {
-            mSurnameEditText.setError(null);
+        mSurname = mSurnameEditText.getText().toString();
+        if (!TextUtils.isEmpty(mSurname)) {
+            if (!ProfileInfoValidator.isNameValid(mSurname)) {
+                mSurnameEditText.setError(getString(R.string.register_not_valid_name));
+                valid = false;
+            } else {
+                mSurnameEditText.setError(null);
+            }
         }
 
-        String email = mEmailEditText.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            mEmailEditText.setError(getString(R.string.register_required));
-            valid = false;
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmailEditText.setError(getString(R.string.register_invalid_email));
-            valid = false;
-        } else {
-            mEmailEditText.setError(null);
+        mEmail = mEmailEditText.getText().toString();
+        if (!TextUtils.isEmpty(mEmail)) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail).matches()) {
+                mEmailEditText.setError(getString(R.string.register_invalid_email));
+                valid = false;
+            } else {
+                mEmailEditText.setError(null);
+            }
         }
 
-        String password = mPasswordEditText.getText().toString();
-        String confirmPassword = mConfirmPasswordEditText.getText().toString();
-        if (!ProfileInfoValidator.isPasswordValid(password)) {
-            mPasswordEditText.setError(getString(R.string.register_password_validation));
-            valid = false;
-        } else if (!password.equals(confirmPassword)) {
-            mPasswordEditText.setError(getString(R.string.register_passwords_not_match));
-            mConfirmPasswordEditText.setError(getString(R.string.register_passwords_not_match));
-            valid = false;
-        } else if (TextUtils.isEmpty(password)) {
-            mPasswordEditText.setError(getString(R.string.register_required));
-            valid = false;
-        } else if (TextUtils.isEmpty(confirmPassword)) {
-            mConfirmPasswordEditText.setError(getString(R.string.register_required));
-            valid = false;
-        } else {
-            mPasswordEditText.setError(null);
-            mConfirmPasswordEditText.setError(null);
+        mPassword = mPasswordEditText.getText().toString();
+        mConfirmPassword = mConfirmPasswordEditText.getText().toString();
+        if (!TextUtils.isEmpty(mPassword)) {
+            if (!ProfileInfoValidator.isPasswordValid(mPassword)) {
+                mPasswordEditText.setError(getString(R.string.register_password_validation));
+                valid = false;
+            } else if (!mPassword.equals(mConfirmPassword)) {
+                mPasswordEditText.setError(getString(R.string.register_passwords_not_match));
+                mConfirmPasswordEditText.setError(getString(R.string.register_passwords_not_match));
+                valid = false;
+            } else if (TextUtils.isEmpty(mPassword)) {
+                mPasswordEditText.setError(getString(R.string.register_required));
+                valid = false;
+            } else if (TextUtils.isEmpty(mConfirmPassword)) {
+                mConfirmPasswordEditText.setError(getString(R.string.register_required));
+                valid = false;
+            } else {
+                mPasswordEditText.setError(null);
+                mConfirmPasswordEditText.setError(null);
+            }
         }
 
         return valid;
+    }
+
+    private void browseForImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.edit_profile_chooser_title)), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

@@ -32,7 +32,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_details);
 
-        getSupportActionBar().setTitle("Edytuj");
+        getSupportActionBar().setTitle(R.string.profile_detaile_activity_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
