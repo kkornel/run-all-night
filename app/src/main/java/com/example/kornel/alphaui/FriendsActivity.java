@@ -118,7 +118,7 @@ public class FriendsActivity extends AppCompatActivity {
                 final DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
                 final DatabaseReference friendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
 
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {

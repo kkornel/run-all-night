@@ -55,8 +55,7 @@ public class MoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View rootView =inflater.inflate(R.layout.fragment_more, container, false);
-
+        View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
         mFreeButton = rootView.findViewById(R.id.freeButton);
         mFriendsButton = rootView.findViewById(R.id.friendsButton);
@@ -99,5 +98,7 @@ public class MoreFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
         super.onCreateOptionsMenu(menu, inflater);
+
     }
+
 }

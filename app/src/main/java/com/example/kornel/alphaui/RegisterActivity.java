@@ -14,6 +14,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,13 +30,6 @@ import java.util.regex.Pattern;
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
 public class RegisterActivity extends AppCompatActivity {
-    public static final String NAME_REGEX = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$";
-    public static final String SPECIAL_CHARS_REGEX = "[^a-z0-9 ]";
-    public static final String UPPER_CASE_REGEX = "[A-Z ]";
-    public static final String LOWER_CASE_REGEX = "[a-z ]";
-    public static final String DIGITS_REGEX = "[0-9 ]";
-    public static final int PASSWORD_MIN_LENGTH = 8;
-
     private EditText mFirstNameEditText;
     private EditText mSurnameEditText;
     private EditText mEmailEditText;
@@ -192,11 +186,12 @@ public class RegisterActivity extends AppCompatActivity {
         boolean valid = true;
 
         String firstName = mFirstNameEditText.getText().toString();
-        Pattern namePattern = Pattern.compile(NAME_REGEX);
+        // Pattern namePattern = Pattern.compile(NAME_REGEX);
         if (TextUtils.isEmpty(firstName)) {
             mFirstNameEditText.setError(getString(R.string.register_required));
             valid = false;
-        } else if (!namePattern.matcher(firstName).find()) {
+        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
+        // } else if (!namePattern.matcher(firstName).find()) {
             mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -207,7 +202,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(surname)) {
             mSurnameEditText.setError(getString(R.string.register_required));
             valid = false;
-        } else if (!namePattern.matcher(surname).find()) {
+        // } else if (!namePattern.matcher(surname).find()) {
+        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
             mSurnameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -227,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         String password = mPasswordEditText.getText().toString();
         String confirmPassword = mConfirmPasswordEditText.getText().toString();
-        if (!isPasswordValid(password)) {
+        if (!ProfileInfoValidator.isPasswordValid(password)) {
             mPasswordEditText.setError(getString(R.string.register_password_validation));
             valid = false;
         } else if (!password.equals(confirmPassword)) {
@@ -248,29 +244,29 @@ public class RegisterActivity extends AppCompatActivity {
         return valid;
     }
 
-    private boolean isPasswordValid(String password) {
-        Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
-        Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
-        Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
-
-        if (password.length() < PASSWORD_MIN_LENGTH) {
-            return false;
-        }
-        if (!specialCharsPattern.matcher(password).find()) {
-            return false;
-        }
-        if (!upperCasePattern.matcher(password).find()) {
-            return false;
-        }
-        if (!lowerCasePattern.matcher(password).find()) {
-            return false;
-        }
-        if (!digitsPattern.matcher(password).find()) {
-            return false;
-        }
-        return true;
-    }
+    // private boolean isPasswordValid(String password) {
+    //     Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
+    //     Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
+    //     Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
+    //     Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
+    //
+    //     if (password.length() < PASSWORD_MIN_LENGTH) {
+    //         return false;
+    //     }
+    //     if (!specialCharsPattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!upperCasePattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!lowerCasePattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!digitsPattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {

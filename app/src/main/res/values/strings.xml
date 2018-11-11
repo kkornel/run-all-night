@@ -96,4 +96,18 @@
     <string name="friends_dialog_title">Dodaj znajomego</string>
     <string name="friends_dialog_email_field">Email</string>
 
+
+    <!-- Confirm Password Dialog -->
+
+    <string name="confirm_password_dialog_title">Wprowadź obecne hasło</string>
+    <string name="confirm_password_cancel_button">Anuluj</string>
+    <string name="confirm_password_confirm_button">Potwierdź</string>
+
+
+    <!-- Edit profile activity -->
+
+    <string name="edit_profile_activity_title">Edytuj profil</string>
+    <string name="edit_profile_new_password_hint">Nowe hasło</string>
+
+
 </resources>

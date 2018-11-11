@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui.mainactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.kornel.alphaui.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -62,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction().hide(active).show(moreFragment).commit();
                     active = moreFragment;
                     mToolbar.setNavigationIcon(R.drawable.ic_directions_bike_black_24dp);
+                    mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(MainActivity.this, ProfileDetailsActivity.class);
+                            startActivity(intent);
+                        }
+                    });
                     mTitle.setVisibility(View.VISIBLE);
                     mTitle.setText("More");
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -70,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        Toast.makeText(this, "sadd", Toast.LENGTH_SHORT).show();
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
