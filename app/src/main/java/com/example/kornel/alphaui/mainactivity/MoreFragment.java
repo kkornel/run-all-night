@@ -89,43 +89,6 @@ public class MoreFragment extends Fragment {
         return rootView;
     }
 
-    // private void addFriend() {
-    //     final String email = mEmail.getText().toString();
-    //
-    //     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    //     final DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
-    //     final DatabaseReference firendReqRef = firebaseDatabase.getReference("friendsRequests");
-    //
-    //     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    //     final FirebaseUser user = firebaseAuth.getCurrentUser();
-    //
-    //     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-    //         @Override
-    //         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-    //             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-    //                 Log.d(TAG, "onDataChange: " + userSnapshot.child("email").toString());
-    //                 if (userSnapshot.child("email").getValue().equals(email)) {
-    //                     String friendUid = userSnapshot.getKey();
-    //                     Log.d(TAG, "onDataChange: " + friendUid);
-    //
-    //                     firendReqRef.child(user.getUid()).child(friendUid).setValue("sent");
-    //                     firendReqRef.child(friendUid).child(user.getUid()).setValue("received");
-    //
-    //                     Toast.makeText(getContext(), "Wysłano zaproszenie do grona znajomych", Toast.LENGTH_LONG).show();
-    //                     mInfoTextView.setText("");
-    //                 } else {
-    //                     mInfoTextView.setText("Nie ma użytkownika o takim adresie email");
-    //                 }
-    //             }
-    //         }
-    //
-    //         @Override
-    //         public void onCancelled(@NonNull DatabaseError databaseError) {
-    //
-    //         }
-    //     });
-    // }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -85,7 +85,7 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
 
-    
+
     <!-- Friends Dialog -->
 
     <string name="friends_dialog_add_button">Dodaj</string>
@@ -93,7 +93,7 @@
     <string name="friends_dialog_already_sent">Zaproszenie zostało wysłane wcześniej</string>
     <string name="friends_dialog_invitation_sent">Zaproszenie zostało wysłane wcześniej</string>
     <string name="friends_dialog_wrong_email">Nie ma użytkownika o takim adresie email</string>
-    <string name="friends_dialog_title">Dodaj znajmowego</string>
+    <string name="friends_dialog_title">Dodaj znajomego</string>
     <string name="friends_dialog_email_field">Email</string>
 
 </resources>

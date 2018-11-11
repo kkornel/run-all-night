@@ -29,12 +29,12 @@ import java.util.regex.Pattern;
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
 public class RegisterActivity extends AppCompatActivity {
-    private static final String NAME_REGEX = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$";
-    private static final String SPECIAL_CHARS_REGEX = "[^a-z0-9 ]";
-    private static final String UPPER_CASE_REGEX = "[A-Z ]";
-    private static final String LOWER_CASE_REGEX = "[a-z ]";
-    private static final String DIGITS_REGEX = "[0-9 ]";
-    private static final int PASSWORD_MIN_LENGTH = 8;
+    public static final String NAME_REGEX = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$";
+    public static final String SPECIAL_CHARS_REGEX = "[^a-z0-9 ]";
+    public static final String UPPER_CASE_REGEX = "[A-Z ]";
+    public static final String LOWER_CASE_REGEX = "[a-z ]";
+    public static final String DIGITS_REGEX = "[0-9 ]";
+    public static final int PASSWORD_MIN_LENGTH = 8;
 
     private EditText mFirstNameEditText;
     private EditText mSurnameEditText;
