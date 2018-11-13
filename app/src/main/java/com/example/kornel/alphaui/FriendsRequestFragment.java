@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
@@ -20,13 +21,18 @@ public class FriendsRequestFragment extends Fragment implements ListItemClickLis
     private FriendsRequestAdapter mFriendsRequestAdapter;
     private RecyclerView mRecyclerView;
 
-    private List<String> mFeedFriendsList;
+    private List<FriendRequest> mFriendsRequestList;
 
     public FriendsRequestFragment() {
     }
 
-    public void setFriendsList(List<String> feedFriendsList) {
-        mFeedFriendsList = feedFriendsList;
+    public void setFriendsList(List<FriendRequest> friendsRequestList) {
+        mFriendsRequestList = friendsRequestList;
+    }
+
+    public void loadNewData(List<FriendRequest> friendsRequestList) {
+        mFriendsRequestList = friendsRequestList;
+        mFriendsRequestAdapter.loadNewData(friendsRequestList);
     }
 
     @Override
@@ -42,7 +48,7 @@ public class FriendsRequestFragment extends Fragment implements ListItemClickLis
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mFriendsRequestAdapter = new FriendsRequestAdapter(this, mFeedFriendsList);
+        mFriendsRequestAdapter = new FriendsRequestAdapter(this, mFriendsRequestList);
         mRecyclerView.setAdapter(mFriendsRequestAdapter);
 
         return rootView;

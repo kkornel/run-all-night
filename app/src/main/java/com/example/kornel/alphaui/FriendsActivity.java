@@ -1,7 +1,6 @@
 package com.example.kornel.alphaui;
 
 import android.content.DialogInterface;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,10 +13,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +22,7 @@ import android.widget.Toast;
 
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.FriendRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,15 +31,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = "FriendsActivity";
 
+    private FirebaseUser mUser;
+    private String mUserUid;
+    private DatabaseReference mUserRef;
+    private DatabaseReference mFriendReqRef;
+
     private List<String> mFriendsList;
+    private List<String> mFriendRequestList;
+
+    private ValueEventListener mRequestListener;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    FriendsListFragment mFriendsListFragment;
+    FriendsRequestFragment mFriendsRequestFragment;
 
     private ViewPager mViewPager;
 
@@ -77,11 +86,70 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        mUser = firebaseAuth.getCurrentUser();
+        mUserUid = mUser.getUid();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        mFriendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
+        mUserRef = firebaseDatabase.getReference(Database.USERS);
+
         mFriendsList = Arrays.asList("asd", "asdasd", "21321", "45df", "23", "333@@#$");
+        mFriendRequestList = new ArrayList<>();
+
+        mRequestListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<FriendRequest> friendsRequestList = new ArrayList<>();
+                for (DataSnapshot request : dataSnapshot.getChildren()) {
+                    FriendRequest friendRequest = new FriendRequest(
+                            request.getKey(),
+                            (String) request.getValue());
+                    friendsRequestList.add(friendRequest);
+                }
+                for (final FriendRequest friendRequest : friendsRequestList) {
+                    mUserRef.child(friendRequest.getFriendUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            List<FriendRequest> updatedFriendsRequestList = new ArrayList<>();
+                            String friendName = dataSnapshot.child(Database.FIRST_NAME).getValue()
+                                    + " " + dataSnapshot.child(Database.SURNAME).getValue();
+                            String avatarUrl = dataSnapshot.child(Database.AVATAR_URL).getValue(String.class);
+                            FriendRequest updatedFriendRequest = new FriendRequest(
+                                    friendRequest.getFriendUid(),
+                                    friendRequest.getRequestType(),
+                                    friendName,
+                                    avatarUrl);
+                            updatedFriendsRequestList.add(updatedFriendRequest);
+
+                            mFriendsRequestFragment.loadNewData(updatedFriendsRequestList);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        mFriendReqRef.child(mUserUid).addValueEventListener(mRequestListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFriendReqRef.removeEventListener(mRequestListener);
     }
 
 
-    public void showAddFriendDialog() {
+    private void showAddFriendDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
         final LayoutInflater inflater = getLayoutInflater();
@@ -114,31 +182,24 @@ public class FriendsActivity extends AppCompatActivity {
 
                 final String email = emailEditText.getText().toString();
 
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
-                final DatabaseReference friendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
-
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                final FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         boolean found = false;
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             if (userSnapshot.child(Database.EMAIL).getValue().equals(email)) {
-                                final String userUid = user.getUid();
+                                mUserUid = mUser.getUid();
                                 final String friendUid = userSnapshot.getKey();
 
-                                friendReqRef.child(userUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.getValue() != null) {
                                             infoTextView.setText(R.string.friends_dialog_already_sent);
                                         } else {
                                             infoTextView.setText("");
-                                            friendReqRef.child(userUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
-                                            friendReqRef.child(friendUid).child(userUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+                                            mFriendReqRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                                            mFriendReqRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
                                             Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
 
                                             dialog.dismiss();
@@ -180,21 +241,15 @@ public class FriendsActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
 
-            Fragment fragment = null;
-
-            switch (position) {
-                case 0:
-                    fragment = new FriendsListFragment();
-                    ((FriendsListFragment) fragment).setFriendsList(mFriendsList);
-                    break;
-
-                case 1:
-                    fragment = new FriendsRequestFragment();
-                    ((FriendsRequestFragment) fragment).setFriendsList(mFriendsList);
-                    break;
+            if (position == 0) {
+                mFriendsListFragment = new FriendsListFragment();
+                mFriendsListFragment.setFriendsList(mFriendsList);
+                return mFriendsListFragment;
+            } else {
+                mFriendsRequestFragment = new FriendsRequestFragment();
+                mFriendsRequestFragment.setFriendsList(new ArrayList<FriendRequest>());
+                return mFriendsRequestFragment;
             }
-
-            return fragment;
         }
 
         @Override

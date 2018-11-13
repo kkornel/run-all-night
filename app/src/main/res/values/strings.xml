@@ -119,6 +119,8 @@
     <string name="profile_details_activity_title">Profil</string>
     <string name="edit_profile_profile_activity">Edytuj profil</string>
     <string name="add_friend_button">Dodaj znajomego</string>
+    <string name="request_type_sent">Wysłano</string>
+    <string name="request_type_received">Akceptuj</string>
 
 
 </resources>

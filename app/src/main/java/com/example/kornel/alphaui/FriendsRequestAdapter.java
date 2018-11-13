@@ -1,6 +1,8 @@
 package com.example.kornel.alphaui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,18 +12,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAdapter.FriendsRequestViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
-    private List<String> mFriendsFeedList;
+    private List<FriendRequest> mFriendsRequestList;
 
-    public FriendsRequestAdapter(ListItemClickListener onClickListener, List<String> feedList) {
+    public FriendsRequestAdapter(ListItemClickListener onClickListener, List<FriendRequest> friendsRequestList) {
         mOnClickListener = onClickListener;
-        mFriendsFeedList = feedList;
+        mFriendsRequestList = friendsRequestList;
     }
 
     @Override
@@ -42,21 +47,28 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
     public void onBindViewHolder(@NonNull FriendsRequestViewHolder friendListViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mFriendsFeedList == null) || (mFriendsFeedList.size() == 0)) {
+        if ((mFriendsRequestList == null) || (mFriendsRequestList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
-            friendListViewHolder.mNameTextView.setText(mFriendsFeedList.get(position));
-            friendListViewHolder.mRequestTypeTextView.setText("Wysłano");
+            Picasso.get().load(mFriendsRequestList.get(position).getAvatarUrl()).into(friendListViewHolder.mAvatarImageView);
+            friendListViewHolder.mNameTextView.setText(mFriendsRequestList.get(position).getFriendName());
+            String requestType;
+            if (mFriendsRequestList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
+                requestType = "Wysłano";
+            } else {
+                requestType = "Akceptuj";
+            }
+            friendListViewHolder.mRequestTypeTextView.setText(requestType);
         }
     }
 
     @Override
     public int getItemCount() {
-        return ((mFriendsFeedList != null) && (mFriendsFeedList.size() !=0) ? mFriendsFeedList.size() : 1);
+        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() !=0) ? mFriendsRequestList.size() : 1);
     }
 
-    void loadNewData(List<String> newActivities) {
-        mFriendsFeedList = newActivities;
+    void loadNewData(List<FriendRequest> newActivities) {
+        mFriendsRequestList = newActivities;
         notifyDataSetChanged();
     }
 
