@@ -70,7 +70,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
     @Override
     public int getItemCount() {
-        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() !=0) ? mFriendsRequestList.size() : 0);
+        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() != 0) ? mFriendsRequestList.size() : 0);
     }
 
     void loadNewData(List<FriendRequest> friendsRequestList) {

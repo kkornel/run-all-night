@@ -206,10 +206,7 @@ public class WorkoutFragment extends Fragment {
             }
         };
 
-        usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
-        // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
-        // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
-        // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
+        // usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
     }
 
     @Override

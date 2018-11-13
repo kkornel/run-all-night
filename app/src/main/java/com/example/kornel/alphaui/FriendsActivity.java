@@ -99,7 +99,6 @@ public class FriendsActivity extends AppCompatActivity {
         mUserRef = firebaseDatabase.getReference(Database.USERS);
 
         mFriendsList = Arrays.asList("asd", "asdasd", "21321", "45df", "23", "333@@#$");
-        // mFriendRequestList = new ArrayList<>();
 
         mRequestListener = new ValueEventListener() {
             @Override
@@ -112,6 +111,11 @@ public class FriendsActivity extends AppCompatActivity {
                             (String) request.getValue());
                     friendsRequestList.add(friendRequest);
                 }
+
+                if (friendsRequestList.size() == 0) {
+                    mFriendsRequestFragment.loadNewData(new ArrayList<FriendRequest>());
+                }
+
                 final List<FriendRequest> updatedFriendsRequestList = new ArrayList<>();
                 for (final FriendRequest friendRequest : friendsRequestList) {
                     mUserRef.child(friendRequest.getFriendUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -229,6 +233,8 @@ public class FriendsActivity extends AppCompatActivity {
                             if (userSnapshot.child(Database.EMAIL).getValue().equals(email)) {
                                 mUserUid = mUser.getUid();
                                 final String friendUid = userSnapshot.getKey();
+
+                                
 
                                 mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
