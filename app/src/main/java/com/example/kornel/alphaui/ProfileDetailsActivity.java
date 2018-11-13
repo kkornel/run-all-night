@@ -10,11 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.ProfileInfoValidator;
+import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,8 +23,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class ProfileDetailsActivity extends AppCompatActivity {
+    private ImageView mAvatarImageView;
+    private TextView mNameTextView;
+    private TextView mTotalDistanceTextView;
+    private TextView mTotalTimeTextView;
+    private TextView mWorkoutsCountTextView;
+    private TextView mHmm1TextView;
+    private TextView mHmm2TextView;
+    private TextView mFirendsCountTextView;
+
+
     private Button mEditProfileButton;
     private Button mAddFriendButton;
 
@@ -32,9 +44,18 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_details);
 
-        getSupportActionBar().setTitle(R.string.profile_detaile_activity_title);
+        getSupportActionBar().setTitle(R.string.profile_details_activity_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mAvatarImageView = findViewById(R.id.avatarImageView);
+        mNameTextView = findViewById(R.id.nameTextView);
+        mTotalDistanceTextView = findViewById(R.id.totalDistanceTextView);
+        mTotalTimeTextView = findViewById(R.id.totalTimeTextView);
+        mWorkoutsCountTextView = findViewById(R.id.workoutsCountTextView);
+        mHmm1TextView = findViewById(R.id.hmm1TextView);
+        mHmm2TextView = findViewById(R.id.hmm2TextView);
+        mFirendsCountTextView = findViewById(R.id.friendsCountTextView);
 
         mEditProfileButton = findViewById(R.id.editProfileButton);
         mEditProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +72,28 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 onAddFriendClicked();
             }
         });
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        String userUid = user.getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
+
+        userRef.child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                Picasso.get().load(user.getAvatarUrl()).into(mAvatarImageView);
+                mNameTextView.setText(user.getFirstName() + " " + user.getSurname());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override

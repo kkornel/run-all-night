@@ -26,6 +26,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,6 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private DatabaseReference mUserRef;
 
+    private String mAvatarUrl;
     private String mAvatarName;
     private Bitmap mAvatarBitmap;
     private String mFirstName;
@@ -114,12 +117,11 @@ public class EditProfileActivity extends AppCompatActivity {
         mUserRef.child(mUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 User user = dataSnapshot.getValue(User.class);
+                Picasso.get().load(user.getAvatarUrl()).into(mAvatarImageView);
                 mFirstNameEditText.setHint(user.getFirstName());
                 mSurnameEditText.setHint(user.getSurname());
                 mEmailEditText.setHint(user.getEmail());
-
             }
 
             @Override
@@ -130,6 +132,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mAvatarName = null;
         mAvatarBitmap = null;
+        mAvatarUrl = null;
     }
 
     @Override
@@ -153,6 +156,7 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             mAvatarName = null;
             mAvatarBitmap = null;
+            mAvatarUrl = null;
         }
     }
 
@@ -208,13 +212,14 @@ public class EditProfileActivity extends AppCompatActivity {
         if (mAvatarName != null && mAvatarBitmap != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
-            StorageReference avatarsRef = storageRef.child(Database.AVATARS);
+            StorageReference avatarsRef = storageRef.child(Database.AVATARS_STORAGE);
 
             String[] separated = mAvatarName.split("\\.");
 
             String newAvatarName = mUserUid + "." + separated[separated.length - 1];
 
-            StorageReference newAvatarRef = avatarsRef.child(Database.AVATARS + "/" + newAvatarName);
+            final StorageReference newAvatarRef
+                    = avatarsRef.child(Database.AVATARS_STORAGE + "/" + newAvatarName);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             mAvatarBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -231,6 +236,32 @@ public class EditProfileActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
+                }
+            });
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return newAvatarRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        mAvatarUrl = downloadUri.toString();
+                        if (!mAvatarUrl.equals("")) {
+                            mUserRef.child(mUserUid).child(Database.AVATAR_URL).setValue(mAvatarUrl);
+                        }
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
                 }
             });
         }
@@ -266,6 +297,8 @@ public class EditProfileActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgressDialog();
+
                 infoTextView.setText("");
 
                 final String password = passwordTextView.getText().toString();
@@ -280,7 +313,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            showProgressDialog();
                             uploadChanges();
                             hideProgressDialog();
                             Toast.makeText(EditProfileActivity.this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();

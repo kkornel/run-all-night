@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
+    private String avatarUrl;
     private String firstName;
     private String surname;
     private String email;
@@ -25,6 +26,14 @@ public class User {
     public User(String firstName, String surname, String email, String lastWorkout) {
         this(firstName, surname, email);
         this.lastWorkout = lastWorkout;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public List<String> getFriends() {
