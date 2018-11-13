@@ -122,6 +122,9 @@
     <string name="request_type_sent">Wysłano</string>
     <string name="request_type_received">Akceptuj</string>
     <string name="user_is_already_a_friends">Ten użytkownik znajduje sie już na twojej liście znajomych</string>
+    <string name="can_not_send_invitation_to_yrself">Nie możesz wysłac sobie zaproszenia.</string>
+    <string name="no_new_invitations">Brak nowych zaproszeń</string>
+    <string name="no_friends">Nie masz żadnych znajomych</string>
 
 
 </resources>

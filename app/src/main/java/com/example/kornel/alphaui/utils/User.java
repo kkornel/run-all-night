@@ -2,6 +2,7 @@ package com.example.kornel.alphaui.utils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class User {
@@ -10,7 +11,7 @@ public class User {
     private String surname;
     private String email;
     private String lastWorkout;
-    private List<String> friends;
+    private HashMap<String, Boolean> friends;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -20,7 +21,7 @@ public class User {
         this.firstName = firstName;
         this.surname = surname;
         this.email = email;
-        this.friends = new ArrayList<>();
+        this.friends = new HashMap<>();
     }
 
     public User(String firstName, String surname, String email, String lastWorkout) {
@@ -36,11 +37,11 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public List<String> getFriends() {
+    public HashMap<String, Boolean> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<String> friends) {
+    public void setFriends(HashMap<String, Boolean> friends) {
         this.friends = friends;
     }
 
@@ -74,5 +75,17 @@ public class User {
 
     public void setLastWorkout(String lastWorkout) {
         this.lastWorkout = lastWorkout;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "avatarUrl='" + avatarUrl + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", lastWorkout='" + lastWorkout + '\'' +
+                ", friends=" + friends +
+                '}';
     }
 }

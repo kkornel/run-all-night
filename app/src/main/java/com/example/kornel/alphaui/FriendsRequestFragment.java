@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.FriendRequest;
@@ -40,6 +41,8 @@ public class FriendsRequestFragment extends Fragment
     private DatabaseReference mUsersRef;
     private DatabaseReference mRequestsRef;
 
+    private TextView mNoDataInfoTextView;
+
     private FriendsRequestAdapter mFriendsRequestAdapter;
     private RecyclerView mRecyclerView;
 
@@ -53,8 +56,18 @@ public class FriendsRequestFragment extends Fragment
     }
 
     public void loadNewData(List<FriendRequest> friendsRequestList) {
-        mFriendsRequestList = friendsRequestList;
+        setFriendsList(friendsRequestList);
+        checkIfListIsEmpty();
         mFriendsRequestAdapter.loadNewData(mFriendsRequestList);
+    }
+
+    private void checkIfListIsEmpty() {
+        if (mFriendsRequestList.size() == 0 ) {
+            mNoDataInfoTextView.setVisibility(View.VISIBLE);
+            mNoDataInfoTextView.setText(getString(R.string.no_new_invitations));
+        } else {
+            mNoDataInfoTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -63,6 +76,9 @@ public class FriendsRequestFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
+        checkIfListIsEmpty();
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);

@@ -25,9 +25,9 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.FriendRequest;
+import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class FriendsActivity extends AppCompatActivity {
@@ -46,10 +47,11 @@ public class FriendsActivity extends AppCompatActivity {
     private DatabaseReference mUserRef;
     private DatabaseReference mFriendReqRef;
 
-    private List<String> mFriendsList;
+    // private List<String> mFriendsList;
     // private List<FriendRequest> mFriendRequestList;
 
     private ValueEventListener mRequestListener;
+    private ValueEventListener mFriendsListener;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     FriendsListFragment mFriendsListFragment;
@@ -97,8 +99,44 @@ public class FriendsActivity extends AppCompatActivity {
         mFriendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
         mUserRef = firebaseDatabase.getReference(Database.USERS);
 
-        mFriendsList = Arrays.asList("asd", "asdasd", "21321", "45df", "23", "333@@#$");
+        // TODO: wczytać tylko to co potrzbne czy całość? Żeby potem przenieść np. do nowego okna
 
+        mFriendsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
+                HashMap<String, Boolean> friends = (HashMap) dataSnapshot.getValue();
+                final List<User> friendsList = new ArrayList<>();
+                if (friends != null) {
+                    for (String key : friends.keySet()) {
+                        mUserRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
+                                User user = dataSnapshot.getValue(User.class);
+                                Log.d(TAG, "2onDataChange: " + user.toString());
+                                friendsList.add(user);
+                                Log.d(TAG, "2onDataChange: " + friendsList.toString());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    Log.d(TAG, "2onDataChange: " + friendsList.toString());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        // TODO prawdopodobnie load new data bedzie wywolywane tyle razy ile..
         mRequestListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -151,12 +189,14 @@ public class FriendsActivity extends AppCompatActivity {
         };
 
         mFriendReqRef.child(mUserUid).addValueEventListener(mRequestListener);
+        mUserRef.child(mUserUid).child(Database.FRIENDS).addValueEventListener(mFriendsListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mFriendReqRef.removeEventListener(mRequestListener);
+        mFriendReqRef.child(mUserUid).removeEventListener(mRequestListener);
+        mUserRef.child(mUserUid).child(Database.FRIENDS).removeEventListener(mFriendsListener);
     }
 
 
@@ -203,7 +243,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 final String friendUid = userSnapshot.getKey();
 
                                 if (mUserUid.equals(friendUid)) {
-                                    infoTextView.setText("Nie możesz wysłac sobie zaproszenia.");
+                                    infoTextView.setText(getString(R.string.can_not_send_invitation_to_yrself));
                                 } else {
 
                                     mUserRef.child(mUserUid).child(Database.FRIENDS).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -273,7 +313,7 @@ public class FriendsActivity extends AppCompatActivity {
 
             if (position == 0) {
                 mFriendsListFragment = new FriendsListFragment();
-                mFriendsListFragment.setFriendsList(mFriendsList);
+                mFriendsListFragment.setFriendsList(new ArrayList<String>());
                 return mFriendsListFragment;
             } else {
                 mFriendsRequestFragment = new FriendsRequestFragment();

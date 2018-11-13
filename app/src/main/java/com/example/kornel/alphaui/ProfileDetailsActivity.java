@@ -39,6 +39,11 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     private Button mEditProfileButton;
     private Button mAddFriendButton;
 
+    private FirebaseUser mUser;
+    private String mUserUid;
+    private DatabaseReference mUserRef;
+    private DatabaseReference mFriendReqRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +79,14 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         });
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        String userUid = user.getUid();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
+        mUser = firebaseAuth.getCurrentUser();
+        mUserUid = mUser.getUid();
 
-        userRef.child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        mFriendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
+        mUserRef = firebaseDatabase.getReference(Database.USERS);
+
+        mUserRef.child(mUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -144,42 +151,54 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
                 final String email = emailEditText.getText().toString();
 
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
-                final DatabaseReference friendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
-
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                final FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         boolean found = false;
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             if (userSnapshot.child(Database.EMAIL).getValue().equals(email)) {
-                                final String userUid = user.getUid();
+                                mUserUid = mUser.getUid();
                                 final String friendUid = userSnapshot.getKey();
 
-                                friendReqRef.child(userUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.getValue() != null) {
-                                            infoTextView.setText(R.string.friends_dialog_already_sent);
-                                        } else {
-                                            infoTextView.setText("");
-                                            friendReqRef.child(userUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
-                                            friendReqRef.child(friendUid).child(userUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
-                                            Toast.makeText(ProfileDetailsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
+                                if (mUserUid.equals(friendUid)) {
+                                    infoTextView.setText(getString(R.string.can_not_send_invitation_to_yrself));
+                                } else {
 
-                                            dialog.dismiss();
+                                    mUserRef.child(mUserUid).child(Database.FRIENDS).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null) {
+                                                infoTextView.setText(getString(R.string.user_is_already_a_friends));
+                                            } else {
+                                                mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.getValue() != null) {
+                                                            infoTextView.setText(R.string.friends_dialog_already_sent);
+                                                        } else {
+                                                            infoTextView.setText("");
+                                                            mFriendReqRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                                                            mFriendReqRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+                                                            Toast.makeText(ProfileDetailsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
+
+                                                            dialog.dismiss();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }
                                 found = true;
                                 break;
                             }
