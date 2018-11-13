@@ -118,33 +118,30 @@ public class FriendsActivity extends AppCompatActivity {
                 final DatabaseReference userRef = firebaseDatabase.getReference(Database.USERS);
                 final DatabaseReference friendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
 
-                final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        boolean found = false;
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             if (userSnapshot.child(Database.EMAIL).getValue().equals(email)) {
                                 final String userUid = user.getUid();
                                 final String friendUid = userSnapshot.getKey();
 
-                                friendReqRef.child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                friendReqRef.child(userUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.getValue() != null) {
+                                            infoTextView.setText(R.string.friends_dialog_already_sent);
+                                        } else {
+                                            infoTextView.setText("");
+                                            friendReqRef.child(userUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                                            friendReqRef.child(friendUid).child(userUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+                                            Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
 
-                                        for (DataSnapshot request : dataSnapshot.getChildren()) {
-                                            if (request.getKey().equals(friendUid)) {
-                                                infoTextView.setText(R.string.friends_dialog_already_sent);
-                                            } else {
-                                                infoTextView.setText("");
-                                                friendReqRef.child(userUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
-                                                friendReqRef.child(friendUid).child(userUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
-                                                Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
-
-                                                dialog.dismiss();
-                                            }
+                                            dialog.dismiss();
                                         }
                                     }
 
@@ -153,9 +150,12 @@ public class FriendsActivity extends AppCompatActivity {
 
                                     }
                                 });
-                            } else {
-                                infoTextView.setText(R.string.friends_dialog_wrong_email);
+                                found = true;
+                                break;
                             }
+                        }
+                        if (!found) {
+                            infoTextView.setText(R.string.friends_dialog_wrong_email);
                         }
                     }
 
