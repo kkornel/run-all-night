@@ -49,6 +49,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         if ((mFriendsRequestsList == null) || (mFriendsRequestsList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
+            // TODO how to keep non image data? no url
             Picasso.get()
                     .load(mFriendsRequestsList.get(position).getAvatarUrl())
                     .placeholder(R.drawable.ic_person_black_64dp)

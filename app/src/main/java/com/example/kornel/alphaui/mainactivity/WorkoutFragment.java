@@ -196,8 +196,6 @@ public class WorkoutFragment extends Fragment {
 
                     }
                 });
-
-
             }
 
             @Override

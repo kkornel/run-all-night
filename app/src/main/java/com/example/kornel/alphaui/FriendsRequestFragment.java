@@ -53,10 +53,7 @@ public class FriendsRequestFragment extends Fragment
         mFriendsRequestList = friendsRequestList;
     }
 
-    private int i = 1;
-
     public void loadNewData(List<FriendRequest> friendsRequestList) {
-        Log.d(TAG, "loadNewData: "+ i++);
         setFriendsList(friendsRequestList);
         checkIfListIsEmpty();
         mFriendsRequestAdapter.loadNewData(mFriendsRequestList);
@@ -101,8 +98,6 @@ public class FriendsRequestFragment extends Fragment
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: " + mFriendsRequestList.get(clickedItemIndex));
-
         String requestType = mFriendsRequestList.get(clickedItemIndex).getRequestType();
         String friendUid = mFriendsRequestList.get(clickedItemIndex).getFriendUid();
 

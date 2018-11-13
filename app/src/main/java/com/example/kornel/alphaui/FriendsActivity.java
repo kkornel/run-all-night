@@ -36,7 +36,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -111,8 +110,7 @@ public class FriendsActivity extends AppCompatActivity {
         mFriendsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
-                HashMap<String, Boolean> friends = (HashMap) dataSnapshot.getValue();
+                final HashMap<String, Boolean> friends = (HashMap) dataSnapshot.getValue();
 
                 if (friends == null) {
                     mFriendsListFragment.loadNewData(new ArrayList<User>());
@@ -122,13 +120,13 @@ public class FriendsActivity extends AppCompatActivity {
                         mUserRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
                                 User user = dataSnapshot.getValue(User.class);
                                 user.setUserUid(key);
-                                Log.d(TAG, "2onDataChange: " + user.toString());
                                 friendsList.add(user);
-                                Log.d(TAG, "2onDataChange: " + friendsList.toString());
-                                mFriendsListFragment.loadNewData(friendsList);
+
+                                if (friendsList.size() == friends.size()) {
+                                    mFriendsListFragment.loadNewData(friendsList);
+                                }
                             }
 
                             @Override
@@ -137,8 +135,6 @@ public class FriendsActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    Log.d(TAG, "2onDataChange: " + friendsList.toString());
-
                 }
             }
 
@@ -148,12 +144,10 @@ public class FriendsActivity extends AppCompatActivity {
             }
         };
 
-        // TODO prawdopodobnie load new data bedzie wywolywane tyle razy ile..
         mRequestListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot);
-                List<FriendRequest> friendsRequestList = new ArrayList<>();
+                final List<FriendRequest> friendsRequestList = new ArrayList<>();
                 for (DataSnapshot request : dataSnapshot.getChildren()) {
                     FriendRequest friendRequest = new FriendRequest(
                             request.getKey(),
@@ -170,8 +164,6 @@ public class FriendsActivity extends AppCompatActivity {
                     mUserRef.child(friendRequest.getFriendUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: " + dataSnapshot);
-
                             String friendName = dataSnapshot.child(Database.FIRST_NAME).getValue()
                                     + " " + dataSnapshot.child(Database.SURNAME).getValue();
                             String avatarUrl = dataSnapshot.child(Database.AVATAR_URL).getValue(String.class);
@@ -182,8 +174,9 @@ public class FriendsActivity extends AppCompatActivity {
                                     avatarUrl);
                             updatedFriendsRequestList.add(updatedFriendRequest);
 
-                            Log.d(TAG, "ma: " + updatedFriendsRequestList.size());
-                            mFriendsRequestFragment.loadNewData(updatedFriendsRequestList);
+                            if(friendsRequestList.size() == updatedFriendsRequestList.size()) {
+                                mFriendsRequestFragment.loadNewData(updatedFriendsRequestList);
+                            }
                         }
 
                         @Override
@@ -192,8 +185,6 @@ public class FriendsActivity extends AppCompatActivity {
                         }
                     });
                 }
-                Log.d(TAG, "sizzze: " + updatedFriendsRequestList.size());
-
             }
 
             @Override
