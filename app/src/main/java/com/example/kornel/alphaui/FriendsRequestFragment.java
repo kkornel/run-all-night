@@ -170,13 +170,11 @@ public class FriendsRequestFragment extends Fragment
                 })
                 .setNegativeButton(negBtn, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
+                        if (type.equals(Database.FRIENDS_REQUESTS_RECEIVED)) {
+                            callback.cancelInvite(friendUid);
+                        }
                     }
                 });
         return builder.create();
     }
-
-
-
-
 }

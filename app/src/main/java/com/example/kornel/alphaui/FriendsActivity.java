@@ -50,7 +50,6 @@ public class FriendsActivity extends AppCompatActivity {
     // private List<FriendRequest> mFriendRequestList;
 
     private ValueEventListener mRequestListener;
-    private ChildEventListener mChild;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     FriendsListFragment mFriendsListFragment;
@@ -151,38 +150,7 @@ public class FriendsActivity extends AppCompatActivity {
             }
         };
 
-        mChild = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "onChildAdded: " + dataSnapshot);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "onChildChanged: " + dataSnapshot);
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved: " + dataSnapshot);
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "onChildMoved: " + dataSnapshot);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
         mFriendReqRef.child(mUserUid).addValueEventListener(mRequestListener);
-        mFriendReqRef.child(mUserUid).addChildEventListener(mChild);
     }
 
     @Override
@@ -234,28 +202,45 @@ public class FriendsActivity extends AppCompatActivity {
                                 mUserUid = mUser.getUid();
                                 final String friendUid = userSnapshot.getKey();
 
-                                
+                                if (mUserUid.equals(friendUid)) {
+                                    infoTextView.setText("Nie możesz wysłac sobie zaproszenia.");
+                                } else {
 
-                                mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.getValue() != null) {
-                                            infoTextView.setText(R.string.friends_dialog_already_sent);
-                                        } else {
-                                            infoTextView.setText("");
-                                            mFriendReqRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
-                                            mFriendReqRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
-                                            Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
+                                    mUserRef.child(mUserUid).child(Database.FRIENDS).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null) {
+                                                infoTextView.setText(getString(R.string.user_is_already_a_friends));
+                                            } else {
+                                                mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.getValue() != null) {
+                                                            infoTextView.setText(R.string.friends_dialog_already_sent);
+                                                        } else {
+                                                            infoTextView.setText("");
+                                                            mFriendReqRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                                                            mFriendReqRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+                                                            Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
 
-                                            dialog.dismiss();
+                                                            dialog.dismiss();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }
                                 found = true;
                                 break;
                             }
