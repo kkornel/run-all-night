@@ -118,7 +118,11 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                Picasso.get().load(user.getAvatarUrl()).into(mAvatarImageView);
+                Picasso.get()
+                        .load(user.getAvatarUrl())
+                        .placeholder(R.drawable.ic_person_black_64dp)
+                        .error(R.drawable.ic_error_red_64dp)
+                        .into(mAvatarImageView);
                 mFirstNameEditText.setHint(user.getFirstName());
                 mSurnameEditText.setHint(user.getSurname());
                 mEmailEditText.setHint(user.getEmail());

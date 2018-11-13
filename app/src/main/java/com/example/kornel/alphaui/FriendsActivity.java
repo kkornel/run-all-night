@@ -2,6 +2,7 @@ package com.example.kornel.alphaui;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -25,6 +27,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.FriendRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,9 +47,10 @@ public class FriendsActivity extends AppCompatActivity {
     private DatabaseReference mFriendReqRef;
 
     private List<String> mFriendsList;
-    private List<String> mFriendRequestList;
+    // private List<FriendRequest> mFriendRequestList;
 
     private ValueEventListener mRequestListener;
+    private ChildEventListener mChild;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     FriendsListFragment mFriendsListFragment;
@@ -95,11 +99,12 @@ public class FriendsActivity extends AppCompatActivity {
         mUserRef = firebaseDatabase.getReference(Database.USERS);
 
         mFriendsList = Arrays.asList("asd", "asdasd", "21321", "45df", "23", "333@@#$");
-        mFriendRequestList = new ArrayList<>();
+        // mFriendRequestList = new ArrayList<>();
 
         mRequestListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot);
                 List<FriendRequest> friendsRequestList = new ArrayList<>();
                 for (DataSnapshot request : dataSnapshot.getChildren()) {
                     FriendRequest friendRequest = new FriendRequest(
@@ -107,11 +112,13 @@ public class FriendsActivity extends AppCompatActivity {
                             (String) request.getValue());
                     friendsRequestList.add(friendRequest);
                 }
+                final List<FriendRequest> updatedFriendsRequestList = new ArrayList<>();
                 for (final FriendRequest friendRequest : friendsRequestList) {
                     mUserRef.child(friendRequest.getFriendUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            List<FriendRequest> updatedFriendsRequestList = new ArrayList<>();
+                            Log.d(TAG, "onDataChange: " + dataSnapshot);
+
                             String friendName = dataSnapshot.child(Database.FIRST_NAME).getValue()
                                     + " " + dataSnapshot.child(Database.SURNAME).getValue();
                             String avatarUrl = dataSnapshot.child(Database.AVATAR_URL).getValue(String.class);
@@ -122,6 +129,7 @@ public class FriendsActivity extends AppCompatActivity {
                                     avatarUrl);
                             updatedFriendsRequestList.add(updatedFriendRequest);
 
+                            Log.d(TAG, "ma: " + updatedFriendsRequestList.size());
                             mFriendsRequestFragment.loadNewData(updatedFriendsRequestList);
                         }
 
@@ -139,7 +147,38 @@ public class FriendsActivity extends AppCompatActivity {
             }
         };
 
+        mChild = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "onChildAdded: " + dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "onChildChanged: " + dataSnapshot);
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved: " + dataSnapshot);
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "onChildMoved: " + dataSnapshot);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
         mFriendReqRef.child(mUserUid).addValueEventListener(mRequestListener);
+        mFriendReqRef.child(mUserUid).addChildEventListener(mChild);
     }
 
     @Override

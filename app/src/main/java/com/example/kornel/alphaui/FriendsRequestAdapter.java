@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAdapter.FriendsRequestViewHolder> {
+    private static final String TAG = "FriendsRequestAdapter";
+
     private final ListItemClickListener mOnClickListener;
 
     private List<FriendRequest> mFriendsRequestList;
@@ -50,7 +52,11 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         if ((mFriendsRequestList == null) || (mFriendsRequestList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
-            Picasso.get().load(mFriendsRequestList.get(position).getAvatarUrl()).into(friendListViewHolder.mAvatarImageView);
+            Picasso.get()
+                    .load(mFriendsRequestList.get(position).getAvatarUrl())
+                    .placeholder(R.drawable.ic_person_black_64dp)
+                    .error(R.drawable.ic_error_red_64dp)
+                    .into(friendListViewHolder.mAvatarImageView);
             friendListViewHolder.mNameTextView.setText(mFriendsRequestList.get(position).getFriendName());
             String requestType;
             if (mFriendsRequestList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
@@ -64,11 +70,11 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
     @Override
     public int getItemCount() {
-        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() !=0) ? mFriendsRequestList.size() : 1);
+        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() !=0) ? mFriendsRequestList.size() : 0);
     }
 
-    void loadNewData(List<FriendRequest> newActivities) {
-        mFriendsRequestList = newActivities;
+    void loadNewData(List<FriendRequest> friendsRequestList) {
+        mFriendsRequestList = friendsRequestList;
         notifyDataSetChanged();
     }
 
@@ -91,6 +97,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         @Override
         public void onClick(View v) {
             Log.d(TAG, "onClick: ");
+
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }
