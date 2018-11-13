@@ -1,8 +1,6 @@
 package com.example.kornel.alphaui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,12 +21,11 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
     private static final String TAG = "FriendsRequestAdapter";
 
     private final ListItemClickListener mOnClickListener;
-
-    private List<FriendRequest> mFriendsRequestList;
+    private List<FriendRequest> mFriendsRequestsList;
 
     public FriendsRequestAdapter(ListItemClickListener onClickListener, List<FriendRequest> friendsRequestList) {
         mOnClickListener = onClickListener;
-        mFriendsRequestList = friendsRequestList;
+        mFriendsRequestsList = friendsRequestList;
     }
 
     @Override
@@ -49,17 +46,17 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
     public void onBindViewHolder(@NonNull FriendsRequestViewHolder friendListViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mFriendsRequestList == null) || (mFriendsRequestList.size() == 0)) {
+        if ((mFriendsRequestsList == null) || (mFriendsRequestsList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
             Picasso.get()
-                    .load(mFriendsRequestList.get(position).getAvatarUrl())
+                    .load(mFriendsRequestsList.get(position).getAvatarUrl())
                     .placeholder(R.drawable.ic_person_black_64dp)
                     .error(R.drawable.ic_error_red_64dp)
                     .into(friendListViewHolder.mAvatarImageView);
-            friendListViewHolder.mNameTextView.setText(mFriendsRequestList.get(position).getFriendName());
+            friendListViewHolder.mNameTextView.setText(mFriendsRequestsList.get(position).getFriendName());
             String requestType;
-            if (mFriendsRequestList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
+            if (mFriendsRequestsList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
                 requestType = "Wysłano";
             } else {
                 requestType = "Akceptuj";
@@ -70,11 +67,11 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
     @Override
     public int getItemCount() {
-        return ((mFriendsRequestList != null) && (mFriendsRequestList.size() != 0) ? mFriendsRequestList.size() : 0);
+        return ((mFriendsRequestsList != null) && (mFriendsRequestsList.size() != 0) ? mFriendsRequestsList.size() : 0);
     }
 
     void loadNewData(List<FriendRequest> friendsRequestList) {
-        mFriendsRequestList = friendsRequestList;
+        mFriendsRequestsList = friendsRequestList;
         notifyDataSetChanged();
     }
 
@@ -87,7 +84,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
         public FriendsRequestViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "WorkoutViewHolder: ");
             mAvatarImageView = itemView.findViewById(R.id.friendAvatarImageView);
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             mRequestTypeTextView = itemView.findViewById(R.id.requestTypeTextView);
@@ -96,8 +92,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: ");
-
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

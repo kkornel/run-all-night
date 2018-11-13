@@ -1,9 +1,9 @@
 package com.example.kornel.alphaui;
 
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.FriendListViewHolder> {
     private final ListItemClickListener mOnClickListener;
+    private List<User> mFriendsProfileList;
 
-    private List<String> mFriendsFeedList;
-
-    public FriendsListAdapter(ListItemClickListener onClickListener, List<String> feedList) {
+    public FriendsListAdapter(ListItemClickListener onClickListener, List<User> feedList) {
         mOnClickListener = onClickListener;
-        mFriendsFeedList = feedList;
+        mFriendsProfileList = feedList;
     }
 
     @Override
@@ -43,20 +44,28 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public void onBindViewHolder(@NonNull FriendListViewHolder friendListViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mFriendsFeedList == null) || (mFriendsFeedList.size() == 0)) {
+        if ((mFriendsProfileList == null) || (mFriendsProfileList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
-            friendListViewHolder.mNameTextView.setText(mFriendsFeedList.get(position));
+            Picasso.get()
+                    .load(mFriendsProfileList.get(position).getAvatarUrl())
+                    .placeholder(R.drawable.ic_person_black_64dp)
+                    .error(R.drawable.ic_error_red_64dp)
+                    .into(friendListViewHolder.mAvatarImageView);
+
+            String name = mFriendsProfileList.get(position).getFirstName()
+                    + " " + mFriendsProfileList.get(position).getSurname();
+            friendListViewHolder.mNameTextView.setText(name);
         }
     }
 
     @Override
     public int getItemCount() {
-        return ((mFriendsFeedList != null) && (mFriendsFeedList.size() !=0) ? mFriendsFeedList.size() : 0);
+        return ((mFriendsProfileList != null) && (mFriendsProfileList.size() != 0) ? mFriendsProfileList.size() : 0);
     }
 
-    void loadNewData(List<String> newActivities) {
-        mFriendsFeedList = newActivities;
+    void loadNewData(List<User> newActivities) {
+        mFriendsProfileList = newActivities;
         notifyDataSetChanged();
     }
 
@@ -68,7 +77,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         public FriendListViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "WorkoutViewHolder: ");
             mAvatarImageView = itemView.findViewById(R.id.friendAvatarImageView);
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             itemView.setOnClickListener(this);
@@ -76,7 +84,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

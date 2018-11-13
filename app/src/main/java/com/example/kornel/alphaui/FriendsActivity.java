@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.Friend;
 import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +59,16 @@ public class FriendsActivity extends AppCompatActivity {
     FriendsRequestFragment mFriendsRequestFragment;
 
     private ViewPager mViewPager;
+
+    interface OnInviteDialogShow {
+        void acceptInvite(String friendUid);
+
+        void cancelInvite(String friendUid);
+    }
+
+    interface OnDeleteFriendDialog {
+        void deleteFriend(String friendUid);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +111,6 @@ public class FriendsActivity extends AppCompatActivity {
         mUserRef = firebaseDatabase.getReference(Database.USERS);
 
         // TODO: wczytać tylko to co potrzbne czy całość? Żeby potem przenieść np. do nowego okna
-
         mFriendsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -117,6 +127,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 Log.d(TAG, "2onDataChange: " + user.toString());
                                 friendsList.add(user);
                                 Log.d(TAG, "2onDataChange: " + friendsList.toString());
+                                mFriendsListFragment.loadNewData(friendsList);
                             }
 
                             @Override
@@ -180,6 +191,8 @@ public class FriendsActivity extends AppCompatActivity {
                         }
                     });
                 }
+                Log.d(TAG, "sizzze: " + updatedFriendsRequestList.size());
+
             }
 
             @Override
@@ -198,7 +211,6 @@ public class FriendsActivity extends AppCompatActivity {
         mFriendReqRef.child(mUserUid).removeEventListener(mRequestListener);
         mUserRef.child(mUserUid).child(Database.FRIENDS).removeEventListener(mFriendsListener);
     }
-
 
     private void showAddFriendDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -313,7 +325,7 @@ public class FriendsActivity extends AppCompatActivity {
 
             if (position == 0) {
                 mFriendsListFragment = new FriendsListFragment();
-                mFriendsListFragment.setFriendsList(new ArrayList<String>());
+                mFriendsListFragment.setFriendsList(new ArrayList<User>());
                 return mFriendsListFragment;
             } else {
                 mFriendsRequestFragment = new FriendsRequestFragment();
@@ -326,6 +338,7 @@ public class FriendsActivity extends AppCompatActivity {
         public int getCount() {
             return 2;
         }
+
     }
 
     @Override

@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
-import com.example.kornel.alphaui.utils.OnDialogShow;
+import com.example.kornel.alphaui.FriendsActivity.OnInviteDialogShow;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,10 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FriendsRequestFragment extends Fragment
-        implements ListItemClickListener, OnDialogShow {
+        implements ListItemClickListener, OnInviteDialogShow {
     private static final String TAG = "FriendsRequestFragment";
 
     private FirebaseUser mUser;
@@ -55,7 +53,10 @@ public class FriendsRequestFragment extends Fragment
         mFriendsRequestList = friendsRequestList;
     }
 
+    private int i = 1;
+
     public void loadNewData(List<FriendRequest> friendsRequestList) {
+        Log.d(TAG, "loadNewData: "+ i++);
         setFriendsList(friendsRequestList);
         checkIfListIsEmpty();
         mFriendsRequestAdapter.loadNewData(mFriendsRequestList);
@@ -108,7 +109,7 @@ public class FriendsRequestFragment extends Fragment
         Dialog dialog = null;
 
         if (requestType.equals(Database.FRIENDS_REQUESTS_SENT)) {
-            dialog = createRequestDialog(
+            dialog = createDialog(
                     Database.FRIENDS_REQUESTS_SENT,
                     "Czy na pewno chcesz anulować zaproszenie?",
                     "Anuluj",
@@ -116,7 +117,7 @@ public class FriendsRequestFragment extends Fragment
                     friendUid,
                     this);
         } else {
-            dialog = createRequestDialog(
+            dialog = createDialog(
                     Database.FRIENDS_REQUESTS_RECEIVED,
                     "Nowe zaproszenie",
                     "Akceptuj",
@@ -172,7 +173,7 @@ public class FriendsRequestFragment extends Fragment
         mRequestsRef.child(friendUid).child(mUserUid).removeValue();
     }
 
-    public Dialog createRequestDialog(final String type, String title, String posBtn, String negBtn, final String friendUid, final OnDialogShow callback) {
+    private Dialog createDialog(final String type, String title, String posBtn, String negBtn, final String friendUid, final OnInviteDialogShow callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(title)
                 .setPositiveButton(posBtn, new DialogInterface.OnClickListener() {
