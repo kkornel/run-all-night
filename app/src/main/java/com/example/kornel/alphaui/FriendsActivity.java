@@ -48,9 +48,6 @@ public class FriendsActivity extends AppCompatActivity {
     private DatabaseReference mUserRef;
     private DatabaseReference mFriendReqRef;
 
-    // private List<String> mFriendsList;
-    // private List<FriendRequest> mFriendRequestList;
-
     private ValueEventListener mRequestListener;
     private ValueEventListener mFriendsListener;
 
@@ -116,14 +113,18 @@ public class FriendsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
                 HashMap<String, Boolean> friends = (HashMap) dataSnapshot.getValue();
-                final List<User> friendsList = new ArrayList<>();
-                if (friends != null) {
-                    for (String key : friends.keySet()) {
+
+                if (friends == null) {
+                    mFriendsListFragment.loadNewData(new ArrayList<User>());
+                } else {
+                    final List<User> friendsList = new ArrayList<>();
+                    for (final String key : friends.keySet()) {
                         mUserRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Log.d(TAG, "2onDataChange: " + dataSnapshot.toString());
                                 User user = dataSnapshot.getValue(User.class);
+                                user.setUserUid(key);
                                 Log.d(TAG, "2onDataChange: " + user.toString());
                                 friendsList.add(user);
                                 Log.d(TAG, "2onDataChange: " + friendsList.toString());
@@ -137,8 +138,8 @@ public class FriendsActivity extends AppCompatActivity {
                         });
                     }
                     Log.d(TAG, "2onDataChange: " + friendsList.toString());
-                }
 
+                }
             }
 
             @Override

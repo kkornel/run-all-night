@@ -52,14 +52,14 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
             Picasso.get()
                     .load(mFriendsRequestsList.get(position).getAvatarUrl())
                     .placeholder(R.drawable.ic_person_black_64dp)
-                    .error(R.drawable.ic_error_red_64dp)
+                    .error(R.drawable.ic_person_black_64dp)
                     .into(friendListViewHolder.mAvatarImageView);
             friendListViewHolder.mNameTextView.setText(mFriendsRequestsList.get(position).getFriendName());
             String requestType;
             if (mFriendsRequestsList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
-                requestType = "Wysłano";
+                requestType = "Wysłano zaproszenie";
             } else {
-                requestType = "Akceptuj";
+                requestType = "Nowe zaproszenie";
             }
             friendListViewHolder.mRequestTypeTextView.setText(requestType);
         }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class User {
+    private String userUid;
     private String avatarUrl;
     private String firstName;
     private String surname;
@@ -27,6 +28,14 @@ public class User {
     public User(String firstName, String surname, String email, String lastWorkout) {
         this(firstName, surname, email);
         this.lastWorkout = lastWorkout;
+    }
+
+    public String getUserUid() {
+        return userUid;
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     public String getAvatarUrl() {
