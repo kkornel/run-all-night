@@ -9,16 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.User;
 
 import java.util.List;
 
 public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedYouFragment";
 
+    private TextView mNoDataInfoTextView;
     private FeedYouAdapter mFeedYouAdapter;
     private RecyclerView mRecyclerView;
 
@@ -27,10 +30,29 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     public FeedYouFragment() {
     }
 
+    // public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
+    //     mFeedYouList = feedYouList;
+    //     if (mFeedYouAdapter != null) {
+    //         mFeedYouAdapter.loadNewData(feedYouList);
+    //     }
+    // }
+
     public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
         mFeedYouList = feedYouList;
-        if (mFeedYouAdapter != null) {
-            mFeedYouAdapter.loadNewData(feedYouList);
+    }
+
+    public void loadNewData(List<WorkoutGpsSummary> feedYouList) {
+        setFeedYouList(feedYouList);
+        checkIfListIsEmpty();
+        mFeedYouAdapter.loadNewData(feedYouList);
+    }
+
+    private void checkIfListIsEmpty() {
+        if (mFeedYouList.size() == 0) {
+            mNoDataInfoTextView.setVisibility(View.VISIBLE);
+            mNoDataInfoTextView.setText(getString(R.string.no_friends));
+        } else {
+            mNoDataInfoTextView.setVisibility(View.GONE);
         }
     }
 
@@ -41,6 +63,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         Log.d(TAG, "onCreateView: ");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
+        checkIfListIsEmpty();
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);

@@ -54,7 +54,7 @@ public class FriendsListFragment extends Fragment
     }
 
     private void checkIfListIsEmpty() {
-        if (mFriendsProfileList.size() == 0 ) {
+        if (mFriendsProfileList.size() == 0) {
             mNoDataInfoTextView.setVisibility(View.VISIBLE);
             mNoDataInfoTextView.setText(getString(R.string.no_friends));
         } else {
@@ -91,14 +91,12 @@ public class FriendsListFragment extends Fragment
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: ");
-
         String friendUid = mFriendsProfileList.get(clickedItemIndex).getUserUid();
 
         Dialog removeFriendDialog = createDialog(
-                "Usuąć znajmowgo?",
-                "Usuń",
-                "Anuluj",
+                getString(R.string.remove_friend),
+                getString(R.string.remove),
+                getString(R.string.cancel),
                 friendUid,
                 this);
 
