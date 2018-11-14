@@ -86,6 +86,10 @@ public class User {
         this.lastWorkout = lastWorkout;
     }
 
+    public String getFullName() {
+        return this.firstName + " " + this.surname;
+    }
+
     @Override
     public String toString() {
         return "User{" +

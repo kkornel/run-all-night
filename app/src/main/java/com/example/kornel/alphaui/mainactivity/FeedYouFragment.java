@@ -50,7 +50,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private void checkIfListIsEmpty() {
         if (mFeedYouList.size() == 0) {
             mNoDataInfoTextView.setVisibility(View.VISIBLE);
-            mNoDataInfoTextView.setText(getString(R.string.no_friends));
+            mNoDataInfoTextView.setText(getString(R.string.no_workouts));
         } else {
             mNoDataInfoTextView.setVisibility(View.GONE);
         }

@@ -55,7 +55,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
     @Override
     public int getItemCount() {
-        return ((mWorkouts != null) && (mWorkouts.size() !=0) ? mWorkouts.size() : 1);
+        return ((mWorkouts != null) && (mWorkouts.size() != 0) ? mWorkouts.size() : 0);
     }
 
     void loadNewData(List<String> newActivities) {

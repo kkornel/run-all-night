@@ -124,7 +124,7 @@
     <string name="confirm_password_confirm_button">Potwierdź</string>
 
 
-    <!-- Edit profile activity -->
+    <!-- Edit Profile Activity -->
 
     <string name="edit_profile_activity_title">Edytuj profil</string>
     <string name="edit_profile_new_password_hint">Nowe hasło</string>
@@ -134,11 +134,14 @@
     <string name="verification_email_sent">Wysłano email weryfikacyjny</string>
 
 
-    <!-- Profile activity -->
+    <!-- Profile Activity -->
 
     <string name="profile_details_activity_title">Profil</string>
     <string name="edit_profile_profile_activity">Edytuj profil</string>
 
+
+    <!-- Feed Fragment -->
+    <string name="no_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>
 
 
 </resources>

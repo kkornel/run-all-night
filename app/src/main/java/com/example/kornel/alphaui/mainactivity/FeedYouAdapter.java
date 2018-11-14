@@ -58,7 +58,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
 
     @Override
     public int getItemCount() {
-        return ((mWorkouts != null) && (mWorkouts.size() !=0) ? mWorkouts.size() : 1);
+        return ((mWorkouts != null) && (mWorkouts.size() != 0) ? mWorkouts.size() : 0);
     }
 
     void loadNewData(List<WorkoutGpsSummary> newActivities) {

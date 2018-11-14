@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+    
     private FirebaseUser mUser;
 
     private Toolbar mToolbar;
@@ -78,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
