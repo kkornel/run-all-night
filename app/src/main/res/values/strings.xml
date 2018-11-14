@@ -14,11 +14,16 @@
     <string name="non_gps_tab_activities">NON GPS</string>
     <string name="title_activity_main2">Main2Activity</string>
 
+
+    <!-- General strings -->
+
     <string name="remove">Usuń</string>
     <string name="close">Zamknij</string>
     <string name="cancel">Anuluj</string>
     <string name="accept">Akceptuj</string>
     <string name="discard">Odrzuć</string>
+    <string name="friends">Znajomi</string>
+    <string name="invitations">Zaproszenia</string>
 
 
     <!-- Register -->
@@ -99,6 +104,7 @@
     <string name="no_friends">Nie masz żadnych znajomych</string>
     <string name="new_invitation">Nowe zaproszenie</string>
     <string name="remove_friend_confirmation">Czy na pewno chcesz anulować zaproszenie?</string>
+
 
     <!-- Friends Dialog -->
 

@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui.friends;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,6 +59,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
             friendListViewHolder.mNameTextView.setText(mFriendsRequestsList.get(position).getFriendName());
             String requestType;
             if (mFriendsRequestsList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
+                // requestType = Resources.getSystem().getString(R.string.app_name);
                 requestType = "Wysłano zaproszenie";
             } else {
                 requestType = "Nowe zaproszenie";
