@@ -33,12 +33,51 @@ import java.util.List;
 public class FeedFragment extends Fragment {
     private static final String TAG = "FeedFragment";
 
+    private FirebaseUser mUser;
+    private String mUserUid;
+    private DatabaseReference mWorkoutsRef;
+    private DatabaseReference mUsersRef;
+
     private FeedPagerAdapter mFeedPagerAdapter;
 
     private ViewPager mViewPager;
 
     private List<String> mGpsWorkouts;
     private List<String> mNonGpsWorkouts;
+
+    private ValueEventListener mFeedYouListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
+                myWorkouts.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
+                if (mFeedYouFragment!= null) {
+                    mFeedYouFragment.setFeedYouList(myWorkouts);
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            throw databaseError.toException();
+        }
+    };
+
+    private ValueEventListener mFeedFriendsListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
+                myWorkouts.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
+                if (mFeedYouFragment!= null) {
+                    mFeedYouFragment.setFeedYouList(myWorkouts);
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            throw databaseError.toException();
+        }
+    };
 
     public FeedFragment() {
         // Required empty public constructor
@@ -66,29 +105,13 @@ public class FeedFragment extends Fragment {
         mNonGpsWorkouts = new ArrayList<>();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        mUser = auth.getCurrentUser();
+        mUserUid = mUser.getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference workoutRef = database.getReference("workouts");
-        DatabaseReference userRef = database.getReference(Database.USERS);
 
-
-
-        workoutRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
-                    myWorkouts.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
-                    if (mFeedYouFragment!= null) {
-                        mFeedYouFragment.setFeedYouList(myWorkouts);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        mUsersRef = database.getReference(Database.USERS);
+        mWorkoutsRef = database.getReference("workouts");
+        mWorkoutsRef.child(mUserUid).addValueEventListener(mFeedYouListener);
 
         for (GpsBasedWorkout activity : GpsBasedWorkout.values()) {
             mGpsWorkouts.add(activity.toString());
@@ -98,6 +121,13 @@ public class FeedFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mWorkoutsRef.child(mUserUid).removeEventListener(mFeedYouListener);
+        mWorkoutsRef.child(mUserUid).removeEventListener(mFeedYouListener);
     }
 
     private List<WorkoutGpsSummary> myWorkouts = new ArrayList<>();

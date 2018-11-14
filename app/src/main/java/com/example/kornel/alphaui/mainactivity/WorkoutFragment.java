@@ -193,14 +193,14 @@ public class WorkoutFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        throw databaseError.toException();
                     }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                throw databaseError.toException();
             }
         };
 

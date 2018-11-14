@@ -138,7 +138,7 @@ public class FriendsRequestFragment extends Fragment
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                throw databaseError.toException();
             }
         });
 
@@ -155,7 +155,7 @@ public class FriendsRequestFragment extends Fragment
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                throw databaseError.toException();
             }
         });
 
