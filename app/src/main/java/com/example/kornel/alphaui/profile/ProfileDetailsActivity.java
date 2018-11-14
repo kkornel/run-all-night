@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.friends;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,16 +9,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
-import com.example.kornel.alphaui.FriendsActivity.OnInviteDialogShow;
+import com.example.kornel.alphaui.friends.FriendsActivity.OnInviteDialogShow;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -106,17 +106,17 @@ public class FriendsRequestFragment extends Fragment
         if (requestType.equals(Database.FRIENDS_REQUESTS_SENT)) {
             dialog = createDialog(
                     Database.FRIENDS_REQUESTS_SENT,
-                    "Czy na pewno chcesz anulować zaproszenie?",
-                    "Anuluj",
-                    "Zamknij",
+                    getString(R.string.remove_friend_confirmation),
+                    getString(R.string.cancel),
+                    getString(R.string.close),
                     friendUid,
                     this);
         } else {
             dialog = createDialog(
                     Database.FRIENDS_REQUESTS_RECEIVED,
-                    "Nowe zaproszenie",
-                    "Akceptuj",
-                    "Odrzucić",
+                    getString(R.string.new_invitation),
+                    getString(R.string.accept),
+                    getString(R.string.discard),
                     friendUid,
                     this);
         }

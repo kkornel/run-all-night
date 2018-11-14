@@ -15,7 +15,10 @@
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="remove">Usuń</string>
+    <string name="close">Zamknij</string>
     <string name="cancel">Anuluj</string>
+    <string name="accept">Akceptuj</string>
+    <string name="discard">Odrzuć</string>
 
 
     <!-- Register -->
@@ -94,7 +97,8 @@
     <string name="can_not_send_invitation_to_yrself">Nie możesz wysłac sobie zaproszenia.</string>
     <string name="no_new_invitations">Brak nowych zaproszeń</string>
     <string name="no_friends">Nie masz żadnych znajomych</string>
-
+    <string name="new_invitation">Nowe zaproszenie</string>
+    <string name="remove_friend_confirmation">Czy na pewno chcesz anulować zaproszenie?</string>
 
     <!-- Friends Dialog -->
 
@@ -128,10 +132,6 @@
 
     <string name="profile_details_activity_title">Profil</string>
     <string name="edit_profile_profile_activity">Edytuj profil</string>
-
-
-
-
 
 
 

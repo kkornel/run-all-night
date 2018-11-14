@@ -1,8 +1,7 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.friends;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -23,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.Friend;
 import com.example.kornel.alphaui.utils.FriendRequest;
 import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;

@@ -14,11 +14,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.ProfileDetailsActivity;
+import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseUser;
-
-import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_FIREBASE_USER;
 
 
 public class MainActivity extends AppCompatActivity {
