@@ -41,7 +41,6 @@ public class FeedFragment extends Fragment {
     private static final String TAG = "FeedFragment";
 
     private FeedPagerAdapter mFeedPagerAdapter;
-
     private ViewPager mViewPager;
 
     public FeedFragment() {

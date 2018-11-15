@@ -42,8 +42,6 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private String mUserUid;
     private DatabaseReference mRootRef;
     private DatabaseReference mWorkoutsRef;
-    private DatabaseReference mUsersRef;
-
     private List<WorkoutGpsSummary> mFeedYouList;
 
     public FeedYouFragment() {
@@ -83,7 +81,6 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         mUserUid = mUser.getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mRootRef = database.getReference();
-        mUsersRef = mRootRef.child(Database.USERS);
         mWorkoutsRef = mRootRef.child(Database.WORKOUTS);
 
         readYourWorkouts();
