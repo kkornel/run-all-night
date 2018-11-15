@@ -89,7 +89,6 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
         public FeedFriendsViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "WorkoutViewHolder: ");
             mAvatarImageView = itemView.findViewById(R.id.avatarImageView);
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             mDateTextView = itemView.findViewById(R.id.dateTextView);
@@ -101,7 +100,6 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

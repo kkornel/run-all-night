@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
@@ -150,6 +152,69 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
+    List<FriendWorkout> friendWorkoutsList = new ArrayList<>();
+
+
+    private void readFriendsWorkouts2() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference friendsRef = rootRef.child("users").child(uid).child("friends");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    final String friendUid = ds.getKey();
+
+                    DatabaseReference friendUidRef = rootRef.child("users").child(friendUid);
+                    ValueEventListener eventListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                String firstName = ds.child("firstName").getValue(String.class);
+                                String surname = ds.child("surname").getValue(String.class);
+                                String friendName = firstName + " " + surname;
+                                Log.d(TAG, friendName);
+
+                                DatabaseReference friendUidWorkoutsRef = rootRef.child("workouts").child(friendUid);
+                                ValueEventListener listener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            Log.d(TAG, "onDataChange: " + ds);
+                                            // Workout workout = ds.getValue(Workout.class);
+                                            // Log.d(TAG, workout.getWorkoutName());
+                                            //
+                                            // //Create an object of FriendWorkout as needed
+                                            // FriendWorkout FriendWorkout = new FriendWorkout(friendName, workout);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+                                    }
+                                };
+                                friendUidWorkoutsRef.addListenerForSingleValueEvent(listener);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+                        }
+                    };
+                    friendUidRef.addListenerForSingleValueEvent(eventListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+            }
+        };
+        friendsRef.addListenerForSingleValueEvent(valueEventListener);
+    }
+
     private void readFriendsWorkouts() {
         final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
         ValueEventListener friendsIdsListener = new ValueEventListener() {
@@ -162,38 +227,40 @@ public class FeedFragment extends Fragment {
                     ValueEventListener friendsProfilesListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                String firstName = ds.child(Database.FIRST_NAME).getValue(String.class);
-                                String surname = ds.child(Database.SURNAME).getValue(String.class);
-                                final String avatarUrl = ds.child(Database.AVATAR_URL).getValue(String.class);
-                                final String friendName = firstName + " " + surname;
+                            User user = dataSnapshot.getValue(User.class);
+                            final String avatarUrl = user.getAvatarUrl();
+                            final String friendName = user.getFullName();
 
-                                DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
-                                ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        List<FriendWorkout> friendWorkoutsList = new ArrayList<>();
-                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                            WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
+                            DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
+                            ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.d(TAG, "onDataChange: " +dataSnapshot);
+                                    friendWorkoutsList = new ArrayList<>();
+                                    // List<FriendWorkout> friendWorkoutsList = new ArrayList<>();
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
 
-                                            FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
-                                            friendWorkoutsList.add(friendWorkout);
-                                            // Workout workout = ds.getValue(Workout.class);
-                                            // Log.d(TAG, workout.getWorkoutName());
-                                            //
-                                            // Create an object of FriendWorkout as needed
-                                            // FriendWorkout FriendWorkout = new FriendWorkout(friendName, workout);
-                                        }
+                                        FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
+                                        friendWorkoutsList.add(friendWorkout);
+                                        // Workout workout = ds.getValue(Workout.class);
+                                        // Log.d(TAG, workout.getWorkoutName());
+                                        //
+                                        // Create an object of FriendWorkout as needed
+                                        // FriendWorkout FriendWorkout = new FriendWorkout(friendName, workout);
+                                    }
+                                    Log.i(TAG, "onDataChange: " + friendWorkoutsList.size());
+                                    if (mFeedFriendsFragment != null)
                                         mFeedFriendsFragment.setFeedFriendsList(friendWorkoutsList);
-                                    }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        Log.e(TAG, databaseError.getMessage());
-                                    }
-                                };
-                                friendUidWorkoutsRef.addListenerForSingleValueEvent(friendsWorkoutsListener);
-                            }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e(TAG, databaseError.getMessage());
+                                }
+                            };
+                            friendUidWorkoutsRef.addListenerForSingleValueEvent(friendsWorkoutsListener);
+
                         }
 
                         @Override
@@ -212,6 +279,31 @@ public class FeedFragment extends Fragment {
         };
         friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
 
     @Override
     public void onDestroy() {
@@ -233,7 +325,7 @@ public class FeedFragment extends Fragment {
         public Fragment getItem(int position) {
             if (position == 0) {
                 mFeedFriendsFragment = new FeedFriendsFragment();
-                mFeedFriendsFragment.setFeedFriendsList(new ArrayList<FriendWorkout>());
+                mFeedFriendsFragment.setFeedFriendsList(friendWorkoutsList);
                 return mFeedFriendsFragment;
             } else {
                 mFeedYouFragment = new FeedYouFragment();
