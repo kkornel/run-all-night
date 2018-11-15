@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -40,19 +41,13 @@ import java.util.List;
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = "FriendsActivity";
 
+    private ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
     private FirebaseUser mUser;
     private String mUserUid;
-    private DatabaseReference mUserRef;
-    private DatabaseReference mFriendReqRef;
-
-    private ValueEventListener mRequestListener;
-    private ValueEventListener mFriendsListener;
-
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    FriendsListFragment mFriendsListFragment;
-    FriendsRequestFragment mFriendsRequestFragment;
-
-    private ViewPager mViewPager;
+    private DatabaseReference mUsersRef;
+    private DatabaseReference mFriendRequestsRef;
 
     interface OnInviteDialogShow {
         void acceptInvite(String friendUid);
@@ -101,105 +96,9 @@ public class FriendsActivity extends AppCompatActivity {
         mUserUid = mUser.getUid();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        mFriendReqRef = firebaseDatabase.getReference(Database.FRIENDS_REQUESTS);
-        mUserRef = firebaseDatabase.getReference(Database.USERS);
-
-        // TODO: wczytać tylko to co potrzbne czy całość? Żeby potem przenieść np. do nowego okna
-        mFriendsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final HashMap<String, Boolean> friends = (HashMap) dataSnapshot.getValue();
-
-                if (friends == null) {
-                    mFriendsListFragment.loadNewData(new ArrayList<User>());
-                } else {
-                    final List<User> friendsList = new ArrayList<>();
-                    for (final String key : friends.keySet()) {
-                        mUserRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                User user = dataSnapshot.getValue(User.class);
-                                user.setUserUid(key);
-                                friendsList.add(user);
-
-                                if (friendsList.size() == friends.size()) {
-                                    mFriendsListFragment.loadNewData(friendsList);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                throw databaseError.toException();
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw databaseError.toException();
-            }
-        };
-
-        mRequestListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final List<FriendRequest> friendsRequestList = new ArrayList<>();
-                for (DataSnapshot request : dataSnapshot.getChildren()) {
-                    FriendRequest friendRequest = new FriendRequest(
-                            request.getKey(),
-                            (String) request.getValue());
-                    friendsRequestList.add(friendRequest);
-                }
-
-                if (friendsRequestList.size() == 0) {
-                    mFriendsRequestFragment.loadNewData(new ArrayList<FriendRequest>());
-                }
-
-                final List<FriendRequest> updatedFriendsRequestList = new ArrayList<>();
-                for (final FriendRequest friendRequest : friendsRequestList) {
-                    mUserRef.child(friendRequest.getFriendUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String friendName = dataSnapshot.child(Database.FIRST_NAME).getValue()
-                                    + " " + dataSnapshot.child(Database.SURNAME).getValue();
-                            String avatarUrl = dataSnapshot.child(Database.AVATAR_URL).getValue(String.class);
-                            FriendRequest updatedFriendRequest = new FriendRequest(
-                                    friendRequest.getFriendUid(),
-                                    friendRequest.getRequestType(),
-                                    friendName,
-                                    avatarUrl);
-                            updatedFriendsRequestList.add(updatedFriendRequest);
-
-                            if(friendsRequestList.size() == updatedFriendsRequestList.size()) {
-                                mFriendsRequestFragment.loadNewData(updatedFriendsRequestList);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            throw databaseError.toException();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw databaseError.toException();
-            }
-        };
-
-        mFriendReqRef.child(mUserUid).addValueEventListener(mRequestListener);
-        mUserRef.child(mUserUid).child(Database.FRIENDS).addValueEventListener(mFriendsListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mFriendReqRef.child(mUserUid).removeEventListener(mRequestListener);
-        mUserRef.child(mUserUid).child(Database.FRIENDS).removeEventListener(mFriendsListener);
+        DatabaseReference rootRef = firebaseDatabase.getReference();
+        mUsersRef = rootRef.child(Database.USERS);
+        mFriendRequestsRef = rootRef.child(Database.FRIENDS_REQUESTS);
     }
 
     private void showAddFriendDialog() {
@@ -235,7 +134,7 @@ public class FriendsActivity extends AppCompatActivity {
 
                 final String email = emailEditText.getText().toString();
 
-                mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                ValueEventListener usersListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         boolean found = false;
@@ -248,21 +147,24 @@ public class FriendsActivity extends AppCompatActivity {
                                     infoTextView.setText(getString(R.string.can_not_send_invitation_to_yrself));
                                 } else {
 
-                                    mUserRef.child(mUserUid).child(Database.FRIENDS).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    DatabaseReference userFriendRef = mUsersRef.child(mUserUid).child(Database.FRIENDS).child(friendUid);
+                                    ValueEventListener friendsListener = new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.getValue() != null) {
                                                 infoTextView.setText(getString(R.string.user_is_already_a_friends));
                                             } else {
-                                                mFriendReqRef.child(mUserUid).child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                DatabaseReference userFriendRequestsRef = mFriendRequestsRef.child(mUserUid).child(friendUid);
+                                                ValueEventListener userFriendRequestsListener = new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         if (dataSnapshot.getValue() != null) {
                                                             infoTextView.setText(R.string.friends_dialog_already_sent);
                                                         } else {
                                                             infoTextView.setText("");
-                                                            mFriendReqRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
-                                                            mFriendReqRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+                                                            mFriendRequestsRef.child(mUserUid).child(friendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                                                            mFriendRequestsRef.child(friendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
                                                             Toast.makeText(FriendsActivity.this, R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
 
                                                             dialog.dismiss();
@@ -271,17 +173,21 @@ public class FriendsActivity extends AppCompatActivity {
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                        Log.e(TAG, "onCancelled: " + databaseError.getMessage());
                                                         throw databaseError.toException();
                                                     }
-                                                });
+                                                };
+                                                userFriendRequestsRef.addListenerForSingleValueEvent(userFriendRequestsListener);
                                             }
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                                            throw databaseError.toException();
                                         }
-                                    });
+                                    };
+                                    userFriendRef.addListenerForSingleValueEvent(friendsListener);
                                 }
                                 found = true;
                                 break;
@@ -294,9 +200,11 @@ public class FriendsActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled: " + databaseError.getMessage());
                         throw databaseError.toException();
                     }
-                });
+                };
+                mUsersRef.addListenerForSingleValueEvent(usersListener);
             }
         });
     }
@@ -314,13 +222,15 @@ public class FriendsActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             if (position == 0) {
-                mFriendsListFragment = new FriendsListFragment();
-                mFriendsListFragment.setFriendsList(new ArrayList<User>());
-                return mFriendsListFragment;
+                // mFriendsListFragment = new FriendsListFragment();
+                FriendsListFragment friendsListFragment = new FriendsListFragment();
+                // mFriendsListFragment.setFriendsList(new ArrayList<User>());
+                return friendsListFragment;
             } else {
-                mFriendsRequestFragment = new FriendsRequestFragment();
-                mFriendsRequestFragment.setFriendsList(new ArrayList<FriendRequest>());
-                return mFriendsRequestFragment;
+                // mFriendsRequestFragment = new FriendsRequestFragment();
+                FriendsRequestFragment friendsRequestFragment = new FriendsRequestFragment();
+                // mFriendsRequestFragment.setFriendsList(new ArrayList<FriendRequest>());
+                return friendsRequestFragment;
             }
         }
 

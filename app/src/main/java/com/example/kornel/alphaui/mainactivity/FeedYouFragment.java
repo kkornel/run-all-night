@@ -132,6 +132,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
             }
         };
         myWorkoutsRef.addListenerForSingleValueEvent(myWorkoutsListener);

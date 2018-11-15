@@ -141,7 +141,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
             }
         };
         friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
@@ -178,7 +179,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e(TAG, databaseError.getMessage());
+                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                            throw databaseError.toException();
                         }
                     };
                     friendUidWorkoutsRef.addListenerForSingleValueEvent(friendsWorkoutsListener);
@@ -186,7 +188,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e(TAG, databaseError.getMessage());
+                    Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                    throw databaseError.toException();
                 }
             };
             friendUidRef.addListenerForSingleValueEvent(friendsProfilesListener);

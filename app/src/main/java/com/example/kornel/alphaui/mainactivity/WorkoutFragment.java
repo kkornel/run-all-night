@@ -193,6 +193,7 @@ public class WorkoutFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled: " + databaseError.getMessage());
                         throw databaseError.toException();
                     }
                 });
@@ -200,6 +201,7 @@ public class WorkoutFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
                 throw databaseError.toException();
             }
         };

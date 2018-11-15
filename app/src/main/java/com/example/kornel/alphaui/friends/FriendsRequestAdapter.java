@@ -50,16 +50,14 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         if ((mFriendsRequestsList == null) || (mFriendsRequestsList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
-            // TODO how to keep non image data? no url
             Picasso.get()
                     .load(mFriendsRequestsList.get(position).getAvatarUrl())
                     .placeholder(R.drawable.ic_person_black_64dp)
-                    .error(R.drawable.ic_person_black_64dp)
+                    .error(R.drawable.ic_error_red_64dp)
                     .into(friendListViewHolder.mAvatarImageView);
             friendListViewHolder.mNameTextView.setText(mFriendsRequestsList.get(position).getFriendName());
             String requestType;
             if (mFriendsRequestsList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
-                // requestType = Resources.getSystem().getString(R.string.app_name);
                 requestType = "Wysłano zaproszenie";
             } else {
                 requestType = "Nowe zaproszenie";

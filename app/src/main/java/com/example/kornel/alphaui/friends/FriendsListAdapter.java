@@ -54,8 +54,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                     .error(R.drawable.ic_error_red_64dp)
                     .into(friendListViewHolder.mAvatarImageView);
 
-            String name = mFriendsProfileList.get(position).getFirstName()
-                    + " " + mFriendsProfileList.get(position).getSurname();
+            String name = mFriendsProfileList.get(position).getFullName();
             friendListViewHolder.mNameTextView.setText(name);
         }
     }

@@ -18,11 +18,7 @@ import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MoreFragment extends Fragment {
-
     private static final String TAG = "MoreFragment";
 
     Button mFreeButton;
