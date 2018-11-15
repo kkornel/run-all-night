@@ -49,7 +49,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         } else {
             workoutViewHolder.mDateTextView.setText(mWorkouts.get(position).getDate());
             workoutViewHolder.mDistanceTextView.setText(String.valueOf(mWorkouts.get(position).getDistance()));
-            workoutViewHolder.mDuartionTextView.setText(mWorkouts.get(position).getDuration());
+            workoutViewHolder.mDurationTextView.setText(mWorkouts.get(position).getDuration());
         }
 
         // Googles way
@@ -72,21 +72,19 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         private ImageView mWorkoutImageView;
         private TextView mDateTextView;
         private TextView mDistanceTextView;
-        private TextView mDuartionTextView;
+        private TextView mDurationTextView;
 
         public FeedYouViewHolder(View itemView) {
             super(itemView);
-            Log.d(TAG, "WorkoutViewHolder: ");
             this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
             this.mDateTextView = itemView.findViewById(R.id.dateTextView);
             this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
-            this.mDuartionTextView = itemView.findViewById(R.id.durationTextView);
+            this.mDurationTextView = itemView.findViewById(R.id.durationTextView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

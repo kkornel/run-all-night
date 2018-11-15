@@ -1,7 +1,6 @@
 package com.example.kornel.alphaui;
 
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
-import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 
 public class FriendWorkout {
     private String friendName;

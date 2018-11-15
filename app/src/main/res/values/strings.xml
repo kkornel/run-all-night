@@ -24,6 +24,7 @@
     <string name="discard">Odrzuć</string>
     <string name="friends">Znajomi</string>
     <string name="invitations">Zaproszenia</string>
+    <string name="loading">Ładowanie</string>
 
 
     <!-- Register -->
@@ -141,7 +142,8 @@
 
 
     <!-- Feed Fragment -->
-    <string name="no_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>
+    <string name="no_your_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>
+    <string name="no_friends_workouts">Twoi znajomi nie zrobili jeszcze żadnego treningu</string>
 
 
 </resources>
