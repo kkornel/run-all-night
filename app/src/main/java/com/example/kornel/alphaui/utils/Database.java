@@ -11,5 +11,5 @@ public class Database {
     public static final String AVATARS_STORAGE = "avatars";
     public static final String AVATAR_URL = "avatarUrl";
     public static final String FRIENDS = "friends";
-
+    public static final String WORKOUTS = "workouts";
 }

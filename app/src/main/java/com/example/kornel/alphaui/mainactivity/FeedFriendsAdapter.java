@@ -10,17 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.FeedFriendsViewHolder> {
     private final ListItemClickListener mOnClickListener;
 
-    private List<String> mFriendsFeedList;
+    private List<FriendWorkout> mFriendsFeedList;
 
-    public FeedFriendsAdapter(ListItemClickListener onClickListener, List<String> feedList) {
+    public FeedFriendsAdapter(ListItemClickListener onClickListener, List<FriendWorkout> feedList) {
         mOnClickListener = onClickListener;
         mFriendsFeedList = feedList;
     }
@@ -46,7 +49,18 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
         if ((mFriendsFeedList == null) || (mFriendsFeedList.size() == 0)) {
             activityViewHolder.mNameTextView.setText("ERROR");
         } else {
-            activityViewHolder.mNameTextView.setText(mFriendsFeedList.get(position));
+            Picasso.get()
+                    .load(mFriendsFeedList.get(position).getAvatarUrl())
+                    .placeholder(R.drawable.ic_person_black_64dp)
+                    .error(R.drawable.ic_error_red_64dp)
+                    .into(activityViewHolder.mAvatarImageView);
+
+            WorkoutGpsSummary workout = mFriendsFeedList.get(position).getWorkout();
+            activityViewHolder.mNameTextView.setText(mFriendsFeedList.get(position).getFriendName());
+            activityViewHolder.mDateTextView.setText(workout.getDate());
+            activityViewHolder.mDescriptionTextView.setText("here should be description");
+            activityViewHolder.mDistanceTextView.setText(String.valueOf(workout.getDistance()));
+            activityViewHolder.mDurationTextView.setText(workout.getDuration());
         }
 
         // Googles way
@@ -58,7 +72,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
         return ((mFriendsFeedList != null) && (mFriendsFeedList.size() !=0) ? mFriendsFeedList.size() : 1);
     }
 
-    void loadNewData(List<String> newActivities) {
+    void loadNewData(List<FriendWorkout> newActivities) {
         mFriendsFeedList = newActivities;
         notifyDataSetChanged();
     }
@@ -71,7 +85,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
         private TextView mDateTextView;
         private TextView mDescriptionTextView;
         private TextView mDistanceTextView;
-        private TextView mDuartionTextView;
+        private TextView mDurationTextView;
 
         public FeedFriendsViewHolder(View itemView) {
             super(itemView);
@@ -81,7 +95,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
             mDateTextView = itemView.findViewById(R.id.dateTextView);
             mDescriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
-            mDuartionTextView = itemView.findViewById(R.id.durationTextView);
+            mDurationTextView = itemView.findViewById(R.id.durationTextView);
             itemView.setOnClickListener(this);
         }
 

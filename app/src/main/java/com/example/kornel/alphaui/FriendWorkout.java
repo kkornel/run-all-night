@@ -1,16 +1,17 @@
 package com.example.kornel.alphaui;
 
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 
 public class FriendWorkout {
     private String friendName;
     private String avatarUrl;
-    private GpsBasedWorkout workout;
+    private WorkoutGpsSummary workout;
 
     public FriendWorkout() {
     }
 
-    public FriendWorkout(String friendName, String avatarUrl, GpsBasedWorkout workout) {
+    public FriendWorkout(String friendName, String avatarUrl, WorkoutGpsSummary workout) {
         this.friendName = friendName;
         this.avatarUrl = avatarUrl;
         this.workout = workout;
@@ -32,11 +33,11 @@ public class FriendWorkout {
         this.avatarUrl = avatarUrl;
     }
 
-    public GpsBasedWorkout getWorkout() {
+    public WorkoutGpsSummary getWorkout() {
         return workout;
     }
 
-    public void setWorkout(GpsBasedWorkout workout) {
+    public void setWorkout(WorkoutGpsSummary workout) {
         this.workout = workout;
     }
 }
