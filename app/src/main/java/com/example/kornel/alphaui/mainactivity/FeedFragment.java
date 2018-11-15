@@ -44,10 +44,6 @@ public class FeedFragment extends Fragment {
 
     private ViewPager mViewPager;
 
-    private FeedYouFragment mFeedYouFragment;
-    private FeedFriendsFragment mFeedFriendsFragment;
-
-
     public FeedFragment() {
         // Required empty public constructor
     }
@@ -72,7 +68,7 @@ public class FeedFragment extends Fragment {
 
         return rootView;
     }
-    
+
     // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
     // one of the sections/tabs/pages.
     public class FeedPagerAdapter extends FragmentPagerAdapter {
@@ -84,13 +80,13 @@ public class FeedFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                mFeedFriendsFragment = new FeedFriendsFragment();
+                FeedFriendsFragment feedFriendsFragment = new FeedFriendsFragment();
                 // mFeedFriendsFragment.setFeedFriendsList(friendWorkoutsList);
-                return mFeedFriendsFragment;
+                return feedFriendsFragment;
             } else {
-                mFeedYouFragment = new FeedYouFragment();
+                FeedYouFragment feedYouFragment = new FeedYouFragment();
                 // mFeedYouFragment.setFeedYouList(mMyWorkouts);
-                return mFeedYouFragment;
+                return feedYouFragment;
             }
         }
 
