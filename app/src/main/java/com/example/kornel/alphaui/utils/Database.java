@@ -8,8 +8,10 @@ public class Database {
     public static final String FRIENDS_REQUESTS_RECEIVED = "received";
     public static final String FIRST_NAME = "firstName";
     public static final String SURNAME = "surname";
-    public static final String AVATARS_STORAGE = "avatars";
     public static final String AVATAR_URL = "avatarUrl";
     public static final String FRIENDS = "friends";
     public static final String WORKOUTS = "workouts";
+    public static final String STORAGE_AVATARS = "avatars";
+    public static final String DEFAULT_IMG_NAME = "default.jpg";
+
 }

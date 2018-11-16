@@ -1,5 +1,7 @@
 package com.example.kornel.alphaui.utils;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,6 +88,7 @@ public class User {
         this.lastWorkout = lastWorkout;
     }
 
+    @Exclude
     public String getFullName() {
         return this.firstName + " " + this.surname;
     }

@@ -2,6 +2,7 @@ package com.example.kornel.alphaui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.regex.Pattern;
 
@@ -87,21 +90,41 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification(user);
 
-                            String userUid = user.getUid();
+                            final String userUid = user.getUid();
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference usersRef = database.getReference(Database.USERS);
+                            final DatabaseReference usersRef = database.getReference(Database.USERS);
+
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference storageRef = storage.getReference();
+                            StorageReference defaultRef = storageRef.child(Database.STORAGE_AVATARS).child(Database.STORAGE_AVATARS + "/" + Database.DEFAULT_IMG_NAME);
+                            defaultRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri downloadUri = task.getResult();
+                                        String avatarUrl = downloadUri.toString();
+                                        if (!avatarUrl.equals("")) {
+                                            User newUser = new User(firstName, surname, email);
+                                            newUser.setAvatarUrl(avatarUrl);
+                                            usersRef.child(userUid).setValue(newUser);
+                                            hideProgressDialog();
+                                            backToLogin(email);
+                                        }
+                                    }
+                                }
+                            });
 
                             // TODO: Here was a change
-                            User newUser = new User(firstName, surname, email);
-                            usersRef.child(userUid).setValue(newUser);
+                            // User newUser = new User(firstName, surname, email);
+                            // usersRef.child(userUid).setValue(newUser);
 
                             // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
                             // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
                             // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
 
-                            hideProgressDialog();
-                            backToLogin(email);
+                            // hideProgressDialog();
+                            // backToLogin(email);
                         } else {
                             // If sign in fails, display a message to the user.
                             Snackbar.make(

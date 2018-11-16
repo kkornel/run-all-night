@@ -217,14 +217,14 @@ public class EditProfileActivity extends AppCompatActivity {
         if (mAvatarName != null && mAvatarBitmap != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
-            StorageReference avatarsRef = storageRef.child(Database.AVATARS_STORAGE);
+            StorageReference avatarsRef = storageRef.child(Database.STORAGE_AVATARS);
 
             String[] separated = mAvatarName.split("\\.");
 
             String newAvatarName = mUserUid + "." + separated[separated.length - 1];
 
             final StorageReference newAvatarRef
-                    = avatarsRef.child(Database.AVATARS_STORAGE + "/" + newAvatarName);
+                    = avatarsRef.child(Database.STORAGE_AVATARS + "/" + newAvatarName);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             mAvatarBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
