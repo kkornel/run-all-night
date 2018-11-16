@@ -37,7 +37,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recycler_view_empty, container, false);
         Log.d(TAG, "onCreateView: ");
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
