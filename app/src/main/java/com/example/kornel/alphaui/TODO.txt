@@ -1,1 +1,2 @@
 1) Add default avatar.
+2) sort by date

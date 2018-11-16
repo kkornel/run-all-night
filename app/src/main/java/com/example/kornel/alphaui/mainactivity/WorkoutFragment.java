@@ -188,7 +188,7 @@ public class WorkoutFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                        mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDate().toString());
+                        mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDateString().toString());
                     }
 
                     @Override

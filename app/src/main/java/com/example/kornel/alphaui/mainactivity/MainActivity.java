@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     mToolbar.setTitle("Feed");
                     mToolbar.setNavigationIcon(null);
                     invalidateOptionsMenu();
+                    ((FeedFragment) feedFragment).fetchNewData();
                     return true;
 
                 case R.id.navigation_workout:

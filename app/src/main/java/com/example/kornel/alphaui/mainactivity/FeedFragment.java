@@ -43,6 +43,8 @@ public class FeedFragment extends Fragment {
     private FeedPagerAdapter mFeedPagerAdapter;
     private ViewPager mViewPager;
 
+    FeedFriendsFragment mFeedFriendsFragment;
+
     public FeedFragment() {
         // Required empty public constructor
     }
@@ -68,6 +70,43 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
+    public void fetchNewData() {
+        if (mFeedFriendsFragment != null) {
+            Log.d(TAG, "fetchNewData: ");
+            mFeedFriendsFragment.fetchNewData();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
     // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
     // one of the sections/tabs/pages.
     public class FeedPagerAdapter extends FragmentPagerAdapter {
@@ -79,9 +118,11 @@ public class FeedFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                FeedFriendsFragment feedFriendsFragment = new FeedFriendsFragment();
+                mFeedFriendsFragment = new FeedFriendsFragment();
+                // FeedFriendsFragment feedFriendsFragment = new FeedFriendsFragment();
                 // mFeedFriendsFragment.setFeedFriendsList(friendWorkoutsList);
-                return feedFriendsFragment;
+                // return feedFriendsFragment;
+                return mFeedFriendsFragment;
             } else {
                 FeedYouFragment feedYouFragment = new FeedYouFragment();
                 // mFeedYouFragment.setFeedYouList(mMyWorkouts);

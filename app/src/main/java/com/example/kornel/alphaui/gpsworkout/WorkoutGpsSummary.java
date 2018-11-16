@@ -2,16 +2,22 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.example.kornel.alphaui.utils.LatLon;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class WorkoutGpsSummary implements Parcelable {
+    private static final String TAG = "WorkoutGpsSummary";
     // private Date date;
+    private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
+    private  SimpleDateFormat sdf;
+
     private String date;
     private String workoutName;
     private String duration;
@@ -20,11 +26,12 @@ public class WorkoutGpsSummary implements Parcelable {
 
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
+        this.sdf = new SimpleDateFormat(DATE_FORMAT);
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLon> path) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-        this.date = sdf.format(new Date());
+        this.sdf = new SimpleDateFormat(DATE_FORMAT);
+        this.date = this.sdf.format(new Date());
         // this.date = new Date();
         this.workoutName = workoutName;
         this.duration = duration;
@@ -32,11 +39,21 @@ public class WorkoutGpsSummary implements Parcelable {
         this.path = path;
     }
 
-    public String getDate() {
+    public String getDateString() {
         return date;
     }
 
-    // public Date getDate() {
+    public Date getDate() {
+        try {
+            Date date = this.sdf.parse(this.date);
+            return date;
+        } catch (ParseException ex) {
+            Log.e(TAG, "getDate: " + ex.getMessage());
+            return new Date();
+        }
+    }
+
+    // public Date getDateString() {
     //     return date;
     // }
 

@@ -3,7 +3,6 @@ package com.example.kornel.alphaui.mainactivity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
             WorkoutGpsSummary workout = mFriendsFeedList.get(position).getWorkout();
             activityViewHolder.mNameTextView.setText(mFriendsFeedList.get(position).getFriendName());
-            activityViewHolder.mDateTextView.setText(workout.getDate());
+            activityViewHolder.mDateTextView.setText(workout.getDateString());
             activityViewHolder.mDescriptionTextView.setText("here should be description");
             activityViewHolder.mDistanceTextView.setText(String.valueOf(workout.getDistance()));
             activityViewHolder.mDurationTextView.setText(workout.getDuration());

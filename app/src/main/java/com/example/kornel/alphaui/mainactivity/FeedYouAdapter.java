@@ -3,7 +3,6 @@ package com.example.kornel.alphaui.mainactivity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
             workoutViewHolder.mDateTextView.setText("ERROR");
         } else {
-            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position).getDate());
+            workoutViewHolder.mDateTextView.setText(mWorkouts.get(position).getDateString());
             workoutViewHolder.mDistanceTextView.setText(String.valueOf(mWorkouts.get(position).getDistance()));
             workoutViewHolder.mDurationTextView.setText(mWorkouts.get(position).getDuration());
         }

@@ -26,8 +26,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
@@ -94,9 +97,38 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    @Override
     public void onListItemClick(int clickedItemIndex) {
         Log.d(TAG, "onListItemClick: ");
         Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
+    }
+
+    public void fetchNewData() {
+        Log.d(TAG, "fetchNewData: ");
+        queryForFriends();
     }
 
     public void setFeedFriendsList(List<FriendWorkout> feedFriendsList) {
@@ -104,9 +136,21 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     }
 
     public void loadNewData(List<FriendWorkout> feedFriendsList) {
+        Log.d(TAG, "loadNewData: size: " + feedFriendsList.size());
+        sortListByDate(feedFriendsList);
         setFeedFriendsList(feedFriendsList);
         checkIfListIsEmpty();
-        mFeedFriendsAdapter.loadNewData(feedFriendsList);
+        mFeedFriendsAdapter.loadNewData(mFeedFriendsList);
+    }
+
+    private void sortListByDate(List<FriendWorkout> list) {
+        Collections.sort(list, new Comparator<FriendWorkout>() {
+            public int compare(FriendWorkout o1, FriendWorkout o2) {
+                if (o1.getWorkout().getDate() == null || o2.getWorkout().getDate() == null)
+                    return 0;
+                return o2.getWorkout().getDate().compareTo(o1.getWorkout().getDate());
+            }
+        });
     }
 
     private void checkIfListIsEmpty() {
@@ -130,6 +174,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: " + ds.toString());
                     friendsIds.add(ds.getKey());
                 }
                 if (friendsIds.size() == 0) {
@@ -156,6 +201,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             ValueEventListener friendsProfilesListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                     mFeedFriendsList = new ArrayList<>();
                     User user = dataSnapshot.getValue(User.class);
                     final String avatarUrl = user.getAvatarUrl();
@@ -165,6 +211,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                     ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onDataChange: " + dataSnapshot);
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
                                 FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
@@ -173,6 +220,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
                             mNumberOfFriendsAlreadyIterated++;
                             if (mNumberOfFriendsAlreadyIterated == mFriendsCount) {
+                                mNumberOfFriendsAlreadyIterated = 0;
+                                Log.d(TAG, "onDataChange: loading new data");
                                 loadNewData(mFeedFriendsList);
                             }
                         }
@@ -194,7 +243,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             };
             friendUidRef.addListenerForSingleValueEvent(friendsProfilesListener);
         }
-
     }
 
     // private void readFriendsWorkouts() {
