@@ -43,7 +43,8 @@ public class FeedFragment extends Fragment {
     private FeedPagerAdapter mFeedPagerAdapter;
     private ViewPager mViewPager;
 
-    FeedFriendsFragment mFeedFriendsFragment;
+    private FeedFriendsFragment mFeedFriendsFragment;
+    private FeedYouFragment mFeedYouFragment;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -74,6 +75,10 @@ public class FeedFragment extends Fragment {
         if (mFeedFriendsFragment != null) {
             Log.d(TAG, "fetchNewData: ");
             mFeedFriendsFragment.fetchNewData();
+        }
+        if (mFeedYouFragment != null) {
+            Log.d(TAG, "fetchNewData: ");
+            mFeedYouFragment.fetchNewData();
         }
     }
 
@@ -124,9 +129,10 @@ public class FeedFragment extends Fragment {
                 // return feedFriendsFragment;
                 return mFeedFriendsFragment;
             } else {
-                FeedYouFragment feedYouFragment = new FeedYouFragment();
+                mFeedYouFragment = new FeedYouFragment();
+                // FeedYouFragment feedYouFragment = new FeedYouFragment();
                 // mFeedYouFragment.setFeedYouList(mMyWorkouts);
-                return feedYouFragment;
+                return mFeedYouFragment;
             }
         }
 

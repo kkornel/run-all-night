@@ -143,30 +143,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mFeedFriendsAdapter.loadNewData(mFeedFriendsList);
     }
 
-    private void sortListByDate(List<FriendWorkout> list) {
-        Collections.sort(list, new Comparator<FriendWorkout>() {
-            public int compare(FriendWorkout o1, FriendWorkout o2) {
-                if (o1.getWorkout().getDate() == null || o2.getWorkout().getDate() == null)
-                    return 0;
-                return o2.getWorkout().getDate().compareTo(o1.getWorkout().getDate());
-            }
-        });
-    }
-
-    private void checkIfListIsEmpty() {
-        if (mFeedFriendsList.size() == 0) {
-            mNoDataInfoTextView.setVisibility(View.VISIBLE);
-            mNoDataInfoTextView.setText(getString(R.string.no_friends_workouts));
-        } else {
-            mNoDataInfoTextView.setVisibility(View.GONE);
-        }
-    }
-
-    private void showNoFriendsMsg() {
-        mNoDataInfoTextView.setVisibility(View.VISIBLE);
-        mNoDataInfoTextView.setText(getString(R.string.no_friends));
-    }
-
     private void queryForFriends() {
         final List<String> friendsIds = new ArrayList<>();
         final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
@@ -243,6 +219,29 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             };
             friendUidRef.addListenerForSingleValueEvent(friendsProfilesListener);
         }
+    }
+
+    private void sortListByDate(List<FriendWorkout> list) {
+        Collections.sort(list, new Comparator<FriendWorkout>() {
+            public int compare(FriendWorkout o1, FriendWorkout o2) {
+                if (o1.getWorkout().getDate() == null || o2.getWorkout().getDate() == null)
+                    return 0;
+                return o2.getWorkout().getDate().compareTo(o1.getWorkout().getDate());
+            }
+        });
+    }
+    private void checkIfListIsEmpty() {
+        if (mFeedFriendsList.size() == 0) {
+            mNoDataInfoTextView.setVisibility(View.VISIBLE);
+            mNoDataInfoTextView.setText(getString(R.string.no_friends_workouts));
+        } else {
+            mNoDataInfoTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void showNoFriendsMsg() {
+        mNoDataInfoTextView.setVisibility(View.VISIBLE);
+        mNoDataInfoTextView.setText(getString(R.string.no_friends));
     }
 
     // private void readFriendsWorkouts() {

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
@@ -28,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -92,14 +95,20 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
     }
 
+    public void fetchNewData() {
+        Log.d(TAG, "fetchNewData: ");
+        readYourWorkouts();
+    }
+
     public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
         mFeedYouList = feedYouList;
     }
 
     public void loadNewData(List<WorkoutGpsSummary> feedYouList) {
+        sortListByDate(feedYouList);
         setFeedYouList(feedYouList);
         checkIfListIsEmpty();
-        mFeedYouAdapter.loadNewData(feedYouList);
+        mFeedYouAdapter.loadNewData(mFeedYouList);
     }
 
     private void checkIfListIsEmpty() {
@@ -136,5 +145,15 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
             }
         };
         myWorkoutsRef.addListenerForSingleValueEvent(myWorkoutsListener);
+    }
+
+    private void sortListByDate(List<WorkoutGpsSummary> list) {
+        Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
+            public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
+                if (o1.getDate() == null || o2.getDate() == null)
+                    return 0;
+                return o2.getDate().compareTo(o1.getDate());
+            }
+        });
     }
 }

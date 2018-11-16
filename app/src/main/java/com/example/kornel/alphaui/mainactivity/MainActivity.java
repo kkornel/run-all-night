@@ -23,14 +23,12 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     
-    private FirebaseUser mUser;
-
     private Toolbar mToolbar;
     private TextView mTitle;
 
-    private final Fragment feedFragment = new FeedFragment();
-    private final Fragment workoutFragment = new WorkoutFragment();
-    private final Fragment moreFragment = new MoreFragment();
+    private final FeedFragment feedFragment = new FeedFragment();
+    private final WorkoutFragment workoutFragment = new WorkoutFragment();
+    private final MoreFragment moreFragment = new MoreFragment();
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment active = workoutFragment;
 
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     mToolbar.setTitle("Feed");
                     mToolbar.setNavigationIcon(null);
                     invalidateOptionsMenu();
-                    ((FeedFragment) feedFragment).fetchNewData();
+                    feedFragment.fetchNewData();
                     return true;
 
                 case R.id.navigation_workout:
