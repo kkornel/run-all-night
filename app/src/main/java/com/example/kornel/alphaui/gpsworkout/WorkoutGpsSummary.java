@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class WorkoutGpsSummary implements Parcelable {
     private static final String TAG = "WorkoutGpsSummary";
-    // private Date date;
+
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
     private  SimpleDateFormat sdf;
 
@@ -30,7 +30,7 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLon> path) {
-        this.sdf = new SimpleDateFormat(DATE_FORMAT);
+        this();
         this.date = this.sdf.format(new Date());
         // this.date = new Date();
         this.workoutName = workoutName;
@@ -52,10 +52,6 @@ public class WorkoutGpsSummary implements Parcelable {
             return new Date();
         }
     }
-
-    // public Date getDateString() {
-    //     return date;
-    // }
 
     public String getWorkoutName() {
         return workoutName;

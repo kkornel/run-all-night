@@ -3,6 +3,7 @@ package com.example.kornel.alphaui.mainactivity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +36,7 @@ import java.util.List;
 public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedFriendsFragment";
 
+    private SwipeRefreshLayout mSwipeRefresh;
     private TextView mNoDataInfoTextView;
     private FeedFriendsAdapter mFeedFriendsAdapter;
     private RecyclerView mRecyclerView;
@@ -59,10 +60,25 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recycler_view_swipe_refresh, container, false);
+        // View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
+        mSwipeRefresh = rootView.findViewById(R.id.swipeRefresh);
+        mSwipeRefresh.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        fetchNewData();
+                    }
+                }
+        );
+        
         mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -97,37 +113,12 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-    }
-
-    @Override
     public void onListItemClick(int clickedItemIndex) {
         Log.d(TAG, "onListItemClick: ");
         Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
     }
 
     public void fetchNewData() {
-        Log.d(TAG, "fetchNewData: ");
         queryForFriends();
     }
 
@@ -136,7 +127,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     }
 
     public void loadNewData(List<FriendWorkout> feedFriendsList) {
-        Log.d(TAG, "loadNewData: size: " + feedFriendsList.size());
         sortListByDate(feedFriendsList);
         setFeedFriendsList(feedFriendsList);
         checkIfListIsEmpty();
@@ -150,7 +140,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: " + ds.toString());
                     friendsIds.add(ds.getKey());
                 }
                 if (friendsIds.size() == 0) {
@@ -177,7 +166,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             ValueEventListener friendsProfilesListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                     mFeedFriendsList = new ArrayList<>();
                     User user = dataSnapshot.getValue(User.class);
                     final String avatarUrl = user.getAvatarUrl();
@@ -187,7 +175,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                     ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: " + dataSnapshot);
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
                                 FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
@@ -197,8 +184,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                             mNumberOfFriendsAlreadyIterated++;
                             if (mNumberOfFriendsAlreadyIterated == mFriendsCount) {
                                 mNumberOfFriendsAlreadyIterated = 0;
-                                Log.d(TAG, "onDataChange: loading new data");
                                 loadNewData(mFeedFriendsList);
+                                mSwipeRefresh.setRefreshing(false);
                             }
                         }
 

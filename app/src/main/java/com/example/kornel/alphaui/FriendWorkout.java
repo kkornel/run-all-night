@@ -8,6 +8,7 @@ public class FriendWorkout {
     private WorkoutGpsSummary workout;
 
     public FriendWorkout() {
+        
     }
 
     public FriendWorkout(String friendName, String avatarUrl, WorkoutGpsSummary workout) {
