@@ -46,6 +46,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
@@ -212,7 +223,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateString();
+                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateStringPl();
                             mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                         }
 

@@ -5,6 +5,8 @@ import android.location.Address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.kornel.alphaui.utils.DateUtils;
+
 public class WeatherInfo implements Parcelable {
     public static final String FAHRENHEIT = "\u00b0F";
     public static final String CELSIUS = "\u00b0C";
@@ -77,115 +79,22 @@ public class WeatherInfo implements Parcelable {
         String hour = time.split(":")[0];
         String min = time.split(":")[1];
         String ampm = splitted[5];
-        if  (ampm.equals("PM")) {
-            if (hour.equals("01")) {
-                hour = "13";
-            }
-            if (hour.equals("02")) {
-                hour = "14";
-            }
-            if (hour.equals("03")) {
-                hour = "15";
-            }
-            if (hour.equals("04")) {
-                hour = "16";
-            }
-            if (hour.equals("05")) {
-                hour = "17";
-            }
-            if (hour.equals("06")) {
-                hour = "18";
-            }
-            if (hour.equals("07")) {
-                hour = "19";
-            }
-            if (hour.equals("08")) {
-                hour = "20";
-            }
-            if (hour.equals("09")) {
-                hour = "21";
-            }
-            if (hour.equals("10")) {
-                hour = "22";
-            }
-            if (hour.equals("11")) {
-                hour = "23";
-            }
-            if (hour.equals("12")) {
-                hour = "24";
-            }
+        if (ampm.equals("PM")) {
+            hour = DateUtils.convertPmTime(hour);
         }
-        return  hour + ":" + min;
+        return hour + ":" + min;
     }
 
     public String getCurrentConditionDatePl() {
         // 'Sun, 18 Nov 2018 05:00 AM CET'
-        String[] splitted = mCurrentConditionDate.split(" ");
+        String[] separated = mCurrentConditionDate.split(" ");
         // 'Sun,'
-        String dayName = splitted[0].substring(0, splitted[0].length() - 1);
-        switch (dayName) {
-            case "Mon":
-                dayName = "Poniedziałek";
-                break;
-            case "Tue":
-                dayName = "Wtorek";
-                break;
-            case "Wed":
-                dayName = "Środa";
-                break;
-            case "Thu":
-                dayName = "Czwartek";
-                break;
-            case "Fri":
-                dayName = "Piątek";
-                break;
-            case "Sat":
-                dayName = "Sobota";
-                break;
-            case "Sun":
-                dayName = "Niedziela";
-                break;
-        }
-        String day = splitted[1];
-        String month = splitted[2];
-        switch (month) {
-            case "Jan":
-                month = "01";
-                break;
-            case "Feb":
-                month = "02";
-                break;
-            case "Mar":
-                month = "03";
-                break;
-            case "Apr":
-                month = "04";
-                break;
-            case "May":
-                month = "05";
-                break;
-            case "Jun":
-                month = "06";
-                break;
-            case "Jul":
-                month = "07";
-                break;
-            case "Aug":
-                month = "08";
-                break;
-            case "Sept":
-                month = "09";
-                break;
-            case "Oct":
-                month = "10";
-                break;
-            case "Nov":
-                month = "11";
-                break;
-            case "Dec":
-                month = "12";
-        }
-        String year = splitted[3];
+        String dayName = separated[0].substring(0, separated[0].length() - 1);
+        dayName = DateUtils.convertDayName(dayName);
+        String day = separated[1];
+        String month = separated[2];
+        month = DateUtils.convertMonthToNumber(month);
+        String year = separated[3];
 
         String pl = dayName + ", " + day + "." + month + "." + year;
 
