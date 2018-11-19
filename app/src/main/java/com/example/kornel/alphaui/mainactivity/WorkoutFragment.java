@@ -29,6 +29,10 @@ import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.weather.Weather;
+import com.example.kornel.alphaui.weather.WeatherInfo;
+import com.example.kornel.alphaui.weather.WeatherInfoListener;
+import com.example.kornel.alphaui.weather.WeatherLog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,8 +40,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
-public class WorkoutFragment extends Fragment {
+import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
+import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
+
+public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private static final String TAG = "WorkoutFragment";
 
     public static final String WORKOUT_NAME_EXTRA_INTENT = "workout_name";
@@ -46,15 +54,16 @@ public class WorkoutFragment extends Fragment {
     public final int PICK_WORKOUT_REQUEST = 1;
 
     // Welcome CardView
+    private CardView mWelcomeCardView;
     private TextView mWelcomeTextView;
     private TextView mLastTrainingTextView;
 
     // Weather CardView
-    private CardView mWeatherCardView;
-    private ImageView mWeatherImageView;
-    private TextView mWeatherTextView;
-    private TextView mWeatherInfoTextView;
-    private TextView mTempTextView;
+    private ImageView mCurrentWeatherIconImageView;
+    private TextView mCurrentWeatherTextView;
+    private TextView mCurrentTempTextView;
+    private TextView mCurrentTimeLocationTextView;
+    private CardView mCurrentWeatherCardView;
 
     // Workout CardView
     private CardView mWorkoutCardView;
@@ -71,24 +80,44 @@ public class WorkoutFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
 
+    private Weather mWeather = Weather.getInstance(true);
+    private WeatherInfo mWeatherInfo;
+
     public WorkoutFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_workout, container, false);
-        
+
+        mWelcomeCardView = rootView.findViewById(R.id.welcomeCardView);
+        mWelcomeCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchByGPS();
+                // searchByLatLon(52.399040, 16.949450);
+            }
+        });
         mWelcomeTextView = rootView.findViewById(R.id.welcomeTextView);
         mLastTrainingTextView = rootView.findViewById(R.id.lastTrainingTextView);
 
-        mWeatherCardView = rootView.findViewById(R.id.weatherCardView);
-        mWeatherImageView = rootView.findViewById(R.id.weatherImageView);
-        mWeatherTextView = rootView.findViewById(R.id.weatherTextView);
-        mWeatherInfoTextView = rootView.findViewById(R.id.weatherInfoTextView);
-        mTempTextView = rootView.findViewById(R.id.tempTextView);
+        mCurrentWeatherCardView = rootView.findViewById(R.id.currentWeatherCardView);
+        mCurrentWeatherCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (WorkoutFragment.this.getActivity(), WeatherDetailsActivity.class);
+                if (mWeatherInfo != null) {
+                    intent.putExtra(WEATHER_INFO_INTENT_EXTRAS, mWeatherInfo);
+                }
+                startActivity(intent);
+            }
+        });
+        mCurrentWeatherIconImageView = rootView.findViewById(R.id.currentWeatherIconImageView);
+        // mCurrentWeatherTextView = findViewById(R.id.currentWeatherDescriptionTextView);
+        mCurrentTempTextView = rootView.findViewById(R.id.currentTemperatureTextView);
+        mCurrentTimeLocationTextView = rootView.findViewById(R.id.currentTimeLocationTextView);
 
         mWorkoutCardView = rootView.findViewById(R.id.activityCardView);
         mWorkoutCardView.setOnClickListener(new View.OnClickListener() {
@@ -112,11 +141,8 @@ public class WorkoutFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
         mMusicImageView = rootView.findViewById(R.id.musicImageView);
         mSelectMusicTextView = rootView.findViewById(R.id.selectMusicTextView);
-
-        mWeatherCardView = rootView.findViewById(R.id.weatherCardView);
 
         mStartWorkoutButton = rootView.findViewById(R.id.startActivityButton);
         mStartWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +172,110 @@ public class WorkoutFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mWeatherInfo = null;
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        final String userUid = user.getUid();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference rootRef = database.getReference();
+        DatabaseReference usersRef = rootRef.child(Database.USERS);
+        final DatabaseReference workoutsRef = rootRef.child(Database.WORKOUTS);
+
+        MainActivityLog.d(userUid);
+        MainActivityLog.d(rootRef.toString());
+
+        ValueEventListener userInfoListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String firstName = user.getFirstName();
+                String lastWorkoutId = user.getLastWorkout();
+                String welcomeMessage = "Cześć, " + firstName + "!";
+                String noLastWorkoutDate = "Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!";
+
+                mWelcomeTextView.setText(welcomeMessage);
+
+                if (lastWorkoutId == null) {
+                    mLastTrainingTextView.setText(noLastWorkoutDate);
+                } else {
+                    workoutsRef.child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateString();
+                            mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                            throw databaseError.toException();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+        usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
+
+        searchByGPS();
+    }
+
+
+    @Override
+    public void gotWeatherInfo(final WeatherInfo weatherInfo, Weather.ErrorType errorType) {
+        if (weatherInfo != null) {
+            mWeatherInfo = weatherInfo;
+
+            WeatherLog.d("gotWeatherInfo: " + weatherInfo.toString());
+
+            WeatherLog.d("====== CURRENT ======" + "\n" +
+                    "date: " + weatherInfo.getCurrentConditionDate() + "\n" +
+                    "weather: " + weatherInfo.getCurrentText() + "\n" +
+                    "temperature in ºC: " + weatherInfo.getCurrentTempC() + "\n" +
+                    "wind speed: " + weatherInfo.getWindSpeedMph() + "\n" +
+                    "Humidity: " + weatherInfo.getAtmosphereHumidity() + "\n" +
+                    "Pressure: " + weatherInfo.getAtmospherePressure() + "\n"
+            );
+
+            Picasso.get()
+                    .load(weatherInfo.getCurrentConditionIconURL())
+                    .into(mCurrentWeatherIconImageView);
+
+            mCurrentTempTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
+            // mCurrentWeatherTextView.setText(weatherInfo.getCurrentText());
+            mCurrentTimeLocationTextView.setText(weatherInfo.getAddress().getThoroughfare() + ", " + weatherInfo.getAddress().getLocality());
+
+        } else {
+            WeatherLog.e("gotWeatherInfo: NULL" + errorType);
+        }
+
+    }
+
+    private void searchByGPS() {
+        mWeather.setNeedDownloadIcons(true);
+        mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
+        mWeather.queryWeatherByGPS(getActivity(), getContext(), this);
+    }
+
+    private void searchByLatLon(double lat, double lon) {
+        mWeather.setNeedDownloadIcons(true);
+        mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
+        mWeather.queryWeatherByLatLon(getContext(), lat, lon, this);
+        // mWeather.queryWeatherByLatLon(getApplicationContext(), location, MainActivity.this);
+    }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
@@ -164,50 +294,7 @@ public class WorkoutFragment extends Fragment {
         alert.show();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-
-        final String userUid = mUser.getUid();
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference(Database.USERS);
-
-        ValueEventListener userInfoListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                // TODO: it's broken cause I've overwritten database
-                User user = dataSnapshot.getValue(User.class);
-                mWelcomeTextView.setText(user.getFirstName());
-
-                database.getReference().child("workouts").child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                        mLastTrainingTextView.setText(dataSnapshot.getValue(WorkoutGpsSummary.class).getDateString().toString());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                        throw databaseError.toException();
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
-            }
-        };
-
-        // usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
