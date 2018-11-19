@@ -30,6 +30,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.weather.Weather;
+import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
 import com.example.kornel.alphaui.weather.WeatherInfoListener;
 import com.example.kornel.alphaui.weather.WeatherLog;
@@ -115,7 +116,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             }
         });
         mCurrentWeatherIconImageView = rootView.findViewById(R.id.currentWeatherIconImageView);
-        // mCurrentWeatherTextView = findViewById(R.id.currentWeatherDescriptionTextView);
+        mCurrentWeatherTextView = rootView.findViewById(R.id.currentWeatherDescriptionTextView);
         mCurrentTempTextView = rootView.findViewById(R.id.currentTemperatureTextView);
         mCurrentTimeLocationTextView = rootView.findViewById(R.id.currentTimeLocationTextView);
 
@@ -254,7 +255,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     .into(mCurrentWeatherIconImageView);
 
             mCurrentTempTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
-            // mCurrentWeatherTextView.setText(weatherInfo.getCurrentText());
+            mCurrentWeatherTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
             mCurrentTimeLocationTextView.setText(weatherInfo.getAddress().getThoroughfare() + ", " + weatherInfo.getAddress().getLocality());
 
         } else {

@@ -88,7 +88,6 @@
                 android:id="@+id/currentWeatherIconImageView"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginTop="16dp"
                 android:adjustViewBounds="true"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/horizontal_middle_1"
@@ -109,24 +108,33 @@
                 android:id="@+id/currentTimeLocationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
                 android:textSize="12sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/currentWeatherDescriptionTextView"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/currentWeatherIconImageView"
                 tools:text="Saturday, September 24" />
 
             <TextView
                 android:id="@+id/currentTemperatureTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
-                android:textSize="72sp"
+                android:textSize="64sp"
                 app:layout_constraintBottom_toBottomOf="@+id/currentWeatherIconImageView"
                 app:layout_constraintLeft_toLeftOf="@+id/horizontal_middle_1"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/currentWeatherIconImageView"
                 tools:text="19\u00b0" />
+
+            <TextView
+                android:id="@+id/currentWeatherDescriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="@+id/currentWeatherIconImageView"
+                app:layout_constraintStart_toStartOf="@+id/currentWeatherIconImageView"
+                app:layout_constraintTop_toBottomOf="@+id/currentWeatherIconImageView" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
