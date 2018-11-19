@@ -2,6 +2,7 @@ package com.example.kornel.alphaui.mainactivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +31,7 @@ import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.Weather;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
@@ -231,6 +234,10 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
 
         searchByGPS();
+
+        // if (!NetworkUtils.isConnected(getContext())) {
+        //     buildAlertMessageNoInternetConnection();
+        // }
     }
 
 
@@ -275,6 +282,27 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
         mWeather.queryWeatherByLatLon(getContext(), lat, lon, this);
         // mWeather.queryWeatherByLatLon(getApplicationContext(), location, MainActivity.this);
+    }
+
+    private void buildAlertMessageNoInternetConnection() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Aby w pełni korzystać z możliwości aplikacji wymagane jest połączenie z Internetem. Czy chcesz włączyć Internet?")
+                .setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent=new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                        ComponentName cName = new ComponentName("com.android.phone","com.android.phone.Settings");
+                        intent.setComponent(cName);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void buildAlertMessageNoGps() {
