@@ -28,10 +28,11 @@ public class WeatherDetailsActivity extends AppCompatActivity {
     // private TextView mPressureTextView;
     // private TextView mWindTextView;
 
-    private TextView mCurrentTimeLocationTextView;
+    private TextView mCurrentLocationTextView;
     private ImageView mCurrentWeatherIconImageView;
     private TextView mCurrentTemperatureTextView;
     private TextView mCurrentWeatherDescriptionTextView;
+    private TextView mCurrentUpdateTimeTextView;
     private TextView mHumidityTextView;
     private TextView mPressureTextView;
     private TextView mWindTextView;
@@ -40,6 +41,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
     private TextView mTodayHighTemperatureTextView;
     private TextView mTodayLowTemperatureTextView;
     private TextView mTodayWeatherDescriptionTextView;
+    private TextView mTodayLocationTextView;
 
 
     @Override
@@ -79,10 +81,11 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mCurrentTimeLocationTextView = findViewById(R.id.currentTimeLocationTextView);
+        mCurrentLocationTextView = findViewById(R.id.currentTimeLocationTextView);
         mCurrentWeatherIconImageView = findViewById(R.id.currentWeatherIconImageView);
         mCurrentTemperatureTextView = findViewById(R.id.currentTemperatureTextView);
         mCurrentWeatherDescriptionTextView = findViewById(R.id.currentWeatherDescriptionTextView);
+        mCurrentUpdateTimeTextView = findViewById(R.id.currentUpdateTimeTextView);
 
         mHumidityTextView = findViewById(R.id.humidityTextView);
         mPressureTextView = findViewById(R.id.pressureTextView);
@@ -93,22 +96,25 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         mTodayHighTemperatureTextView = findViewById(R.id.todayHighTempTextView);
         mTodayLowTemperatureTextView = findViewById(R.id.todayLowTempTextView);
         mTodayWeatherDescriptionTextView = findViewById(R.id.todayWeatherDescriptionTextView);
+        mTodayLocationTextView = findViewById(R.id.todayLocationTextView);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             WeatherInfo weatherInfo = extras.getParcelable(WEATHER_INFO_INTENT_EXTRAS);
-            mCurrentTimeLocationTextView.setText(weatherInfo.getAddress().getThoroughfare() + ", " + weatherInfo.getAddress().getLocality() + " | " + weatherInfo.getTimeFormatted());
+            mCurrentLocationTextView.setText(weatherInfo.getAddress().getThoroughfare() + ", " + weatherInfo.getAddress().getLocality());
             Picasso.get()
                     .load(weatherInfo.getCurrentConditionIconURL())
                     .into(mCurrentWeatherIconImageView);
             mCurrentTemperatureTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
             mCurrentWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
+            mCurrentUpdateTimeTextView.setText("Zaktualizowano: " + weatherInfo.getTimeFormatted());
 
             mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
             mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
             mWindTextView.setText(weatherInfo.getWindSpeedKmh() + KMH);
 
-            mTodayDateTextView.setText(weatherInfo.getCurrentConditionDatePl() + " - " + weatherInfo.getAddress().getLocality());
+            mTodayDateTextView.setText(weatherInfo.getCurrentConditionDatePl());
+            mTodayLocationTextView.setText(weatherInfo.getAddress().getLocality());
             Picasso.get()
                     .load(weatherInfo.getTodayConditionIconURL())
                     .into(mTodayWeatherIconImageView);

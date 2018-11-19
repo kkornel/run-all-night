@@ -41,12 +41,14 @@ public class WorkoutGpsSummary implements Parcelable {
 
     public String getDateString() {
         return date;
+        // return "";
     }
 
     public Date getDate() {
         try {
             Date date = this.sdf.parse(this.date);
             return date;
+            // return new Date();
         } catch (ParseException ex) {
             Log.e(TAG, "getDate: " + ex.getMessage());
             return new Date();

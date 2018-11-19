@@ -295,8 +295,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         alert.show();
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_WORKOUT_REQUEST) {
