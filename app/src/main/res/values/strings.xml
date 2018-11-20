@@ -164,6 +164,8 @@
     <string name="save">Zapisz</string>
     <string name="camera">Aparat</string>
     <string name="gallery">Galeria</string>
+    <string name="pick_camera_gallery">Wybierz akcje:</string>
+    <string name="summary">Podsumowanie</string>
 
 
 </resources>

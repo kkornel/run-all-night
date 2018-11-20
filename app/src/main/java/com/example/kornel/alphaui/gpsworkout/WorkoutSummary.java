@@ -2,14 +2,20 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+
+import java.text.SimpleDateFormat;
+
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,16 +39,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity.WORKOUT_DETAILS_EXTRA_INTENT;
 
 public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummary";
 
-    private static final int PICK_IMAGE_REQUEST = 123;
+    private static final int REQUEST_PICK_IMAGE = 123;
+    private static final int REQUEST_IMAGE_CAPTURE = 321;
 
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
@@ -89,13 +100,15 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
 
     private AlertDialog mCameraGalleryDialog;
     private Bitmap mSelectedPhotoBitmap;
+    private String mCurrentPhotoPath;
+    private Uri mCurrentPhotoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_summary);
 
-        getSupportActionBar().setTitle("Podsumowanie");
+        getSupportActionBar().setTitle(R.string.summary);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -196,57 +209,15 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
         // });
     }
 
-    private void deleteSelectedPhoto() {
-        mSelectedPhotoBitmap = null;
-        mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
-        hideSelectedPhotoCardView();
-    }
-
-    private void showCameraGalleryDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        final LayoutInflater inflater = getLayoutInflater();
-
-        View vView = inflater.inflate(R.layout.select_photo_dialog, null);
-        final Button cameraButton = vView.findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(WorkoutSummary.this, "camera", Toast.LENGTH_SHORT).show();
-            }
-        });
-        final Button galleryButton = vView.findViewById(R.id.galleryButton);
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                browseForImage();
-            }
-        });
-
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(vView).setTitle("Wybierz akcje:");
-
-        mCameraGalleryDialog = builder.create();
-        mCameraGalleryDialog.show();
-
-    }
-
-    private void browseForImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.edit_profile_chooser_title)), PICK_IMAGE_REQUEST);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mCameraGalleryDialog.dismiss();
+        if (mCameraGalleryDialog != null) {
+            mCameraGalleryDialog.dismiss();
+        }
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             Uri uri = data.getData();
 
@@ -259,18 +230,21 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            showSelectedPhotoCardView();
+            galleryAddPic();
+
+            try {
+                mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
+
         } else {
             mSelectedPhotoBitmap = null;
             hideSelectedPhotoCardView();
         }
-    }
-
-    private void hideSelectedPhotoCardView() {
-        mSelectedPhotoCardView.setVisibility(View.GONE);
-    }
-
-    private void showSelectedPhotoCardView() {
-        mSelectedPhotoCardView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -282,21 +256,6 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-    }
-
-    public void requestInternetConnection() {
-        Snackbar.make(
-                mSummaryCardView,
-                R.string.enable_internet,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.settings, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent viewIntent = new Intent(Settings.ACTION_DATA_USAGE_SETTINGS);
-                        startActivity(viewIntent);
-                    }
-                })
-                .show();
     }
 
     @Override
@@ -321,7 +280,7 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
         }
     }
 
-    public void saveWorkout(WorkoutGpsSummary workoutSummary) {
+    private void saveWorkout(WorkoutGpsSummary workoutSummary) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -346,4 +305,119 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
         database.getReference().updateChildren(childUpdates);
     }
 
+    private void browseForImageIntent() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.edit_profile_chooser_title)), REQUEST_PICK_IMAGE);
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                WorkoutLog.printStack(ex);
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.kornel.alphaui",
+                        photoFile);
+
+                mCurrentPhotoUri = photoURI;
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void showCameraGalleryDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        final LayoutInflater inflater = getLayoutInflater();
+
+        View vView = inflater.inflate(R.layout.select_photo_dialog, null);
+        final Button cameraButton = vView.findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
+        final Button galleryButton = vView.findViewById(R.id.galleryButton);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                browseForImageIntent();
+            }
+        });
+
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(vView).setTitle(R.string.pick_camera_gallery);
+
+        mCameraGalleryDialog = builder.create();
+        mCameraGalleryDialog.show();
+
+    }
+
+    private void deleteSelectedPhoto() {
+        mSelectedPhotoBitmap = null;
+        mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
+        hideSelectedPhotoCardView();
+    }
+
+    private void hideSelectedPhotoCardView() {
+        mSelectedPhotoCardView.setVisibility(View.GONE);
+    }
+
+    private void showSelectedPhotoCardView() {
+        mSelectedPhotoCardView.setVisibility(View.VISIBLE);
+    }
+
+    public void requestInternetConnection() {
+        Snackbar.make(
+                mSummaryCardView,
+                R.string.enable_internet,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.settings, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent viewIntent = new Intent(Settings.ACTION_DATA_USAGE_SETTINGS);
+                        startActivity(viewIntent);
+                    }
+                })
+                .show();
+    }
 }
