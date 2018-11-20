@@ -50,48 +50,48 @@ public class WorkoutSummary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_summary);
 
-        mTimeTextView = findViewById(R.id.timetv);
-        mDistanceTextView = findViewById(R.id.distancetv);
-        mSaveButton = findViewById(R.id.saveButton);
-        mDontSaveButton = findViewById(R.id.dontSaveButton);
+        // mTimeTextView = findViewById(R.id.timetv);
+        // mDistanceTextView = findViewById(R.id.distancetv);
+        // mSaveButton = findViewById(R.id.saveButton);
+        // mDontSaveButton = findViewById(R.id.dontSaveButton);
 
-        final WorkoutGpsSummary workoutSummary = (WorkoutGpsSummary) getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
-
-        mTimeTextView.setText(workoutSummary.getDuration());
-
-        double distance = workoutSummary.getDistance();
-        distance /= 1000;
-        // String.format("%.5g%n", distance);
-        DecimalFormat df = new DecimalFormat("#.##");
-        mDistanceTextView.setText(df.format(distance));
-
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!hasInternetConnection()) {
-                    requestInternetConnection();
-                    return;
-                }
-
-                saveWorkout(workoutSummary);
-
-                Toast.makeText(WorkoutSummary.this, "Workout saved", Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        mDontSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(WorkoutSummary.this, "Workout not saved", Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        // final WorkoutGpsSummary workoutSummary = (WorkoutGpsSummary) getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
+        //
+        // mTimeTextView.setText(workoutSummary.getDuration());
+        //
+        // double distance = workoutSummary.getDistance();
+        // distance /= 1000;
+        // // String.format("%.5g%n", distance);
+        // DecimalFormat df = new DecimalFormat("#.##");
+        // mDistanceTextView.setText(df.format(distance));
+        //
+        // mSaveButton.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //
+        //         if (!hasInternetConnection()) {
+        //             requestInternetConnection();
+        //             return;
+        //         }
+        //
+        //         saveWorkout(workoutSummary);
+        //
+        //         Toast.makeText(WorkoutSummary.this, "Workout saved", Toast.LENGTH_LONG).show();
+        //
+        //         Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
+        //         startActivity(intent);
+        //     }
+        // });
+        //
+        // mDontSaveButton.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         Toast.makeText(WorkoutSummary.this, "Workout not saved", Toast.LENGTH_LONG).show();
+        //
+        //         Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
+        //         startActivity(intent);
+        //     }
+        // });
     }
 
     public void requestInternetConnection() {

@@ -144,6 +144,22 @@
     <!-- Feed Fragment -->
     <string name="no_your_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>
     <string name="no_friends_workouts">Twoi znajomi nie zrobili jeszcze żadnego treningu</string>
+    <string name="summary">Podsumowanie</string>
+    <string name="duration">Czas</string>
+    <string name="avg_pace">średnie tempo</string>
+    <string name="avg_speed">średnia prędkość</string>
+    <string name="distance">dystans</string>
+    <string name="max_pace">max tempo</string>
+    <string name="max_speed">max prędkość</string>
+    <string name="description">Opis</string>
+    <string name="add_description">Dodaj opis</string>
+    <string name="photo">Zdjęcie</string>
+    <string name="select">Wybierz</string>
+    <string name="delete">Usuń</string>
+    <string name="privacy_settings">Ustawienie prywatności</string>
+    <string name="who_can_see">Kto może zobaczyć:</string>
+    <string name="weather">Pogoda</string>
+    <string name="laps">Okrążenia</string>
 
 
 </resources>

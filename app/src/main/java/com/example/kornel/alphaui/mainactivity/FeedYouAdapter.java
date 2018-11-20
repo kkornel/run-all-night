@@ -78,7 +78,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
             this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
             this.mDateTextView = itemView.findViewById(R.id.dateTextView);
             this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
-            this.mDurationTextView = itemView.findViewById(R.id.durationTextView);
+            this.mDurationTextView = itemView.findViewById(R.id.durationLabel);
             itemView.setOnClickListener(this);
         }
 

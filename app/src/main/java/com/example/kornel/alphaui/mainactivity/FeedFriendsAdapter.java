@@ -93,7 +93,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
             mDateTextView = itemView.findViewById(R.id.dateTextView);
             mDescriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
-            mDurationTextView = itemView.findViewById(R.id.durationTextView);
+            mDurationTextView = itemView.findViewById(R.id.durationLabel);
             itemView.setOnClickListener(this);
         }
 
