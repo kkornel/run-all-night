@@ -160,6 +160,10 @@
     <string name="who_can_see">Kto może zobaczyć:</string>
     <string name="weather">Pogoda</string>
     <string name="laps">Okrążenia</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="save">Zapisz</string>
+    <string name="camera">Aparat</string>
+    <string name="gallery">Galeria</string>
 
 
 </resources>

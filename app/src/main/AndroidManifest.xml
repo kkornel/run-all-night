@@ -79,7 +79,11 @@
         <activity android:name=".profile.ProfileDetailsActivity" />
         <activity android:name=".profile.EditProfileActivity" />
         <activity android:name=".GpsWorkoutDetails" />
-        <activity android:name=".mainactivity.WeatherDetailsActivity"></activity>
+        <activity android:name=".mainactivity.WeatherDetailsActivity" />
+        <activity
+            android:name=".TestActivity"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
