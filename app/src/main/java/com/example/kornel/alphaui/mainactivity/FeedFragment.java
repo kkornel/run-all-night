@@ -2,39 +2,16 @@ package com.example.kornel.alphaui.mainactivity;
 
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
-import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.Friend;
-import com.example.kornel.alphaui.utils.GpsBasedWorkout;
-import com.example.kornel.alphaui.utils.NonGpsBasedWorkout;
-import com.example.kornel.alphaui.utils.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 public class FeedFragment extends Fragment {
@@ -51,8 +28,7 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
         // Create the adapter that will return a fragment for each of the three

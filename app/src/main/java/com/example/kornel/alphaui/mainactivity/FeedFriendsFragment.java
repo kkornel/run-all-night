@@ -99,8 +99,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     public void onStart() {
         super.onStart();
 
-        Log.d(TAG, "onStart: ");
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         mUserUid = mUser.getUid();

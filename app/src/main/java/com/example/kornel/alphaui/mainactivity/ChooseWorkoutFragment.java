@@ -29,6 +29,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
     private List<String> mWorkoutsList;
 
     public ChooseWorkoutFragment() {
+
     }
 
     public void setWorkoutsList(List<String> workoutsList) {
@@ -38,7 +39,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view_empty, container, false);
-        Log.d(TAG, "onCreateView: ");
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);

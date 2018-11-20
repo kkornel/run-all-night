@@ -17,8 +17,6 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
-import com.google.firebase.auth.FirebaseUser;
-
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

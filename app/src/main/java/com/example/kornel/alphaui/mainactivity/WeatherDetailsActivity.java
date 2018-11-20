@@ -16,17 +16,7 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.KMH;
 import static com.example.kornel.alphaui.weather.WeatherInfo.PERCENT;
 
 public class WeatherDetailsActivity extends AppCompatActivity {
-
     public static final String WEATHER_INFO_INTENT_EXTRAS = "weather_info_intent_extras";
-
-    // private TextView mDateTextView;
-    // private ImageView mWeatherIconImageView;
-    // private TextView mHighTemperatureTextView;
-    // private TextView mLowTemperatureTextView;
-    // private TextView mWeatherDescriptionTextView;
-    // private TextView mHumidityTextView;
-    // private TextView mPressureTextView;
-    // private TextView mWindTextView;
 
     private TextView mCurrentLocationTextView;
     private ImageView mCurrentWeatherIconImageView;
@@ -43,41 +33,12 @@ public class WeatherDetailsActivity extends AppCompatActivity {
     private TextView mTodayWeatherDescriptionTextView;
     private TextView mTodayLocationTextView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_details);
 
-        // getSupportActionBar().setTitle("Szczegóły");
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //
-        // mDateTextView = findViewById(R.id.dateTextView);
-        // mWeatherIconImageView = findViewById(R.id.weatherIconImageView);
-        // mHighTemperatureTextView = findViewById(R.id.highTemperatureTextView);
-        // mLowTemperatureTextView = findViewById(R.id.lowTemperatureTextView);
-        // mWeatherDescriptionTextView = findViewById(R.id.weatherDescriptionTextView);
-        // mHumidityTextView = findViewById(R.id.humidityTextView);
-        // mPressureTextView = findViewById(R.id.pressureTextView);
-        // mWindTextView = findViewById(R.id.windTextView);
-        //
-        // Bundle extras = getIntent().getExtras();
-        // if (extras != null) {
-        //     WeatherInfo weatherInfo = (WeatherInfo) extras.getParcelable(WEATHER_INFO_INTENT_EXTRAS);
-        //     mDateTextView.setText(weatherInfo.getCurrentConditionDatePl());
-        //     Picasso.get()
-        //             .load(weatherInfo.getTodayConditionIconURL())
-        //             .into(mWeatherIconImageView);
-        //     mHighTemperatureTextView.setText(weatherInfo.getTodayHighC() + CELSIUS);
-        //     mLowTemperatureTextView.setText(weatherInfo.getTodayLowC() + CELSIUS);
-        //     mWeatherDescriptionTextView.setText(weatherInfo.getTodayText());
-        //     mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
-        //     mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
-        //     mWindTextView.setText(weatherInfo.getWindSpeedKmh() + KMH);
-        // }
-
-        getSupportActionBar().setTitle("Szczegóły");
+        getSupportActionBar().setTitle(R.string.details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -107,7 +68,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
                     .into(mCurrentWeatherIconImageView);
             mCurrentTemperatureTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
             mCurrentWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
-            mCurrentUpdateTimeTextView.setText("Zaktualizowano: " + weatherInfo.getTimeFormatted());
+            mCurrentUpdateTimeTextView.setText(getString(R.string.updated) + weatherInfo.getTimeFormatted());
 
             mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
             mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
@@ -122,21 +83,6 @@ public class WeatherDetailsActivity extends AppCompatActivity {
             mTodayLowTemperatureTextView.setText(weatherInfo.getTodayLowC() + CELSIUS);
             mTodayWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getTodayCode()));
         }
-
-        // Bundle extras = getIntent().getExtras();
-        // if (extras != null) {
-        //     WeatherInfo weatherInfo = (WeatherInfo) extras.getParcelable(WEATHER_INFO_INTENT_EXTRAS);
-        //     mDateTextView.setText(weatherInfo.getCurrentConditionDatePl());
-        //     Picasso.get()
-        //             .load(weatherInfo.getTodayConditionIconURL())
-        //             .into(mWeatherIconImageView);
-        //     mHighTemperatureTextView.setText(weatherInfo.getTodayHighC() + CELSIUS);
-        //     mLowTemperatureTextView.setText(weatherInfo.getTodayLowC() + CELSIUS);
-        //     mWeatherDescriptionTextView.setText(weatherInfo.getTodayText());
-        //     mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
-        //     mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
-        //     mWindTextView.setText(weatherInfo.getWindSpeedKmh() + KMH);
-        // }
     }
 
     @Override

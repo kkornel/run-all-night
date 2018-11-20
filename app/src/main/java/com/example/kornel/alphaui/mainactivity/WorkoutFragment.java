@@ -31,7 +31,6 @@ import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.User;
-import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.Weather;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
@@ -45,17 +44,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
@@ -211,8 +199,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 User user = dataSnapshot.getValue(User.class);
                 String firstName = user.getFirstName();
                 String lastWorkoutId = user.getLastWorkout();
-                String welcomeMessage = "Cześć, " + firstName + "!";
-                String noLastWorkoutDate = "Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!";
+                String welcomeMessage = getString(R.string.hello) + ", " + firstName + "!";
+                String noLastWorkoutDate = getString(R.string.no_workouts_yet);
 
                 mWelcomeTextView.setText(welcomeMessage);
 

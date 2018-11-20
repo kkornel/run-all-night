@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.mainactivity;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import com.example.kornel.alphaui.LoginActivity;
 import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseAuth;
 
-
 public class MoreFragment extends Fragment {
     private static final String TAG = "MoreFragment";
 
@@ -30,10 +28,8 @@ public class MoreFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);

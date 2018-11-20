@@ -169,6 +169,10 @@
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
+    <string name="details">Szczegóły</string>
+    <string name="updated">Zaktualizowano:</string>
+    <string name="hello">Cześć</string>
+    <string name="no_workouts_yet">Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!</string>
 
 
 </resources>
