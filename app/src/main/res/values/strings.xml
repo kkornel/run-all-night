@@ -165,6 +165,10 @@
     <string name="camera">Aparat</string>
     <string name="gallery">Galeria</string>
     <string name="pick_camera_gallery">Wybierz akcje:</string>
+    <string name="title_activity_choose_workout2">ChooseWorkoutActivity2</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
 
 
 </resources>

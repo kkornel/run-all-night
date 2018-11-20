@@ -138,7 +138,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         mWorkoutCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChooseWorkoutActivity.class);
+                Intent intent = new Intent(getActivity(), ChooseWorkoutActivity2.class);
                 startActivityForResult(intent, PICK_WORKOUT_REQUEST);
             }
         });
