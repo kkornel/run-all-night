@@ -7,19 +7,34 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
+import com.example.kornel.alphaui.mainactivity.MainActivityLog;
+import com.example.kornel.alphaui.utils.CurrentUserProfile;
+import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.time.LocalDate;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
+
     public static final String INTENT_EXTRA_FIREBASE_USER = "firebase_user";
     public static final String INTENT_EXTRA_USER_EMAIL = "user_email";
 
@@ -71,10 +86,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // TODO: Enable this
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            login(user);
-        }
+        // FirebaseUser user = mAuth.getCurrentUser();
+        // if (user != null) {
+        //     login(user);
+        // }
     }
 
     private void signIn(String email, String password) {
@@ -93,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            hideProgressDialog();
+                            // hideProgressDialog();
 
                             // TODO: Enable this
                             if (!user.isEmailVerified()) {

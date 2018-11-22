@@ -31,12 +31,10 @@ public class WorkoutGpsSummary implements Parcelable {
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
         // this.sdf = new SimpleDateFormat(DATE_FORMAT);
-        gapBetweenWorkouts();
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLon> path) {
         // this();
-        gapBetweenWorkouts();
         this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
 
         // DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
@@ -82,14 +80,14 @@ public class WorkoutGpsSummary implements Parcelable {
         return dayName + ", " + day + "." + month + "." + year;
     }
 
-    public void gapBetweenWorkouts() {
+    public String gapBetweenWorkouts() {
         try {
-            Date endDate = new SimpleDateFormat(DATE_FORMAT).parse("Mon, 19 Nov 2018 12:14:11");
-            Date startDate = new SimpleDateFormat(DATE_FORMAT).parse("Sun, 18 Nov 2018 05:24:51");
-            long different = endDate.getTime() - startDate.getTime();
+            Date todayDate = new Date();
+            Date lastWorkoutDate = new SimpleDateFormat(DATE_FORMAT).parse(dateString);
+            long different = todayDate.getTime() - lastWorkoutDate.getTime();
 
-            MainActivityLog.d("startDate : " + startDate);
-            MainActivityLog.d("endDate : "+ endDate);
+            MainActivityLog.d("todayDate : " + todayDate);
+            MainActivityLog.d("lastWorkoutDate : "+ lastWorkoutDate);
             MainActivityLog.d("different : " + different);
 
             long secondsInMilli = 1000;
@@ -109,11 +107,26 @@ public class WorkoutGpsSummary implements Parcelable {
             long elapsedSeconds = different / secondsInMilli;
 
             MainActivityLog.d(elapsedDays + "days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " +  elapsedSeconds + "seconds");
+
+            if (elapsedDays > 0) {
+                if (elapsedDays == 1) {
+                    return "1 dzień temu";
+                } else {
+                    return String.valueOf(elapsedDays) + " dni temu";
+                }
+            } else {
+                if (elapsedHours < 1) {
+                    return String.valueOf(elapsedMinutes) + " minut temu";
+                } else if (elapsedHours == 1) {
+                    return "1 godzinę temu";
+                } else {
+                    return String.valueOf(elapsedHours) + " godzin temu";
+                }
+            }
         } catch (ParseException e) {
             e.printStackTrace();
+            return getDateStringPl();
         }
-
-
     }
 
     public String getDateString() {

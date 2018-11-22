@@ -173,6 +173,9 @@
     <string name="updated">Zaktualizowano:</string>
     <string name="hello">Cześć</string>
     <string name="no_workouts_yet">Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!</string>
+    <string name="start">Start</string>
+    <string name="activity">Aktywność</string>
+    <string name="music">Muzyka</string>
 
 
 </resources>
