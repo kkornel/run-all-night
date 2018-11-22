@@ -428,11 +428,15 @@ public class LocationTrackingService extends Service {
     }
 
     public WorkoutGpsSummary getWorkOutSummary() {
-        return new WorkoutGpsSummary(
+        WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
                 mCurrentGpsWorkout.getWorkoutName(),
                 mCurrentGpsWorkout.getDurationString(),
                 mCurrentGpsWorkout.getTotalDistance(),
+                mCurrentGpsWorkout.getPace(),
+                mCurrentGpsWorkout.getSpeed(),
                 mCurrentGpsWorkout.getPath());
+        Log.d("getSpeed", "getWorkOutSummary: " + workoutGpsSummary);
+        return workoutGpsSummary;
     }
 
     public List<LatLon> getPath() {

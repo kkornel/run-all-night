@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -270,7 +271,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mIsForegroundServiceRunning = false;
 
         Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
-        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, mService.getWorkOutSummary());
+        WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
+        Log.d("getSpeed", "finishWorkout: " + workoutGpsSummary);
+        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
         startActivity(summaryActivity);
     }
 

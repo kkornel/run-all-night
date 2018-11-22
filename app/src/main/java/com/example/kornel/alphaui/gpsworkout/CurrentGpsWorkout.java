@@ -25,10 +25,10 @@ public class CurrentGpsWorkout {
     private List<Lap> mLaps;
 
     // Total distance since started tracking in meters
-    private double mTotalDistance;
+    // private double mTotalDistance;
 
     // Total time since started tracking in milliseconds
-    private long mDuration;
+    // private long mDuration;
 
     private Stopwatch mStopWatch;
 
@@ -58,6 +58,20 @@ public class CurrentGpsWorkout {
         return previous.distanceTo(newLocation);
     }
 
+    public long getDuration() {
+        return mDuration;
+    }
+
+    public double getPace() {
+        Log.d("getSpeed", "getPace: " + mPace);
+        return mPace;
+    }
+
+    public double getSpeed() {
+        Log.d("getSpeed", "getSpeed: " + mSpeed);
+        return mSpeed;
+    }
+
     private long timeBetweenTwoLastLocations() {
         int pathSize = mPath.size();
         if (pathSize <= 1) {
@@ -72,8 +86,24 @@ public class CurrentGpsWorkout {
         return mStopWatch.getTotalMilliSecs();
     }
 
+    // duration [ms]
+    private long mDuration;
+    // distance [m]
+    private double mTotalDistance;
+    // pace [min/km]
+    private double mPace;
+    // speed [km/h]
+    private double mSpeed;
 
+
+
+    // avg pace
+    // max pace
+    // avg speed
+    // max speed
     public void calculateNewDetails(Location previous, Location newLocation) {
+
+        mDuration = mStopWatch.getTotalMilliSecs();
 
         float distanceBetweenTwoLocations = distanceBetweenTwoLastLocations(previous, newLocation);
 
@@ -81,23 +111,38 @@ public class CurrentGpsWorkout {
 
         long timeBetweenTwoLastLocations = timeBetweenTwoLastLocations();
 
-        float km = (float) mTotalDistance / 1000;
+        double km = mTotalDistance / 1000.0;
 
         int sec = (int) (getTimeStamp() / 1000);
+
         int minInt = sec / 60;
-        float minFloat = (float)sec / 60.0f;
-        float minIntPerKm = minInt / km;
-        float minFloatPerKm = (float)minFloat / km;
+        double minDouble = (double) sec / 60.0;
+
+        int hourInt = minInt / 60;
+        double hourDouble = minDouble / 60.0;
+
+        double minIntPerKm = (double) (minInt / km);
+        double minDoublePerKm = (double) minDouble / km;
+        mPace = minDoublePerKm;
+
+        double kmPerHourInt = (double) km / hourInt;
+        double kmPerHourDouble = (double) km / hourDouble;
+        mSpeed = kmPerHourDouble;
 
         Log.d("calculateNewDetails", "distanceBetweenTwoLocations: " + distanceBetweenTwoLocations);
         Log.d("calculateNewDetails", "timeBetweenTwoLastLocations: " + timeBetweenTwoLastLocations);
         Log.d("calculateNewDetails", "mTotalDistance: " + mTotalDistance);
+        Log.d("calculateNewDetails", "mDuration: " + mDuration);
         Log.d("calculateNewDetails", "km: " + km);
         Log.d("calculateNewDetails", "sec: " + sec);
         Log.d("calculateNewDetails", "minInt: " + minInt);
-        Log.d("calculateNewDetails", "minFloat: " + minFloat);
+        Log.d("calculateNewDetails", "minDouble: " + minDouble);
+        Log.d("calculateNewDetails", "hourInt: " + hourInt);
+        Log.d("calculateNewDetails", "hourDouble: " + hourDouble);
         Log.d("calculateNewDetails", "minIntPerKm: " + minIntPerKm);
-        Log.d("calculateNewDetails", "minFloatPerKm: " + minFloatPerKm);
+        Log.d("calculateNewDetails", "minDoublePerKm: " + minDoublePerKm);
+        Log.d("calculateNewDetails", "kmPerHourInt: " + kmPerHourInt);
+        Log.d("calculateNewDetails", "kmPerHourDouble: " + kmPerHourDouble);
         Log.d("calculateNewDetails", "========================================================================");
     }
 
@@ -131,7 +176,7 @@ public class CurrentGpsWorkout {
         Log.d(TAG, "mDuration = " + mDuration);
         Log.d(TAG, "s/m = " + mDuration / mTotalDistance);
         Log.d(TAG, "m/s = " + mTotalDistance / mDuration);
-        Log.d(TAG, "km/h = " + ((mTotalDistance /1000) / (mDuration)/60));
+        Log.d(TAG, "km/h = " + ((mTotalDistance / 1000) / (mDuration) / 60));
 
         // TODO: Check if made lap. How to do it in a nice way?
         if (mTotalDistance / 1000 >= 1) {
@@ -139,7 +184,7 @@ public class CurrentGpsWorkout {
 
             long previousLapTimeStamp = 0;
             if (mLaps.size() > 1) {
-                previousLapTimeStamp = mLaps.get(mLaps.size()-1).getTimeStamp();
+                previousLapTimeStamp = mLaps.get(mLaps.size() - 1).getTimeStamp();
             }
             // Lap newLap = new Lap(currentLatLng, mDuration, mDuration - previousLapTimeStamp);
             // mLaps.add(newLap);
