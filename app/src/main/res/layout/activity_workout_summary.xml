@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".gpsworkout.WorkoutSummary"
+    tools:context=".gpsworkout.WorkoutSummaryActivity"
     tools:layout_editor_absoluteX="64dp"
     tools:layout_editor_absoluteY="121dp">
 
@@ -93,7 +93,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/workoutCardView"
-            tools:context=".gpsworkout.WorkoutSummary" />
+            tools:context=".gpsworkout.WorkoutSummaryActivity" />
 
         <TextView
             android:id="@+id/summaryLabel"

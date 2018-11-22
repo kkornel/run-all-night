@@ -57,7 +57,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".gpsworkout.WorkoutSummary" />
+        <activity android:name=".gpsworkout.WorkoutSummaryActivity" />
         <activity android:name=".gpsworkout.StartGpsWorkoutActivity" />
 
         <!--

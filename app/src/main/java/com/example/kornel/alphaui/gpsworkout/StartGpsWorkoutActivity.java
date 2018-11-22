@@ -127,7 +127,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 if (!hasLocationPermissions()) {
                     requestPermissions();
-                } else if (LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
+                } else if (!LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
                     showSnackbarRequestGpsEnabled();
                 } else {
                     startWorkout();
@@ -211,7 +211,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         if (!hasLocationPermissions()) {
             requestPermissions();
-        } else if (LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
+        } else if (!LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
             showSnackbarRequestGpsEnabled();
         }
     }
@@ -269,7 +269,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         startService(intent);
         mIsForegroundServiceRunning = false;
 
-        Intent summaryActivity = new Intent(this, WorkoutSummary.class);
+        Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
         summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, mService.getWorkOutSummary());
         startActivity(summaryActivity);
     }

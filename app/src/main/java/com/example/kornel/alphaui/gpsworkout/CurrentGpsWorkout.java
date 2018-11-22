@@ -25,7 +25,7 @@ public class CurrentGpsWorkout {
     private List<Lap> mLaps;
 
     // Total distance since started tracking in meters
-    private double mDistance;
+    private double mTotalDistance;
 
     // Total time since started tracking in milliseconds
     private long mDuration;
@@ -36,7 +36,7 @@ public class CurrentGpsWorkout {
         mWorkoutName = workout;
         mPath = new ArrayList<>();
         mLaps = new ArrayList<>();
-        mDistance = 0.00;
+        mTotalDistance = 0.00;
         mDuration = 0;
         mStopWatch = new Stopwatch();
         startStopwatch();
@@ -51,7 +51,54 @@ public class CurrentGpsWorkout {
     }
 
     public void calculateDistanceBetweenTwoLocations(Location previous, Location newLocation) {
-        mDistance += previous.distanceTo(newLocation);
+        mTotalDistance += previous.distanceTo(newLocation);
+    }
+
+    public float distanceBetweenTwoLastLocations(Location previous, Location newLocation) {
+        return previous.distanceTo(newLocation);
+    }
+
+    private long timeBetweenTwoLastLocations() {
+        int pathSize = mPath.size();
+        if (pathSize <= 1) {
+            return 0;
+        }
+        long previousLocationTimeStamp = mPath.get(pathSize - 2).getTimeStamp();
+        long currentLocationTimeStamp = mPath.get(pathSize - 1).getTimeStamp();
+        return currentLocationTimeStamp - previousLocationTimeStamp;
+    }
+
+    public long getTimeStamp() {
+        return mStopWatch.getTotalMilliSecs();
+    }
+
+
+    public void calculateNewDetails(Location previous, Location newLocation) {
+
+        float distanceBetweenTwoLocations = distanceBetweenTwoLastLocations(previous, newLocation);
+
+        mTotalDistance += distanceBetweenTwoLocations;
+
+        long timeBetweenTwoLastLocations = timeBetweenTwoLastLocations();
+
+        float km = (float) mTotalDistance / 1000;
+
+        int sec = (int) (getTimeStamp() / 1000);
+        int minInt = sec / 60;
+        float minFloat = (float)sec / 60.0f;
+        float minIntPerKm = minInt / km;
+        float minFloatPerKm = (float)minFloat / km;
+
+        Log.d("calculateNewDetails", "distanceBetweenTwoLocations: " + distanceBetweenTwoLocations);
+        Log.d("calculateNewDetails", "timeBetweenTwoLastLocations: " + timeBetweenTwoLastLocations);
+        Log.d("calculateNewDetails", "mTotalDistance: " + mTotalDistance);
+        Log.d("calculateNewDetails", "km: " + km);
+        Log.d("calculateNewDetails", "sec: " + sec);
+        Log.d("calculateNewDetails", "minInt: " + minInt);
+        Log.d("calculateNewDetails", "minFloat: " + minFloat);
+        Log.d("calculateNewDetails", "minIntPerKm: " + minIntPerKm);
+        Log.d("calculateNewDetails", "minFloatPerKm: " + minFloatPerKm);
+        Log.d("calculateNewDetails", "========================================================================");
     }
 
     public void calculateDistanceBetweenTwoLastLocations() {
@@ -74,20 +121,20 @@ public class CurrentGpsWorkout {
         currentLocation.setLongitude(currentLatLng.getLatitude());
 
         double distance = previousLocation.distanceTo(currentLocation);
-        mDistance += distance;
+        mTotalDistance += distance;
 
         Log.d(TAG, "distance between " + previousLatLng + " and " + currentLatLng + " = " + distance);
-        Log.d(TAG, "total distance = " + mDistance);
+        Log.d(TAG, "total distance = " + mTotalDistance);
 
         mDuration = mStopWatch.getTotalMilliSecs() / 1000;
-        Log.d(TAG, "mDistance = " + mDistance);
+        Log.d(TAG, "mDistance = " + mTotalDistance);
         Log.d(TAG, "mDuration = " + mDuration);
-        Log.d(TAG, "s/m = " + mDuration / mDistance);
-        Log.d(TAG, "m/s = " + mDistance / mDuration);
-        Log.d(TAG, "km/h = " + ((mDistance/1000) / (mDuration)/60));
+        Log.d(TAG, "s/m = " + mDuration / mTotalDistance);
+        Log.d(TAG, "m/s = " + mTotalDistance / mDuration);
+        Log.d(TAG, "km/h = " + ((mTotalDistance /1000) / (mDuration)/60));
 
         // TODO: Check if made lap. How to do it in a nice way?
-        if (mDistance / 1000 >= 1) {
+        if (mTotalDistance / 1000 >= 1) {
             mDuration = mStopWatch.getTotalMilliSecs();
 
             long previousLapTimeStamp = 0;
@@ -116,8 +163,8 @@ public class CurrentGpsWorkout {
         return mWorkoutName;
     }
 
-    public double getDistance() {
-        return mDistance;
+    public double getTotalDistance() {
+        return mTotalDistance;
     }
 
     public ArrayList<LatLon> getTestLatLng() {

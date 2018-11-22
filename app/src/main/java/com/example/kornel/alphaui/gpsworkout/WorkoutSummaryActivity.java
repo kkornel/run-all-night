@@ -29,8 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -48,8 +50,8 @@ import java.util.Map;
 import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity.WORKOUT_DETAILS_EXTRA_INTENT;
 
-public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallback {
-    private static final String TAG = "WorkoutSummary";
+public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String TAG = "WorkoutSummaryActivity";
 
     private static final int REQUEST_PICK_IMAGE = 123;
     private static final int REQUEST_IMAGE_CAPTURE = 321;
@@ -167,10 +169,38 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
 
         mLapsCardView = findViewById(R.id.lapsCardView);
 
-        mSaveButton = findViewById(R.id.saveButton);
-        mDeleteButton = findViewById(R.id.deleteButton);
-
         final WorkoutGpsSummary workoutSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
+
+        mSaveButton = findViewById(R.id.saveButton);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
+                    requestInternetConnection();
+                    return;
+                }
+
+                saveWorkout(workoutSummary);
+
+                Toast.makeText(WorkoutSummaryActivity.this, "Workout saved", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        mDeleteButton = findViewById(R.id.deleteButton);
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(WorkoutSummaryActivity.this, "Workout not saved", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         //
         // mTimeTextView.setText(workoutSummary.getDuration());
         //
@@ -191,9 +221,9 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
         //
         //         saveWorkout(workoutSummary);
         //
-        //         Toast.makeText(WorkoutSummary.this, "Workout saved", Toast.LENGTH_LONG).show();
+        //         Toast.makeText(WorkoutSummaryActivity.this, "Workout saved", Toast.LENGTH_LONG).show();
         //
-        //         Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
+        //         Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
         //         startActivity(intent);
         //     }
         // });
@@ -201,9 +231,9 @@ public class WorkoutSummary extends AppCompatActivity implements OnMapReadyCallb
         // mDontSaveButton.setOnClickListener(new View.OnClickListener() {
         //     @Override
         //     public void onClick(View v) {
-        //         Toast.makeText(WorkoutSummary.this, "Workout not saved", Toast.LENGTH_LONG).show();
+        //         Toast.makeText(WorkoutSummaryActivity.this, "Workout not saved", Toast.LENGTH_LONG).show();
         //
-        //         Intent intent = new Intent(WorkoutSummary.this, MainActivity.class);
+        //         Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
         //         startActivity(intent);
         //     }
         // });

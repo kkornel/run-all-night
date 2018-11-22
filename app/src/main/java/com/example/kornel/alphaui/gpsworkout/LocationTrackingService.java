@@ -135,12 +135,12 @@ public class LocationTrackingService extends Service {
             case ACTION_START_FOREGROUND_SERVICE:
                 String workoutName = intent.getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
                 startForegroundService(workoutName);
-                Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_SHORT).show();
                 break;
 
             case ACTION_STOP_FOREGROUND_SERVICE:
                 stopForegroundService();
-                Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_SHORT).show();
                 break;
 
             case ACTION_RESUME_WORKOUT:
@@ -217,13 +217,7 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    public WorkoutGpsSummary getWorkOutSummary() {
-        return new WorkoutGpsSummary(
-                mCurrentGpsWorkout.getWorkoutName(),
-                mCurrentGpsWorkout.getDurationString(),
-                mCurrentGpsWorkout.getDistance(),
-                mCurrentGpsWorkout.getPath());
-    }
+    // ////////////////////////////////////////////////////////////////////////////////////////////
 
     private Location mPreviousLocation;
 
@@ -235,28 +229,42 @@ public class LocationTrackingService extends Service {
     private void onNewLocation_X(Location newLocation) {
         // I have a new Location
         // Create LatLng based on new Location
-        LatLon newLatLng = new LatLon(newLocation.getLatitude(), newLocation.getLongitude());
+        LatLon newLatLon = new LatLon(
+                newLocation.getLatitude(),
+                newLocation.getLongitude(),
+                mCurrentGpsWorkout.getTimeStamp());
+
+        Log.d("calculateNewDetails", "newLatLon: " + newLatLon);
 
         // Calculate new distance
+        // if (mPreviousLocation != null) {
+        //     mCurrentGpsWorkout.calculateNewDetails(mPreviousLocation, newLocation);
+        // }
+
+        mCurrentDistance = mCurrentGpsWorkout.getTotalDistance();
+
+        mCurrentGpsWorkout.addLatLngToPath(newLatLon);
+
         if (mPreviousLocation != null) {
-            mCurrentGpsWorkout.calculateDistanceBetweenTwoLocations(mPreviousLocation, newLocation);
+            mCurrentGpsWorkout.calculateNewDetails(mPreviousLocation, newLocation);
         }
+        Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+        sendBroadcast(intent);
 
-        mCurrentDistance = mCurrentGpsWorkout.getDistance();
-
-        if (mPreviousDistance == 0.0) {
-            mCurrentGpsWorkout.addLatLngToPath(newLatLng);
-
-            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-            intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-            sendBroadcast(intent);
-        } else if ((mCurrentDistance - mPreviousDistance >= DISTANCE_MAX_DIFF_METERS)) {
-            mCurrentGpsWorkout.addLatLngToPath(newLatLng);
-
-            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-            intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-            sendBroadcast(intent);
-        }
+        // if (mPreviousDistance == 0.0) {
+        //     mCurrentGpsWorkout.addLatLngToPath(newLatLon);
+        //
+        //     Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+        //     intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+        //     sendBroadcast(intent);
+        // } else if ((mCurrentDistance - mPreviousDistance >= DISTANCE_MAX_DIFF_METERS)) {
+        //     mCurrentGpsWorkout.addLatLngToPath(newLatLon);
+        //
+        //     Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+        //     intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+        //     sendBroadcast(intent);
+        // }
 
         mPreviousLocation = newLocation;
         mPreviousDistance = mCurrentDistance;
@@ -308,6 +316,9 @@ public class LocationTrackingService extends Service {
         intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
         sendBroadcast(intent);
     }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
 
     // Class used for the client Binder. Because we know this service always runs
     // in the same process as its clients, we don't need to deal with IPC.
@@ -416,6 +427,14 @@ public class LocationTrackingService extends Service {
         }
     }
 
+    public WorkoutGpsSummary getWorkOutSummary() {
+        return new WorkoutGpsSummary(
+                mCurrentGpsWorkout.getWorkoutName(),
+                mCurrentGpsWorkout.getDurationString(),
+                mCurrentGpsWorkout.getTotalDistance(),
+                mCurrentGpsWorkout.getPath());
+    }
+
     public List<LatLon> getPath() {
         return mCurrentGpsWorkout.getPath();
     }
@@ -432,7 +451,7 @@ public class LocationTrackingService extends Service {
         if (mCurrentGpsWorkout == null) {
             return "0.00";
         }
-        double distance = mCurrentGpsWorkout.getDistance();
+        double distance = mCurrentGpsWorkout.getTotalDistance();
 
         if (distance == 0) {
             return "0.00";
