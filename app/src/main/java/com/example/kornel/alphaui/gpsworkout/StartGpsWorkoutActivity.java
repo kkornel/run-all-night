@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,16 +21,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.weather.LocationUtils;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
@@ -129,8 +127,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 if (!hasLocationPermissions()) {
                     requestPermissions();
-                } else if (!isGpsEnabled()) {
-                    requestGpsEnabled();
+                } else if (LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
+                    showSnackbarRequestGpsEnabled();
                 } else {
                     startWorkout();
                     mViewFlipper.setDisplayedChild(PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER);
@@ -155,7 +153,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 finishWorkout();
-                Toast.makeText(StartGpsWorkoutActivity.this, "Finished", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -175,7 +172,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             @Override
             public void onPageSelected(int position) {
                 if (position == 0 || position == 2) {
-                    Log.d(TAG, "onPageSelected: ");
                     TranslateAnimation animate = new TranslateAnimation(0, 0, 0, mViewFlipper.getHeight());
                     animate.setDuration(100);
                     animate.setFillAfter(true);
@@ -215,8 +211,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         if (!hasLocationPermissions()) {
             requestPermissions();
-        } else if (!isGpsEnabled()) {
-            requestGpsEnabled();
+        } else if (LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
+            showSnackbarRequestGpsEnabled();
         }
     }
 
@@ -283,7 +279,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
     }
 
-
     // A FragmentPagerAdapter that returns a fragment corresponding to one of the sections/tabs/pages.
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -314,12 +309,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean isGpsEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    private void requestGpsEnabled() {
+    private void showSnackbarRequestGpsEnabled() {
         Snackbar.make(
                 mViewFlipper,
                 R.string.enable_gps,

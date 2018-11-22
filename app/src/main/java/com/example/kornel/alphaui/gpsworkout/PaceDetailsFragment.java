@@ -20,8 +20,7 @@ import java.util.List;
 import com.example.kornel.alphaui.R;
 
 
-public class PaceDetailsFragment extends Fragment implements
-        PaceAdapter.ListItemClickListener {
+public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListItemClickListener {
     private static final String TAG = "PaceDetailsFragment";
 
     private TextView mTimeTextView;
