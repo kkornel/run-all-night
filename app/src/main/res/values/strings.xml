@@ -176,6 +176,7 @@
     <string name="start">Start</string>
     <string name="activity">Aktywność</string>
     <string name="music">Muzyka</string>
+    <string name="no_internet">Nie masz połączenia z Internetem</string>
 
 
 </resources>

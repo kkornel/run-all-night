@@ -18,6 +18,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,8 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.util.regex.Pattern;
 
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
@@ -195,15 +194,30 @@ public class RegisterActivity extends AppCompatActivity {
         if (!validateForm()) {
             return;
         }
-        String firstName = mFirstNameEditText.getText().toString();
-        String surname = mSurnameEditText.getText().toString();
-        String email = mEmailEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
 
-        createAccount(firstName, surname, email, password);
         Utils.hideKeyboard(this);
-    }
 
+        if (!NetworkUtils.isConnected(RegisterActivity.this)) {
+            Snackbar.make(
+                    mRegisterButton,
+                    R.string.no_internet,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    })
+                    .show();
+        } else {
+            String firstName = mFirstNameEditText.getText().toString();
+            String surname = mSurnameEditText.getText().toString();
+            String email = mEmailEditText.getText().toString();
+            String password = mPasswordEditText.getText().toString();
+
+            createAccount(firstName, surname, email, password);
+        }
+    }
 
     private boolean validateForm() {
         boolean valid = true;
@@ -214,7 +228,7 @@ public class RegisterActivity extends AppCompatActivity {
             mFirstNameEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (!ProfileInfoValidator.isNameValid(firstName)) {
-        // } else if (!namePattern.matcher(firstName).find()) {
+            // } else if (!namePattern.matcher(firstName).find()) {
             mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -225,7 +239,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(surname)) {
             mSurnameEditText.setError(getString(R.string.register_required));
             valid = false;
-        // } else if (!namePattern.matcher(surname).find()) {
+            // } else if (!namePattern.matcher(surname).find()) {
         } else if (!ProfileInfoValidator.isNameValid(firstName)) {
             mSurnameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;

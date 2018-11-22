@@ -11,16 +11,13 @@ import com.google.firebase.database.Exclude;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class WorkoutGpsSummary implements Parcelable {
     private static final String TAG = "WorkoutGpsSummary";
 
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
-    // private SimpleDateFormat sdf;
 
     private String dateString;
     private String workoutName;
@@ -30,23 +27,10 @@ public class WorkoutGpsSummary implements Parcelable {
 
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
-        // this.sdf = new SimpleDateFormat(DATE_FORMAT);
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, double distance, ArrayList<LatLon> path) {
-        // this();
         this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
-
-        // DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-        // String date =
-        //         null;
-        // if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-        //     date = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
-        //             .withLocale(new Locale("pl"))
-        //             .format(new Date().toInstant());
-        // } else {
-        //     date = new SimpleDateFormat(DATE_FORMAT).format(new Date());
-        // }
         this.workoutName = workoutName;
         this.duration = duration;
         this.distance = distance;

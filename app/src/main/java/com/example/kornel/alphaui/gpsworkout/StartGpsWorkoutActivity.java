@@ -32,10 +32,7 @@ import android.widget.ViewFlipper;
 
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.utils.LatLon;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
-
-import java.util.List;
 
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 

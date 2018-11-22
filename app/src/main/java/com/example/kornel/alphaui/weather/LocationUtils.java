@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -80,21 +78,16 @@ public class LocationUtils {
             result.gotLocation(null, mErrorType);
             return;
         }
-        Log.d("beep", mGpsEnabled + "");
-        Log.d("beep", mNetworkEnabled + "");
-        Location net_loc=null, gps_loc=null;
-        Log.d("beep", gps_loc + "");
-        if(mGpsEnabled) {
+
+        Location gps_loc = null;
+        if (mGpsEnabled) {
             try {
                 gps_loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
             } catch (SecurityException e) {
                 mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
             }
         }
-        Log.d("beep", gps_loc + "");
-        if(gps_loc!=null){
-            Log.d("beep", gps_loc + "");
+        if (gps_loc != null) {
             mLocationResult.gotLocation(gps_loc, mErrorType);
             return;
         }

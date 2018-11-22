@@ -7,30 +7,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
-import com.example.kornel.alphaui.mainactivity.MainActivityLog;
-import com.example.kornel.alphaui.utils.CurrentUserProfile;
-import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.time.LocalDate;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -60,7 +48,21 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
+                if (!NetworkUtils.isConnected(LoginActivity.this)) {
+                    Snackbar.make(
+                            mLoginButton,
+                            R.string.no_internet,
+                            Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.ok, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .show();
+                } else {
+                    signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
+                }
             }
         });
         mCreateAccountButton = findViewById(R.id.createAccountButton);
