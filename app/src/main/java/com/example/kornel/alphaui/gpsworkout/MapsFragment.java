@@ -30,11 +30,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
-
-import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadcastReceiver.LAST_LOCATION_EXTRA_BROADCAST_INTENT;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -112,9 +109,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private Marker mCurrentMarker;
 
-    private void centerMapOnTheLocationZoom(Location location, int zoom) {
+    private void centerMapOnTheLocationZoom(Location location, int zoom, boolean addMarker) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        if (addMarker) {
+            mCurrentMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng));
+        }
     }
 
     private void updatePath(ArrayList<LatLng> path) {
@@ -137,11 +139,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        Location lastKnowLocation = LocationUtils.lastKnowLoacation;
-        Log.d("qwe", "onMapReady: location= " +lastKnowLocation);
+        Location lastKnowLocation = LocationUtils.lastKnowLocation;
         if (lastKnowLocation != null) {
-            Log.d("qwe", "onSuccess: location= " + lastKnowLocation.toString());
-            centerMapOnTheLocationZoom(lastKnowLocation, ZOOM_VALUE);
+            centerMapOnTheLocationZoom(lastKnowLocation, ZOOM_VALUE, true);
         }
     }
 
@@ -176,7 +176,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            centerMapOnTheLocationZoom(lastLocation, ZOOM_VALUE);
+                            centerMapOnTheLocationZoom(lastLocation, ZOOM_VALUE, true);
                         }
                     });
 
@@ -205,7 +205,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                 newLocation.setLatitude(newLatLng.latitude);
                                 newLocation.setLongitude(newLatLng.longitude);
 
-                                centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE);
+                                centerMapOnTheLocationZoom(newLocation, ZOOM_VALUE, false);
                             }
                         }
                     });

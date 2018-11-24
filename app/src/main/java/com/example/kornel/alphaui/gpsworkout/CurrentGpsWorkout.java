@@ -2,8 +2,6 @@ package com.example.kornel.alphaui.gpsworkout;
 
 
 import android.location.Location;
-import android.location.LocationManager;
-import android.util.Log;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
@@ -17,6 +15,8 @@ public class CurrentGpsWorkout {
     private static final String TAG = "CurrentGpsWorkout";
 
     private static final int MAX_OMITTED_LAT_LONS = 5;
+    private static final double MIN_VALUE_OF_TOTAL_DISTANCE_METERS = 0.5;
+    private static final double MIN_VALUE_OF_METERS_BETWEEN_LOCATIONS = 0.5;
 
     private String mWorkoutName;
 
@@ -140,10 +140,9 @@ public class CurrentGpsWorkout {
         NewLocationLog.d("calculateNewDetails: mTotalDistance: " + mTotalDistance);
         NewLocationLog.d("calculateNewDetails: totalDistanceKm: " + totalDistanceKm);
 
-
         checkForLap(newLocation);
 
-        if (mTotalDistance < 1.5) {
+        if (mTotalDistance < MIN_VALUE_OF_TOTAL_DISTANCE_METERS) {
             NewLocationLog.d("2d", "mTotalDistance < 1.5 : " + mTotalDistance + " ZAWRACAM!");
             return;
         }
@@ -151,9 +150,10 @@ public class CurrentGpsWorkout {
         mAvgPace = durationMin / totalDistanceKm;
         mAvgPaceString = paceToString(mAvgPace);
 
-        mAvgSpeed = totalDistanceKm / durationHour;
+        // mAvgSpeed = totalDistanceKm / durationHour;
+        mAvgSpeed =  (double) Math.round((totalDistanceKm / durationHour) * 100) / 100;
 
-        if (distanceBetweenTwoLocations < 1.5) {
+        if (distanceBetweenTwoLocations < MIN_VALUE_OF_METERS_BETWEEN_LOCATIONS) {
             NewLocationLog.d("2d", "distanceBetweenTwoLocations < 1.5 : " + distanceBetweenTwoLocations + " ZAWRACAM!");
             return;
         }
@@ -162,9 +162,9 @@ public class CurrentGpsWorkout {
         int secBetweenTwoPositions = (int) (msBetweenTwoLastPositions / 1000);
         double minBetweenTwoPositions = (double) secBetweenTwoPositions / 60.0;
         double hourBetweenTwoPositions = minBetweenTwoPositions / 60.0;
-        double kmBetweenTwoLocations = distanceBetweenTwoLocations / 1000.0;
+        double kmBetweenTwoPositions = distanceBetweenTwoLocations / 1000.0;
 
-        mCurrentPace = minBetweenTwoPositions / kmBetweenTwoLocations;
+        mCurrentPace = minBetweenTwoPositions / kmBetweenTwoPositions;
         mCurrentPaceString = paceToString(mCurrentPace);
 
         if (mCurrentPace > mMaxPace) {
@@ -172,7 +172,8 @@ public class CurrentGpsWorkout {
             mMaxPaceString = paceToString(mMaxPace);
         }
 
-        mCurrentSpeed = kmBetweenTwoLocations / hourBetweenTwoPositions;
+        // mCurrentSpeed =  kmBetweenTwoPositions / hourBetweenTwoPositions;
+        mCurrentSpeed =  (double) Math.round((kmBetweenTwoPositions / hourBetweenTwoPositions) * 100) / 100;
 
         if (mCurrentSpeed > mMaxSpeed) {
             mMaxSpeed = mCurrentSpeed;
@@ -187,7 +188,7 @@ public class CurrentGpsWorkout {
         NewLocationLog.d("calculateNewDetails: secBetweenTwoPositions: " + secBetweenTwoPositions);
         NewLocationLog.d("calculateNewDetails: minBetweenTwoPositions: " + minBetweenTwoPositions);
         NewLocationLog.d("calculateNewDetails: hourBetweenTwoPositions: " + hourBetweenTwoPositions);
-        NewLocationLog.d("calculateNewDetails: kmBetweenTwoLocations: " + kmBetweenTwoLocations);
+        NewLocationLog.d("calculateNewDetails: kmBetweenTwoPositions: " + kmBetweenTwoPositions);
 
         NewLocationLog.d("calculateNewDetails: mAvgPace: " + mAvgPace);
         NewLocationLog.d("calculateNewDetails: mAvgPaceString: " + mAvgPaceString);
@@ -274,7 +275,7 @@ public class CurrentGpsWorkout {
         NewLocationLog.d("calculateNewDetails: correctSecs: " + correctSecs);
         NewLocationLog.d("calculateNewDetails: correctSecsRounded: " + correctSecsRounded);
 
-        return minPartOfMinPerKm + ":" + (int) correctSecsRounded;
+        return minPartOfMinPerKm + ":" + String.format("%02d",(int) correctSecsRounded);
     }
 
     public void startStopwatch() {
