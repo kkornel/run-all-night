@@ -7,82 +7,197 @@ import android.util.Log;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.Position;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class CurrentGpsWorkout {
     private static final String TAG = "CurrentGpsWorkout";
 
-    // Type of current activity
+    private static final int MAX_OMITTED_LAT_LONS = 5;
+
     private String mWorkoutName;
 
-    // Array of all LatLng on path
+    // duration [ms]
+    private long mDuration;
+
+    // distance [m]
+    private double mTotalDistance;
+
+    // pace [min/km]
+    // total time / total distance
+    private double mAvgPace;
+    private String mAvgPaceString;
+
+    // time between positions / distance between positions
+    private double mCurrentPace;
+    private String mCurrentPaceString;
+
+    // the largest of current paces
+    private double mMaxPace;
+    private String mMaxPaceString;
+
+    // speed [km/h]
+    // total distance / total time
+    private double mAvgSpeed;
+    // distance between positions / time between positions
+    private double mCurrentSpeed;
+    // the largest of current speeds
+    private double mMaxSpeed;
+
+    // Array of selected LatLng on path. Not storing all, because it's a large set od data.
     private ArrayList<LatLon> mPath;
 
     // Array of all laps. Lap = 1 km
     private ArrayList<Lap> mLaps;
 
-    // Total distance since started tracking in meters
-    // private double mTotalDistance;
-
-    // Total time since started tracking in milliseconds
-    // private long mDuration;
-
     private Stopwatch mStopWatch;
+
+    private Location mPreviousLocation;
+
+    private Position mCurrentPosition;
+    private Position mPreviousPosition;
+
+    private int mCurrentLap;
+
+    private int mCurrentNewLatLon;
 
     public CurrentGpsWorkout(String workout) {
         mWorkoutName = workout;
+        mDuration = 0;
+        mTotalDistance = 0.0;
+        mAvgPace = 0.0;
+        mAvgPaceString = "0:00";
+        mCurrentPace = 0.0;
+        mCurrentPaceString = "0:00";
+        mMaxPace = 0.0;
+        mMaxPaceString = "0:00";
+        mAvgSpeed = 0.0;
+        mCurrentSpeed = 0.0;
+        mMaxSpeed = 0.0;
         mPath = new ArrayList<>();
         mLaps = new ArrayList<>();
-        mTotalDistance = 0.00;
-        mDuration = 0;
-        mPace = 0.0;
-        mSpeed = 0.0;
-        mPaceString = "0:00";
         mStopWatch = new Stopwatch();
+        mPreviousLocation = null;
+        mCurrentPosition = null;
+        mPreviousPosition = null;
+        mCurrentLap = 1;
+        mCurrentNewLatLon = 1;
         startStopwatch();
     }
 
-    public void startStopwatch() {
-        mStopWatch.startStopwatch();
+    public void onNewLocation(Location newLocation) {
+        LatLon newLatLon = new LatLon(
+                newLocation.getLatitude(),
+                newLocation.getLongitude());
+
+        NewLocationLog.d("onNewLocation: newLatLon=" + newLatLon.toString());
+
+        mCurrentPosition = new Position(
+                newLatLon,
+                mStopWatch.getTotalMilliSecs());
+
+        NewLocationLog.d("onNewLocation: mCurrentPosition=" + mCurrentPosition.toString());
+
+        if (mCurrentNewLatLon == 1) {
+            NewLocationLog.d("onNewLocation: mCurrentNewLatLon=" + mCurrentNewLatLon + " - ADDING TO THE PATH!");
+            addLatLngToPath(newLatLon);
+        } else {
+            NewLocationLog.d("onNewLocation: mCurrentNewLatLon=" + mCurrentNewLatLon + " - OMITTING!");
+        }
+
+        calculateNewDetails(newLocation);
+
+        if (++mCurrentNewLatLon == MAX_OMITTED_LAT_LONS) {
+            mCurrentNewLatLon = 1;
+        }
+
+        mPreviousPosition = mCurrentPosition;
+        mPreviousLocation = newLocation;
     }
 
-    public void pauseStopwatch() {
-        mStopWatch.pauseStopwatch();
+    private void calculateNewDetails(Location newLocation) {
+        mDuration = mStopWatch.getTotalMilliSecs();
+        int durationSec = (int) (mDuration / 1000);
+        double durationMin = (double) durationSec / 60.0;
+        double durationHour = durationMin / 60.0;
+
+        if (mPreviousLocation == null) {
+            return;
+        }
+
+        float distanceBetweenTwoLocations = distanceBetweenTwoLastLocations(mPreviousLocation, newLocation);
+        mTotalDistance += distanceBetweenTwoLocations;
+        double totalDistanceKm = mTotalDistance / 1000.0;
+
+
+        NewLocationLog.d("calculateNewDetails: mDuration: " + mDuration);
+        NewLocationLog.d("calculateNewDetails: durationSec: " + durationSec);
+        NewLocationLog.d("calculateNewDetails: durationMin: " + durationMin);
+        NewLocationLog.d("calculateNewDetails: durationHour: " + durationHour);
+        NewLocationLog.d("calculateNewDetails: mPreviousLocation: " + mPreviousLocation);
+        NewLocationLog.d("calculateNewDetails: distanceBetweenTwoLocations: " + distanceBetweenTwoLocations);
+        NewLocationLog.d("calculateNewDetails: mTotalDistance: " + mTotalDistance);
+        NewLocationLog.d("calculateNewDetails: totalDistanceKm: " + totalDistanceKm);
+
+
+        checkForLap(newLocation);
+
+        mAvgPace = durationMin / totalDistanceKm;
+        mAvgPaceString = paceToString(mAvgPace);
+
+        long msBetweenTwoLastPositions = timeBetweenTwoLastPositions();
+        int secBetweenTwoPositions = (int) (msBetweenTwoLastPositions / 1000);
+        double minBetweenTwoPositions = (double) secBetweenTwoPositions / 60.0;
+        double hourBetweenTwoPositions = minBetweenTwoPositions / 60.0;
+        double kmBetweenTwoLocations = distanceBetweenTwoLocations / 1000.0;
+
+        mCurrentPace = minBetweenTwoPositions / kmBetweenTwoLocations;
+        mCurrentPaceString = paceToString(mCurrentPace);
+
+        if (mCurrentPace > mMaxPace) {
+            mMaxPace = mCurrentPace;
+            mMaxPaceString = paceToString(mMaxPace);
+        }
+
+
+        mAvgSpeed = totalDistanceKm / durationHour;
+
+        mCurrentSpeed = kmBetweenTwoLocations / hourBetweenTwoPositions;
+
+        if (mCurrentSpeed > mMaxSpeed) {
+            mMaxSpeed = mCurrentSpeed;
+        }
+
+
+        NewLocationLog.d("calculateNewDetails: msBetweenTwoLastPositions: " + msBetweenTwoLastPositions);
+        NewLocationLog.d("calculateNewDetails: secBetweenTwoPositions: " + secBetweenTwoPositions);
+        NewLocationLog.d("calculateNewDetails: minBetweenTwoPositions: " + minBetweenTwoPositions);
+        NewLocationLog.d("calculateNewDetails: hourBetweenTwoPositions: " + hourBetweenTwoPositions);
+        NewLocationLog.d("calculateNewDetails: kmBetweenTwoLocations: " + kmBetweenTwoLocations);
+
+        NewLocationLog.d("calculateNewDetails: mAvgPace: " + mAvgPace);
+        NewLocationLog.d("calculateNewDetails: mAvgPaceString: " + mAvgPaceString);
+        NewLocationLog.d("calculateNewDetails: mCurrentPace: " + mCurrentPace);
+        NewLocationLog.d("calculateNewDetails: mCurrentPaceString: " + mCurrentPaceString);
+        NewLocationLog.d("calculateNewDetails: mMaxPace: " + mMaxPace);
+        NewLocationLog.d("calculateNewDetails: mMaxPaceString: " + mMaxPaceString);
+
+        NewLocationLog.d("calculateNewDetails: mAvgSpeed: " + mAvgSpeed);
+        NewLocationLog.d("calculateNewDetails: mCurrentSpeed: " + mCurrentSpeed);
+        NewLocationLog.d("calculateNewDetails: mMaxSpeed: " + mMaxSpeed);
+
     }
 
-    public void calculateDistanceBetweenTwoLocations(Location previous, Location newLocation) {
-        mTotalDistance += previous.distanceTo(newLocation);
+    private void addLatLngToPath(LatLon newLatLng) {
+        mPath.add(newLatLng);
     }
 
-    public float distanceBetweenTwoLastLocations(Location previous, Location newLocation) {
+    private float distanceBetweenTwoLastLocations(Location previous, Location newLocation) {
         return previous.distanceTo(newLocation);
     }
-
-    private long timeBetweenTwoLastLocations() {
-        int pathSize = mPath.size();
-        if (pathSize <= 1) {
-            return 0;
-        }
-        long previousLocationTimeStamp = mPath.get(pathSize - 2).getTimeStamp();
-        long currentLocationTimeStamp = mPath.get(pathSize - 1).getTimeStamp();
-        return currentLocationTimeStamp - previousLocationTimeStamp;
-    }
-
-    // duration [ms]
-    private long mDuration;
-    // distance [m]
-    private double mTotalDistance;
-    // pace [min/km]
-    private double mPace;
-    // speed [km/h]
-    private double mSpeed;
-
-    private String mPaceString = "0:00";
-
-    private int laps = 1;
 
     private void checkForLap(Location newLocation) {
         /*
@@ -100,140 +215,62 @@ public class CurrentGpsWorkout {
          * ale zostaje 54m!
          */
         int km = (int) mTotalDistance / 1000;
+        NewLocationLog.d("checkForLap: km=" + km);
 
-        if (laps == km) {
-            Log.d(TAG, "checkForLap: new LAP! at: " + mTotalDistance);
-            LatLon newLatLon = new LatLon(
+        if (mCurrentLap == km) {
+            NewLocationLog.d("checkForLap: new LAP! at: " + mTotalDistance);
+            LatLon lapLatLon = new LatLon(
                     newLocation.getLatitude(),
-                    newLocation.getLongitude(),
-                    mDuration);
+                    newLocation.getLongitude());
+
+            Position lapPosition = new Position(lapLatLon, mDuration);
+
             Lap newLap = null;
             if (mLaps.size() == 0) {
-                newLap = new Lap(newLatLon, mDuration);
+                newLap = new Lap(lapPosition, mDuration);
             } else {
-                newLap = new Lap(newLatLon, mDuration - mLaps.get(mLaps.size()-1).getLatLonTimeStamp());
+                int lastLapIdx = mLaps.size() - 1;
+                long differenceBetweenLaps = mDuration - mLaps.get(lastLapIdx).getPositionTimeStamp();
+                newLap = new Lap(lapPosition, differenceBetweenLaps);
             }
             mLaps.add(newLap);
-            laps++;
+            mCurrentLap++;
+
             for (Lap lap : mLaps) {
-                Log.d(TAG, "checkForLap: " + lap);
+                NewLocationLog.d("checkForLap: lap=" + lap);
             }
         }
     }
 
-    // avg pace
-    // max pace
-    // avg speed
-    // max speed
-    public void calculateNewDetails(Location previous, Location newLocation) {
+    private long timeBetweenTwoLastPositions() {
+        if (mPreviousPosition == null) {
+            return 0;
+        }
+        long previousPositionTimeStamp = mPreviousPosition.getTimeStamp();
+        long currentPositionTimeStamp = mCurrentPosition.getTimeStamp();
+        return currentPositionTimeStamp - previousPositionTimeStamp;
+    }
 
-        mDuration = mStopWatch.getTotalMilliSecs();
+    private String paceToString(double minPerKm) {
+        long minPartOfMinPerKm = (long) minPerKm;
+        double secPartOfMinPerKm = minPerKm - minPartOfMinPerKm;
 
-        float distanceBetweenTwoLocations = distanceBetweenTwoLastLocations(previous, newLocation);
-
-        mTotalDistance += distanceBetweenTwoLocations;
-
-        checkForLap(newLocation);
-
-        long timeBetweenTwoLastLocations = timeBetweenTwoLastLocations();
-
-        double km = mTotalDistance / 1000.0;
-
-        int sec = (int) (getTimeStamp() / 1000);
-
-        int minInt = sec / 60;
-        double minDouble = (double) sec / 60.0;
-
-        int hourInt = minInt / 60;
-        double hourDouble = minDouble / 60.0;
-
-        double minIntPerKm = (double) (minInt / km);
-        double minDoublePerKm = (double) minDouble / km;
-
-        long mins = (long) minDoublePerKm;
-        double secs = minDoublePerKm - mins;
-        double correctSecs = 60 * secs;
+        double correctSecs = 60 * secPartOfMinPerKm;
         double correctSecsRounded = Math.round(correctSecs);
-        mPaceString = mins + ":" + (int) correctSecsRounded;
-        mPace = minDoublePerKm;
 
+        NewLocationLog.d("calculateNewDetails: minPartOfMinPerKm: " + minPartOfMinPerKm);
+        NewLocationLog.d("calculateNewDetails: correctSecs: " + correctSecs);
+        NewLocationLog.d("calculateNewDetails: correctSecsRounded: " + correctSecsRounded);
 
-        double kmPerHourInt = (double) km / hourInt;
-        double kmPerHourDouble = (double) km / hourDouble;
-        mSpeed = kmPerHourDouble;
-
-        Log.d("calculateNewDetails", "distanceBetweenTwoLocations: " + distanceBetweenTwoLocations);
-        Log.d("calculateNewDetails", "timeBetweenTwoLastLocations: " + timeBetweenTwoLastLocations);
-        Log.d("calculateNewDetails", "mTotalDistance: " + mTotalDistance);
-        Log.d("calculateNewDetails", "mDuration: " + mDuration);
-        Log.d("calculateNewDetails", "km: " + km);
-        Log.d("calculateNewDetails", "sec: " + sec);
-        Log.d("calculateNewDetails", "minInt: " + minInt);
-        Log.d("calculateNewDetails", "minDouble: " + minDouble);
-        Log.d("calculateNewDetails", "hourInt: " + hourInt);
-        Log.d("calculateNewDetails", "hourDouble: " + hourDouble);
-        Log.d("calculateNewDetails", "minIntPerKm: " + minIntPerKm);
-        Log.d("calculateNewDetails", "minDoublePerKm: " + minDoublePerKm);
-        Log.d("calculateNewDetails", "kmPerHourInt: " + kmPerHourInt);
-        Log.d("calculateNewDetails", "kmPerHourDouble: " + kmPerHourDouble);
-        Log.d("calculateNewDetails", "========================================================================");
-        Log.d("calculateNewDetails", "minDoublePerKm: " + minDoublePerKm);
-        Log.d("calculateNewDetails", "mins: " + mins);
-        Log.d("calculateNewDetails", "secs: " + secs);
-        Log.d("calculateNewDetails", "correctSecs: " + correctSecs);
-        Log.d("calculateNewDetails", "correctSecsRounded: " + correctSecsRounded);
-        Log.d("calculateNewDetails", "mPaceString: " + mPaceString);
-        Log.d("calculateNewDetails", "========================================================================");
+        return minPartOfMinPerKm + ":" + (int) correctSecsRounded;
     }
 
-    public void calculateDistanceBetweenTwoLastLocations() {
-        int pathSize = mPath.size();
-        if (pathSize <= 1) {
-            return;
-        }
-        // I am doing this after already adding new LatLng to the path.
-        // So current location has index = size-1. Because already added.
-        // And last location has index = size-2.
-
-        Location previousLocation = new Location(LocationManager.GPS_PROVIDER);
-        LatLon previousLatLng = mPath.get(pathSize - 2);
-        previousLocation.setLatitude(previousLatLng.getLatitude());
-        previousLocation.setLongitude(previousLatLng.getLongitude());
-
-        Location currentLocation = new Location(LocationManager.GPS_PROVIDER);
-        LatLon currentLatLng = mPath.get(pathSize - 1);
-        currentLocation.setLatitude(currentLatLng.getLatitude());
-        currentLocation.setLongitude(currentLatLng.getLatitude());
-
-        double distance = previousLocation.distanceTo(currentLocation);
-        mTotalDistance += distance;
-
-        Log.d(TAG, "distance between " + previousLatLng + " and " + currentLatLng + " = " + distance);
-        Log.d(TAG, "total distance = " + mTotalDistance);
-
-        mDuration = mStopWatch.getTotalMilliSecs() / 1000;
-        Log.d(TAG, "mDistance = " + mTotalDistance);
-        Log.d(TAG, "mDuration = " + mDuration);
-        Log.d(TAG, "s/m = " + mDuration / mTotalDistance);
-        Log.d(TAG, "m/s = " + mTotalDistance / mDuration);
-        Log.d(TAG, "km/h = " + ((mTotalDistance / 1000) / (mDuration) / 60));
-
-        // TODO: Check if made lap. How to do it in a nice way?
-        if (mTotalDistance / 1000 >= 1) {
-            mDuration = mStopWatch.getTotalMilliSecs();
-
-            long previousLapTimeStamp = 0;
-            if (mLaps.size() > 1) {
-                // previousLapTimeStamp = mLaps.get(mLaps.size() - 1).getTimeStamp();
-            }
-            // Lap newLap = new Lap(currentLatLng, mDuration, mDuration - previousLapTimeStamp);
-            // mLaps.add(newLap);
-            // Log.d("dsa", "new lap! " + newLap);
-        }
+    public void startStopwatch() {
+        mStopWatch.startStopwatch();
     }
 
-    public void addLatLngToPath(LatLon newLatLng) {
-        mPath.add(newLatLng);
+    public void pauseStopwatch() {
+        mStopWatch.pauseStopwatch();
     }
 
     public String getWorkoutName() {
@@ -244,6 +281,20 @@ public class CurrentGpsWorkout {
         return mTotalDistance;
     }
 
+    public String getTotalDistanceString() {
+        double distance = getTotalDistance();
+
+        if (distance == 0) {
+            return "0.00";
+        }
+
+        distance /= 1000;
+
+        // String.format("%.5g%n", distance);
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(distance);
+    }
+
     public long getDuration() {
         return mDuration;
     }
@@ -252,65 +303,56 @@ public class CurrentGpsWorkout {
         return mStopWatch.getDurationString();
     }
 
+    public double getAvgPace() {
+        return mAvgPace;
+    }
+
+    public String getAvgPaceString() {
+        return mAvgPaceString;
+    }
+
+    public double getCurrentPace() {
+        return mCurrentPace;
+    }
+
+    public String getCurrentPaceString() {
+        return mCurrentPaceString;
+    }
+
+    public double getMaxPace() {
+        return mMaxPace;
+    }
+
+    public String getMaxPaceString() {
+        return mMaxPaceString;
+    }
+
+    public double getAvgSpeed() {
+        return mAvgSpeed;
+    }
+
+    public String getAvgSpeedString() {
+        return String.valueOf(mAvgSpeed);
+    }
+
+    public double getCurrentSpeed() {
+        return mCurrentSpeed;
+    }
+
+    public double getMaxSpeed() {
+        return mMaxSpeed;
+    }
+
+    public String getMaxSpeedString() {
+        return String.valueOf(mMaxSpeed);
+    }
+
     public ArrayList<LatLon> getPath() {
         return mPath;
-    }
-
-    public double getPace() {
-        return mPace;
-    }
-
-    public double getSpeed() {
-        return mSpeed;
-    }
-
-    public String getPaceString() {
-        return mPaceString;
     }
 
     public ArrayList<Lap> getLaps() {
         return mLaps;
     }
 
-    public long getTimeStamp() {
-        return mStopWatch.getTotalMilliSecs();
-    }
-
-    public ArrayList<LatLon> getTestLatLng() {
-        ArrayList<LatLon> mTestCoordinates = new ArrayList<>();
-        mTestCoordinates.add(new LatLon(52.416042, 16.939496));
-        mTestCoordinates.add(new LatLon(52.415358, 16.939367));
-        mTestCoordinates.add(new LatLon(52.414553, 16.939206));
-        mTestCoordinates.add(new LatLon(52.413627, 16.939072));
-        mTestCoordinates.add(new LatLon(52.412538, 16.938852));
-        mTestCoordinates.add(new LatLon(52.411671, 16.938482));
-        mTestCoordinates.add(new LatLon(52.410830, 16.938246));
-        mTestCoordinates.add(new LatLon(52.409943, 16.938353));
-        mTestCoordinates.add(new LatLon(52.409449, 16.938267));
-        mTestCoordinates.add(new LatLon(52.409010, 16.938155));
-        mTestCoordinates.add(new LatLon(52.408706, 16.938106));
-        mTestCoordinates.add(new LatLon(52.408238, 16.938047));
-        mTestCoordinates.add(new LatLon(52.407708, 16.937945));
-        mTestCoordinates.add(new LatLon(52.407407, 16.937881));
-        mTestCoordinates.add(new LatLon(52.407138, 16.937838));
-        mTestCoordinates.add(new LatLon(52.406863, 16.937801));
-        mTestCoordinates.add(new LatLon(52.406340, 16.937704));
-        mTestCoordinates.add(new LatLon(52.405842, 16.937591));
-        mTestCoordinates.add(new LatLon(52.405430, 16.937559));
-        mTestCoordinates.add(new LatLon(52.405083, 16.937490));
-        mTestCoordinates.add(new LatLon(52.404573, 16.937345));
-        mTestCoordinates.add(new LatLon(52.403615, 16.936963));
-        mTestCoordinates.add(new LatLon(52.403060, 16.936833));
-        mTestCoordinates.add(new LatLon(52.402435, 16.936616));
-        mTestCoordinates.add(new LatLon(52.401926, 16.936400));
-        mTestCoordinates.add(new LatLon(52.401483, 16.936255));
-        mTestCoordinates.add(new LatLon(52.401002, 16.936043));
-        mTestCoordinates.add(new LatLon(52.400829, 16.936231));
-        mTestCoordinates.add(new LatLon(52.400959, 16.936802));
-        mTestCoordinates.add(new LatLon(52.401138, 16.937424));
-        mTestCoordinates.add(new LatLon(52.401352, 16.937919));
-        mTestCoordinates.add(new LatLon(52.401457, 16.938247));
-        mTestCoordinates.add(new LatLon(52.401613, 16.938716));
-        return mTestCoordinates;
-    }
 }

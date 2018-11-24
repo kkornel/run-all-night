@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -84,15 +83,6 @@ public class LocationTrackingService extends Service {
     private boolean mDidComeFromNotification;
     private boolean mIsServiceRunning;
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////X
-
-    private List<LatLon> mTestCoordinates;
-    private List<LatLon> mTestCoordinates2;
-
-    private int i = -1;
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////
-
     public interface OnNewActivityState {
         void updateButtons(boolean isPaused);
     }
@@ -122,7 +112,6 @@ public class LocationTrackingService extends Service {
         // mLocationManager = (LocationManager)
         //         getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        createTest();
         setupGoogleLocationServicesApi();
         setupNotifications();
     }
@@ -219,106 +208,38 @@ public class LocationTrackingService extends Service {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    private Location mPreviousLocation;
-
-    private double mPreviousDistance = 0.0;
-    private double mCurrentDistance = 0.0;
     private static final int DISTANCE_MIN_DIFF_METERS = 15;
     private static final int DISTANCE_MAX_DIFF_METERS = 20;
 
-    private void onNewLocation_X(Location newLocation) {
-        // I have a new Location
-        // Create LatLng based on new Location
+    private Location mPreviousLoation = null;
+
+    private void onNewLocation(Location newLocation) {
+
+        NewLocationLog.d("==================================================================");
+        NewLocationLog.d("onNewLocation: newLocation: " + newLocation.toString());
+
+        if (mPreviousLoation != null) {
+            float distance = mPreviousLoation.distanceTo(newLocation);
+            if (distance < 2) {
+                NewLocationLog.d("onNewLocation: POMIJAM dystans: " + distance);
+                return;
+            }
+        }
+
+        mCurrentGpsWorkout.onNewLocation(newLocation);
+
         LatLon newLatLon = new LatLon(
                 newLocation.getLatitude(),
-                newLocation.getLongitude(),
-                mCurrentGpsWorkout.getTimeStamp());
-
-        Log.d("calculateNewDetails", "newLatLon: " + newLatLon);
-
-        // Calculate new distance
-        // if (mPreviousLocation != null) {
-        //     mCurrentGpsWorkout.calculateNewDetails(mPreviousLocation, newLocation);
-        // }
-
-        mCurrentDistance = mCurrentGpsWorkout.getTotalDistance();
-
-        mCurrentGpsWorkout.addLatLngToPath(newLatLon);
-
-        if (mPreviousLocation != null) {
-            mCurrentGpsWorkout.calculateNewDetails(mPreviousLocation, newLocation);
-        }
-        Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-        sendBroadcast(intent);
-
-        // if (mPreviousDistance == 0.0) {
-        //     mCurrentGpsWorkout.addLatLngToPath(newLatLon);
-        //
-        //     Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        //     intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-        //     sendBroadcast(intent);
-        // } else if ((mCurrentDistance - mPreviousDistance >= DISTANCE_MAX_DIFF_METERS)) {
-        //     mCurrentGpsWorkout.addLatLngToPath(newLatLon);
-        //
-        //     Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        //     intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
-        //     sendBroadcast(intent);
-        // }
-
-        mPreviousLocation = newLocation;
-        mPreviousDistance = mCurrentDistance;
-    }
-
-    public void onNewLocation_Y(Location newLocation) {
-        // TODO calculate everything
-        Log.d(TAG, "onNewLocation: " + newLocation);
-
-        if (i == -1) {
-            i++;
-            return;
-        }
-
-        if (i >= mTestCoordinates.size())
-            return;
-
-        newLocation = new Location(LocationManager.GPS_PROVIDER);
-        newLocation.setLatitude(mTestCoordinates.get(i).getLatitude());
-        newLocation.setLongitude(mTestCoordinates.get(i).getLongitude());
-
-        // I have a new Location
-        // Create LatLng based on new Location
-        LatLon newLatLng = new LatLon(newLocation.getLatitude(), newLocation.getLongitude());
-
-        // Move camera to new position
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(newLatLng));
-
-        // Add new LatLng to the path
-        mCurrentGpsWorkout.addLatLngToPath(newLatLng);
-
-        // Calculate distance between two previous locations
-        mCurrentGpsWorkout.calculateDistanceBetweenTwoLastLocations();
-
-        if (i < 1) {
-            // mPolylineOptions = new PolylineOptions()
-            //         .add(newLatLng);
-            // mPolyline = mMap.addPolyline(mPolylineOptions);
-            mTestCoordinates2 = new ArrayList<>();
-            mTestCoordinates2.add(newLatLng);
-        } else {
-            mTestCoordinates2.add(newLatLng);
-            // mPolyline.setPoints(mTestCoordinates2);
-        }
-
-        i++;
+                newLocation.getLongitude());
 
         Intent intent = new Intent(ACTION_LOCATION_CHANGED);
-        intent.putParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT, mCurrentGpsWorkout.getPath());
+        intent.putExtra(LOCATION_EXTRA_BROADCAST_INTENT, newLatLon);
         sendBroadcast(intent);
+
+        mPreviousLoation = newLocation;
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
-
 
     // Class used for the client Binder. Because we know this service always runs
     // in the same process as its clients, we don't need to deal with IPC.
@@ -342,7 +263,7 @@ public class LocationTrackingService extends Service {
                 if (locationResult == null) {
                     return;
                 }
-                onNewLocation_X(locationResult.getLastLocation());
+                onNewLocation(locationResult.getLastLocation());
             }
         };
 
@@ -351,7 +272,7 @@ public class LocationTrackingService extends Service {
     }
 
     // Google Location Services API
-    protected void createLocationRequest() {
+    private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
@@ -401,10 +322,6 @@ public class LocationTrackingService extends Service {
         mNotificationHandler.removeCallbacks(mNotificationRunnable);
     }
 
-    public void setCallback(OnNewActivityState callback) {
-        mButtonCallback = callback;
-    }
-
     /**
      * Methods for clients.
      */
@@ -427,13 +344,19 @@ public class LocationTrackingService extends Service {
         }
     }
 
+    public void setCallback(OnNewActivityState callback) {
+        mButtonCallback = callback;
+    }
+
     public WorkoutGpsSummary getWorkOutSummary() {
         WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
                 mCurrentGpsWorkout.getWorkoutName(),
                 mCurrentGpsWorkout.getDurationString(),
-                mCurrentGpsWorkout.getTotalDistance(),
-                mCurrentGpsWorkout.getPaceString(),
-                mCurrentGpsWorkout.getSpeed(),
+                mCurrentGpsWorkout.getTotalDistanceString(),
+                mCurrentGpsWorkout.getAvgPaceString(),
+                mCurrentGpsWorkout.getMaxPaceString(),
+                mCurrentGpsWorkout.getAvgSpeedString(),
+                mCurrentGpsWorkout.getMaxSpeedString(),
                 mCurrentGpsWorkout.getPath(),
                 mCurrentGpsWorkout.getLaps());
         Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
@@ -453,25 +376,24 @@ public class LocationTrackingService extends Service {
     }
 
     public String getDistanceString() {
-        if (mCurrentGpsWorkout == null) {
+        if (mCurrentGpsWorkout != null) {
+            return mCurrentGpsWorkout.getTotalDistanceString();
+        } else {
             return "0.00";
         }
-        double distance = mCurrentGpsWorkout.getTotalDistance();
-
-        if (distance == 0) {
-            return "0.00";
-        }
-
-        distance /= 1000;
-
-        // String.format("%.5g%n", distance);
-        DecimalFormat df = new DecimalFormat("#.##");
-        return df.format(distance);
     }
 
-    public String getPace() {
+    public String getAvgPace() {
         if (mCurrentGpsWorkout != null) {
-            return mCurrentGpsWorkout.getPaceString();
+            return mCurrentGpsWorkout.getAvgPaceString();
+        } else {
+            return "0:00";
+        }
+    }
+
+    public String getCurrentPace() {
+        if (mCurrentGpsWorkout != null) {
+            return mCurrentGpsWorkout.getCurrentPaceString();
         } else {
             return "0:00";
         }
@@ -483,43 +405,6 @@ public class LocationTrackingService extends Service {
 
     public boolean isServiceRunning() {
         return mIsServiceRunning;
-    }
-
-    private void createTest() {
-        mTestCoordinates = new ArrayList<>();
-        mTestCoordinates.add(new LatLon(52.416042, 16.939496));
-        mTestCoordinates.add(new LatLon(52.415358, 16.939367));
-        mTestCoordinates.add(new LatLon(52.414553, 16.939206));
-        mTestCoordinates.add(new LatLon(52.413627, 16.939072));
-        mTestCoordinates.add(new LatLon(52.412538, 16.938852));
-        mTestCoordinates.add(new LatLon(52.411671, 16.938482));
-        mTestCoordinates.add(new LatLon(52.410830, 16.938246));
-        mTestCoordinates.add(new LatLon(52.409943, 16.938353));
-        mTestCoordinates.add(new LatLon(52.409449, 16.938267));
-        mTestCoordinates.add(new LatLon(52.409010, 16.938155));
-        mTestCoordinates.add(new LatLon(52.408706, 16.938106));
-        mTestCoordinates.add(new LatLon(52.408238, 16.938047));
-        mTestCoordinates.add(new LatLon(52.407708, 16.937945));
-        mTestCoordinates.add(new LatLon(52.407407, 16.937881));
-        mTestCoordinates.add(new LatLon(52.407138, 16.937838));
-        mTestCoordinates.add(new LatLon(52.406863, 16.937801));
-        mTestCoordinates.add(new LatLon(52.406340, 16.937704));
-        mTestCoordinates.add(new LatLon(52.405842, 16.937591));
-        mTestCoordinates.add(new LatLon(52.405430, 16.937559));
-        mTestCoordinates.add(new LatLon(52.405083, 16.937490));
-        mTestCoordinates.add(new LatLon(52.404573, 16.937345));
-        mTestCoordinates.add(new LatLon(52.403615, 16.936963));
-        mTestCoordinates.add(new LatLon(52.403060, 16.936833));
-        mTestCoordinates.add(new LatLon(52.402435, 16.936616));
-        mTestCoordinates.add(new LatLon(52.401926, 16.936400));
-        mTestCoordinates.add(new LatLon(52.401483, 16.936255));
-        mTestCoordinates.add(new LatLon(52.401002, 16.936043));
-        mTestCoordinates.add(new LatLon(52.400829, 16.936231));
-        mTestCoordinates.add(new LatLon(52.400959, 16.936802));
-        mTestCoordinates.add(new LatLon(52.401138, 16.937424));
-        mTestCoordinates.add(new LatLon(52.401352, 16.937919));
-        mTestCoordinates.add(new LatLon(52.401457, 16.938247));
-        mTestCoordinates.add(new LatLon(52.401613, 16.938716));
     }
 
     // Framework location APIs - Not recommended
@@ -539,7 +424,7 @@ public class LocationTrackingService extends Service {
     //         public void onLocationChanged(Location location) {
     //             Log.d(TAG, "onLocationChanged: ");
     //             // onNewLocation(location);
-    //             onNewLocation_X(location);
+    //             onNewLocation(location);
     //         }
     //
     //         @Override

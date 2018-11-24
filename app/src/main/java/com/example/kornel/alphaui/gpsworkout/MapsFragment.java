@@ -53,6 +53,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private PolylineOptions mPolylineOptions;
     private Polyline mPolyline;
 
+    private ArrayList<LatLng> mPath;
+
     interface OnMapUpdate {
         void onFabClicked();
     }
@@ -87,6 +89,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mLocationIntentFilter.addAction(ACTION_LOCATION_CHANGED);
         mLocationIntentFilter.addAction(ACTION_LAST_LOCATION);
         mLocationReceiver = new LocationBroadcastReceiver(new Handler());
+
+        mPath = new ArrayList<>();
     }
 
     @Override
@@ -138,7 +142,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return super.getUserVisibleHint();
     }
 
-    // TODO: Przesyłać całą tablice? Czy tylko pojedyncze LatLng?
     public class LocationBroadcastReceiver extends BroadcastReceiver {
         private static final String TAG = "LocationBroadcastReceiv";
 
@@ -168,21 +171,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     break;
 
                 case ACTION_LOCATION_CHANGED:
-                    final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
-                    final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
+                    LatLon latLon = intent.getParcelableExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    mPath.add(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
+                    // final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    // final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
 
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             // If user is looking and map do not move camera, just update path.
                             // Otherwise move and zoom camera to the new location.
-                            updatePath(path);
+                            updatePath(mPath);
 
                             Log.d(TAG, "run: " + getUserVisibleHint());
 
                             if (!getUserVisibleHint()) {
-                                int idxOfNewLocation = path.size() - 1;
-                                LatLng newLatLng = path.get(idxOfNewLocation);
+                                int idxOfNewLocation = mPath.size() - 1;
+                                LatLng newLatLng = mPath.get(idxOfNewLocation);
 
                                 Location newLocation = new Location(LocationManager.GPS_PROVIDER);
                                 newLocation.setLatitude(newLatLng.latitude);

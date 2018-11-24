@@ -18,8 +18,8 @@ public class MainDetailsFragment extends Fragment {
 
     private TextView mTimeTextView;
     private TextView mDistanceTextView;
-    private TextView mCurrentTextView;
-    private TextView mAvgTextView;
+    private TextView mCurrentPaceTextView;
+    private TextView mAvgPaceTextView;
 
     public MainDetailsFragment() {
 
@@ -32,8 +32,8 @@ public class MainDetailsFragment extends Fragment {
 
         mTimeTextView = rootView.findViewById(R.id.timeTextView);
         mDistanceTextView = rootView.findViewById(R.id.distanceTextView);
-        mCurrentTextView = rootView.findViewById(R.id.currentPaceTextView);
-        mAvgTextView = rootView.findViewById(R.id.avgTextView);
+        mCurrentPaceTextView = rootView.findViewById(R.id.currentPaceTextView);
+        mAvgPaceTextView = rootView.findViewById(R.id.avgTextView);
 
         return rootView;
     }
@@ -46,11 +46,11 @@ public class MainDetailsFragment extends Fragment {
         mDistanceTextView.setText(distance);
     }
 
-    public void setAvg(String avg) {
-        mAvgTextView.setText(avg);
+    public void setAvgPace(String avg) {
+        mAvgPaceTextView.setText(avg);
     }
 
-    public void setCurrent(String current) {
-        mCurrentTextView.setText(current);
+    public void setCurrentPace(String current) {
+        mCurrentPaceTextView.setText(current);
     }
 }

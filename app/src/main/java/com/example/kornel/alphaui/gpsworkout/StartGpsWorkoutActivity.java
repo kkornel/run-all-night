@@ -201,11 +201,18 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                mMainDetailsFragment.setTime(mService.getTimeString());
-                mMainDetailsFragment.setDistance(mService.getDistanceString());
-                mMainDetailsFragment.setCurrent(mService.getPace());
-                mPaceDetailsFragment.setTime(mService.getTimeString());
-                mPaceDetailsFragment.setCurrent(mService.getPace());
+                String time = mService.getTimeString();
+                String distance = mService.getDistanceString();
+                String avgPace = mService.getAvgPace();
+                String currentPace = mService.getCurrentPace();
+
+                mMainDetailsFragment.setTime(time);
+                mMainDetailsFragment.setDistance(distance);
+                mMainDetailsFragment.setAvgPace(avgPace);
+                mMainDetailsFragment.setCurrentPace(currentPace);
+                mPaceDetailsFragment.setTime(time);
+                mPaceDetailsFragment.setAvgPace(avgPace);
+                mPaceDetailsFragment.setCurrentPace(currentPace);
 
                 mTimeHandler.postDelayed(this, 500);
             }

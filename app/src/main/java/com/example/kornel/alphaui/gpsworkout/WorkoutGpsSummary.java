@@ -23,9 +23,11 @@ public class WorkoutGpsSummary implements Parcelable {
     private String dateString;
     private String workoutName;
     private String duration;
-    private double distance;
-    private double speed;
-    private String pace;
+    private String distance;
+    private String avgPace;
+    private String maxPace;
+    private String avgSpeed;
+    private String maxSpeed;
     private ArrayList<LatLon> path;
     private ArrayList<Lap> laps;
 
@@ -33,14 +35,16 @@ public class WorkoutGpsSummary implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
     }
 
-    public WorkoutGpsSummary(String workoutName, String duration, double distance, String pace, double speed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
+    public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
         this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         this.workoutName = workoutName;
         this.duration = duration;
         this.distance = distance;
+        this.avgPace = avgPace;
+        this.maxPace = maxPace;
+        this.avgSpeed = avgSpeed;
+        this.maxSpeed = maxSpeed;
         this.path = path;
-        this.speed = speed;
-        this.pace = pace;
         this.laps = laps;
     }
 
@@ -107,7 +111,11 @@ public class WorkoutGpsSummary implements Parcelable {
                 }
             } else {
                 if (elapsedHours < 1) {
-                    return String.valueOf(elapsedMinutes) + " minut temu";
+                    if (elapsedMinutes < 5) {
+                        return "Chwilę temu";
+                    } else {
+                        return String.valueOf(elapsedMinutes) + " minut temu";
+                    }
                 } else if (elapsedHours == 1) {
                     return "1 godzinę temu";
                 } else {
@@ -143,16 +151,24 @@ public class WorkoutGpsSummary implements Parcelable {
         return duration;
     }
 
-    public double getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public double getSpeed() {
-        return speed;
+    public String getAvgPace() {
+        return avgPace;
     }
 
-    public String getPace() {
-        return pace;
+    public String getMaxPace() {
+        return maxPace;
+    }
+
+    public String getAvgSpeed() {
+        return avgSpeed;
+    }
+
+    public String getMaxSpeed() {
+        return maxSpeed;
     }
 
     public ArrayList<LatLon> getPath() {
@@ -169,23 +185,28 @@ public class WorkoutGpsSummary implements Parcelable {
                 "dateString='" + dateString + '\'' +
                 ", workoutName='" + workoutName + '\'' +
                 ", duration='" + duration + '\'' +
-                ", distance=" + distance +
-                ", speed=" + speed +
-                ", pace=" + pace +
+                ", distance='" + distance + '\'' +
+                ", avgPace='" + avgPace + '\'' +
+                ", maxPace='" + maxPace + '\'' +
+                ", avgSpeed='" + avgSpeed + '\'' +
+                ", maxSpeed='" + maxSpeed + '\'' +
                 ", path=" + path +
+                ", laps=" + laps +
                 '}';
     }
 
-    // Parcelable Part
+    // Parcelling Part
 
     public WorkoutGpsSummary(Parcel in){
         // this.date = new Date(in.readLong());
         this.dateString = in.readString();
         this.workoutName = in.readString();
         this.duration = in.readString();
-        this.distance = in.readDouble();
-        this.pace = in.readString();
-        this.speed = in.readDouble();
+        this.distance = in.readString();
+        this.avgPace = in.readString();;
+        this.maxPace = in.readString();;
+        this.avgSpeed = in.readString();;
+        this.maxSpeed = in.readString();;
         path = new ArrayList<>();
         in.readList(this.path, LatLon.class.getClassLoader());
         laps = new ArrayList<>();
@@ -203,9 +224,11 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.dateString);
         dest.writeString(this.workoutName);
         dest.writeString(this.duration);
-        dest.writeDouble(this.distance);
-        dest.writeString(this.pace);
-        dest.writeDouble(this.speed);
+        dest.writeString(this.distance);
+        dest.writeString(this.avgPace);
+        dest.writeString(this.maxPace);
+        dest.writeString(this.avgSpeed);
+        dest.writeString(this.maxSpeed);
         dest.writeList(this.path);
         dest.writeList(this.laps);
     }
