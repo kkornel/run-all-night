@@ -210,10 +210,10 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         mDurationTextView.setText(workoutSummary.getDuration());
         mDistanceTextView.setText(workoutSummary.getDistance());
-        mAvgPaceTextView.setText(workoutSummary.getAvgPace()+ "min/km");
-        mMaxPaceTextView.setText(workoutSummary.getMaxPace()+ "min/km");
-        mAvgSpeedTextView.setText(workoutSummary.getAvgSpeed()+ "km/h");
-        mMaxSpeedTextView.setText(workoutSummary.getMaxSpeed() + "km/h");
+        mAvgPaceTextView.setText(workoutSummary.getAvgPace());
+        mMaxPaceTextView.setText(workoutSummary.getMaxPace());
+        mAvgSpeedTextView.setText(workoutSummary.getAvgSpeed());
+        mMaxSpeedTextView.setText(workoutSummary.getMaxSpeed());
 
 
         mWeatherCardView = findViewById(R.id.weatherCardView);
