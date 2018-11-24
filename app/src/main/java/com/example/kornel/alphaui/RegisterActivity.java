@@ -2,6 +2,7 @@ package com.example.kornel.alphaui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,10 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.ProfileInfoValidator;
+import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,19 +26,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.regex.Pattern;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
 public class RegisterActivity extends AppCompatActivity {
-    private static final String NAME_REGEX = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$";
-    private static final String SPECIAL_CHARS_REGEX = "[^a-z0-9 ]";
-    private static final String UPPER_CASE_REGEX = "[A-Z ]";
-    private static final String LOWER_CASE_REGEX = "[a-z ]";
-    private static final String DIGITS_REGEX = "[0-9 ]";
-    private static final int PASSWORD_MIN_LENGTH = 8;
-
     private EditText mFirstNameEditText;
     private EditText mSurnameEditText;
     private EditText mEmailEditText;
@@ -92,17 +89,41 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification(user);
 
-                            String userUid = user.getUid();
+                            final String userUid = user.getUid();
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference usersRef = database.getReference(Database.USERS);
+                            final DatabaseReference usersRef = database.getReference(Database.USERS);
 
-                            usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
-                            usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
-                            usersRef.child(userUid).child(Database.EMAIL).setValue(email);
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference storageRef = storage.getReference();
+                            StorageReference defaultRef = storageRef.child(Database.STORAGE_AVATARS).child(Database.STORAGE_AVATARS + "/" + Database.DEFAULT_IMG_NAME);
+                            defaultRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        Uri downloadUri = task.getResult();
+                                        String avatarUrl = downloadUri.toString();
+                                        if (!avatarUrl.equals("")) {
+                                            User newUser = new User(firstName, surname, email);
+                                            newUser.setAvatarUrl(avatarUrl);
+                                            usersRef.child(userUid).setValue(newUser);
+                                            hideProgressDialog();
+                                            backToLogin(email);
+                                        }
+                                    }
+                                }
+                            });
 
-                            hideProgressDialog();
-                            backToLogin(email);
+                            // TODO: Here was a change
+                            // User newUser = new User(firstName, surname, email);
+                            // usersRef.child(userUid).setValue(newUser);
+
+                            // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
+                            // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
+                            // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
+
+                            // hideProgressDialog();
+                            // backToLogin(email);
                         } else {
                             // If sign in fails, display a message to the user.
                             Snackbar.make(
@@ -173,25 +194,41 @@ public class RegisterActivity extends AppCompatActivity {
         if (!validateForm()) {
             return;
         }
-        String firstName = mFirstNameEditText.getText().toString();
-        String surname = mSurnameEditText.getText().toString();
-        String email = mEmailEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
 
-        createAccount(firstName, surname, email, password);
         Utils.hideKeyboard(this);
-    }
 
+        if (!NetworkUtils.isConnected(RegisterActivity.this)) {
+            Snackbar.make(
+                    mRegisterButton,
+                    R.string.no_internet,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    })
+                    .show();
+        } else {
+            String firstName = mFirstNameEditText.getText().toString();
+            String surname = mSurnameEditText.getText().toString();
+            String email = mEmailEditText.getText().toString();
+            String password = mPasswordEditText.getText().toString();
+
+            createAccount(firstName, surname, email, password);
+        }
+    }
 
     private boolean validateForm() {
         boolean valid = true;
 
         String firstName = mFirstNameEditText.getText().toString();
-        Pattern namePattern = Pattern.compile(NAME_REGEX);
+        // Pattern namePattern = Pattern.compile(NAME_REGEX);
         if (TextUtils.isEmpty(firstName)) {
             mFirstNameEditText.setError(getString(R.string.register_required));
             valid = false;
-        } else if (!namePattern.matcher(firstName).find()) {
+        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
+            // } else if (!namePattern.matcher(firstName).find()) {
             mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -202,7 +239,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(surname)) {
             mSurnameEditText.setError(getString(R.string.register_required));
             valid = false;
-        } else if (!namePattern.matcher(surname).find()) {
+            // } else if (!namePattern.matcher(surname).find()) {
+        } else if (!ProfileInfoValidator.isNameValid(firstName)) {
             mSurnameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -222,7 +260,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         String password = mPasswordEditText.getText().toString();
         String confirmPassword = mConfirmPasswordEditText.getText().toString();
-        if (!isPasswordValid(password)) {
+        if (!ProfileInfoValidator.isPasswordValid(password)) {
             mPasswordEditText.setError(getString(R.string.register_password_validation));
             valid = false;
         } else if (!password.equals(confirmPassword)) {
@@ -243,29 +281,29 @@ public class RegisterActivity extends AppCompatActivity {
         return valid;
     }
 
-    private boolean isPasswordValid(String password) {
-        Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
-        Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
-        Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
-        Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
-
-        if (password.length() < PASSWORD_MIN_LENGTH) {
-            return false;
-        }
-        if (!specialCharsPattern.matcher(password).find()) {
-            return false;
-        }
-        if (!upperCasePattern.matcher(password).find()) {
-            return false;
-        }
-        if (!lowerCasePattern.matcher(password).find()) {
-            return false;
-        }
-        if (!digitsPattern.matcher(password).find()) {
-            return false;
-        }
-        return true;
-    }
+    // private boolean isPasswordValid(String password) {
+    //     Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
+    //     Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
+    //     Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
+    //     Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
+    //
+    //     if (password.length() < PASSWORD_MIN_LENGTH) {
+    //         return false;
+    //     }
+    //     if (!specialCharsPattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!upperCasePattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!lowerCasePattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     if (!digitsPattern.matcher(password).find()) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {

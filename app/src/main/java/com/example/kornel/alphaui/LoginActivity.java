@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.utils.Utils;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
+
     public static final String INTENT_EXTRA_FIREBASE_USER = "firebase_user";
     public static final String INTENT_EXTRA_USER_EMAIL = "user_email";
 
@@ -44,7 +48,21 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
+                if (!NetworkUtils.isConnected(LoginActivity.this)) {
+                    Snackbar.make(
+                            mLoginButton,
+                            R.string.no_internet,
+                            Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.ok, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .show();
+                } else {
+                    signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
+                }
             }
         });
         mCreateAccountButton = findViewById(R.id.createAccountButton);
@@ -70,10 +88,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // TODO: Enable this
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // login(user);
-        }
+        // FirebaseUser user = mAuth.getCurrentUser();
+        // if (user != null) {
+        //     login(user);
+        // }
     }
 
     private void signIn(String email, String password) {
@@ -92,15 +110,16 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            hideProgressDialog();
+                            // hideProgressDialog();
 
+                            // TODO: Enable this
                             if (!user.isEmailVerified()) {
                                 Snackbar.make(
                                         mLoginButton,
                                         R.string.login_email_not_verified,
                                         Snackbar.LENGTH_LONG)
                                         .show();
-                                return;
+                                // return;
                             }
 
                             login(user);

@@ -69,12 +69,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/distanceTextView"
-        app:layout_constraintEnd_toStartOf="@+id/durationTextView"
+        app:layout_constraintEnd_toStartOf="@+id/durationLabel"
         app:layout_constraintStart_toEndOf="@+id/distanceTextView"
         app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
 
     <TextView
-        android:id="@+id/durationTextView"
+        android:id="@+id/durationLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WorkoutFragment">
+    tools:context=".mainactivity.WorkoutFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/welcomeCardView"
@@ -14,7 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@android:color/background_light"
-        app:layout_constraintBottom_toTopOf="@+id/weatherCardView"
+        app:layout_constraintBottom_toTopOf="@+id/currentWeatherCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,15 +32,13 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Hello, Kornel!"
                 android:textColor="@android:color/black"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toTopOf="@+id/lastTrainingTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                tools:text="Cześć, Jadwiga!" />
 
             <TextView
                 android:id="@+id/lastTrainingTextView"
@@ -50,102 +48,121 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Your last training was: 22.10.2018"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/welcomeTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/welcomeTextView"
+                app:layout_constraintVertical_bias="1.0"
+                tools:text="Ostatni trening: poniedziałek, 19.11.2018" />
+
+            <TextView
+                android:id="@+id/noInternetTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Nie masz połączenia z Internetem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/weatherCardView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/currentWeatherCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        app:cardBackgroundColor="@android:color/holo_blue_light"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeCardView">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/weatherConstraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/weatherImageView"
-                android:layout_width="78dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/art_light_rain"
-                tools:src="@drawable/art_light_rain" />
-
-            <TextView
-                android:id="@+id/weatherTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Rain"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/weatherInfoTextView"
-                app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/weatherImageView"
-                app:layout_constraintTop_toTopOf="@+id/weatherImageView"
-                app:layout_constraintVertical_bias="0.52" />
-
-            <TextView
-                android:id="@+id/weatherInfoTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="7dp"
-                android:text="Take a coat."
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/weatherImageView"
-                app:layout_constraintTop_toBottomOf="@+id/weatherTextView" />
+            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <android.support.constraint.Guideline
-                android:id="@+id/horizontalMiddle1"
+                android:id="@+id/horizontal_middle_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
+            <ImageView
+                android:id="@+id/currentWeatherIconImageView"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/horizontal_middle_1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_umbrella" />
+
+            <!--<TextView-->
+            <!--android:id="@+id/currentWeatherDescriptionTextView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:textSize="20sp"-->
+            <!--app:layout_constraintLeft_toLeftOf="@+id/currentWeatherIconImageView"-->
+            <!--app:layout_constraintRight_toRightOf="@+id/currentWeatherIconImageView"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/currentWeatherIconImageView"-->
+            <!--tools:text="Rainy" />-->
+
             <TextView
-                android:id="@+id/tempTextView"
+                android:id="@+id/currentTimeLocationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="12\u00b0"
-                android:textColor="@android:color/black"
-                android:textSize="48sp"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherImageView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/horizontalMiddle1"
-                app:layout_constraintTop_toTopOf="@+id/weatherImageView" />
+                android:layout_marginRight="8dp"
+                android:textSize="12sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/currentWeatherDescriptionTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="Saturday, September 24" />
 
+            <TextView
+                android:id="@+id/currentTemperatureTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif-light"
+                android:textSize="64sp"
+                app:layout_constraintBottom_toBottomOf="@+id/currentWeatherIconImageView"
+                app:layout_constraintLeft_toLeftOf="@+id/horizontal_middle_1"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/currentWeatherIconImageView"
+                tools:text="19\u00b0" />
+
+            <TextView
+                android:id="@+id/currentWeatherDescriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/currentWeatherIconImageView"
+                app:layout_constraintStart_toStartOf="@+id/currentWeatherIconImageView"
+                app:layout_constraintTop_toBottomOf="@+id/currentWeatherIconImageView"
+                tools:text="Pochmurno" />
+
+            <TextView
+                android:id="@+id/noGpsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Aby otrzymywać informacje o pogodzie konieczne jest włączenie GPS"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
@@ -160,7 +177,7 @@
         app:layout_constraintBottom_toTopOf="@+id/startActivityButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weatherCardView">
+        app:layout_constraintTop_toBottomOf="@+id/currentWeatherCardView">
 
         <!--<android.support.v7.widget.CardView-->
         <!--android:layout_width="match_parent"-->
@@ -218,7 +235,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Activity"
+                    android:text="@string/activity"
                     android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/horizontalMiddle2"
@@ -282,14 +299,14 @@
 
                 <TextView
                     android:id="@+id/musicTextView"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Music"
+                    android:text="@string/music"
                     android:textColor="@android:color/black"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/horizontalMiddle3"
                     app:layout_constraintTop_toTopOf="@+id/musicImageView" />
 
@@ -301,7 +318,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
-                    android:text="Select"
+                    android:text="@string/select"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/musicImageView"
@@ -325,7 +342,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/my_buttons"
-        android:text="Button"
+        android:text="@string/start"
+        android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
