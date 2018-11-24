@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -33,10 +32,10 @@ public class LocationUtils {
 
     private MyLocationResult mLocationResult;
     private boolean mGpsEnabled = false;
-    private boolean mNetworkEnabled = false;
+    // private boolean mNetworkEnabled = false;
     private LocationErrorType mErrorType = null;
 
-    public static Location lastKnowLoacation = null;
+    public static Location lastKnowLocation = null;
 
     public interface MyLocationResult {
         void gotLocation(Location location, LocationErrorType errorType);
@@ -59,7 +58,6 @@ public class LocationUtils {
                 if (locationResult == null) {
                     return;
                 }
-                Log.d("qwe", "mLocationCallback: locationResult= " + locationResult.getLastLocation().toString() + " " + mErrorType);
                 mLocationResult.gotLocation(locationResult.getLastLocation(), mErrorType);
             }
         };
@@ -70,30 +68,39 @@ public class LocationUtils {
         } catch (Exception ex) {
             mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
         }
-        try {
-            mNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-            mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
-        }
+        // try {
+        //     mNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        //     Log.d("qwe", "mNetworkEnabled= " + mNetworkEnabled);
+        // } catch (Exception ex) {
+        //     mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
+        // }
 
         //don't start listeners if no provider is enabled
-        if (!mGpsEnabled && !mNetworkEnabled) {
+        // if (!mGpsEnabled && !mNetworkEnabled) {
+        //     Log.d("qwe", "don't start listeners if no provider is enabled");
+        //     result.gotLocation(null, mErrorType);
+        //     return;
+        // }
+
+        if (!mGpsEnabled) {
             result.gotLocation(null, mErrorType);
             return;
         }
 
-        Location gps_loc = null;
-        if (mGpsEnabled) {
-            try {
-                gps_loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            } catch (SecurityException e) {
-                mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
-            }
-        }
-        if (gps_loc != null) {
-            mLocationResult.gotLocation(gps_loc, mErrorType);
-            return;
-        }
+        // Location gps_loc = null;
+        // if (mGpsEnabled) {
+        //     try {
+        //         gps_loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //         Log.d("qwe", "gps_loc= " + gps_loc);
+        //     } catch (SecurityException e) {
+        //         mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
+        //     }
+        // }
+        // if (gps_loc != null) {
+        //     Log.d("qwe", "gps_loc != null " + gps_loc);
+        //     mLocationResult.gotLocation(gps_loc, mErrorType);
+        //     //return;
+        // }
 
         if (mGpsEnabled) {
             try {
@@ -123,8 +130,7 @@ public class LocationUtils {
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
                                     // Logic to handle location object
-                                    lastKnowLoacation = location;
-                                    Log.d("qwe", "onSuccess: location= " + location.toString());
+                                    lastKnowLocation = location;
                                     WeatherLog.d(location.toString());
                                     mLocationResult.gotLocation(location, mErrorType);
                                 }

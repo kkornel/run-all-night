@@ -45,6 +45,8 @@ public class Stopwatch {
 
                 seconds = seconds % 60;
 
+                minutes = minutes % 60;
+
                 milliseconds = (int) (updateTime % 1000);
 
                 // Log.d(TAG, "startTime: " + startTime);
@@ -79,6 +81,7 @@ public class Stopwatch {
         updateTime = 0;
         seconds = 0;
         minutes = 0;
+        hours = 0;
         milliseconds = 0;
     }
 
@@ -91,7 +94,8 @@ public class Stopwatch {
         if (hours == 0) {
             time = minutes + ":" + String.format("%02d", seconds);
         } else {
-            time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+            // time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+            time = hours + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
         }
         return time;
     }

@@ -40,6 +40,8 @@ import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKI
 public class LocationTrackingService extends Service {
     private static final String TAG = "LocationTrackingService";
 
+    private static final int MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES = 4000;
+
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
 
@@ -223,7 +225,7 @@ public class LocationTrackingService extends Service {
             long prevStamp = mPreviousLocation.getTime();
             long newStamp = newLocation.getTime();
             long msBetweenPrevAndNew = newStamp - prevStamp;
-            if (msBetweenPrevAndNew < 4500) {
+            if (msBetweenPrevAndNew < MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES) {
                 NewLocationLog.d("onNewLocation: OMITTING because timeBetweenUpdates = : " + msBetweenPrevAndNew);
                 return;
             }
