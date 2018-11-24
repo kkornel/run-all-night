@@ -12,8 +12,6 @@ public class LatLon implements Parcelable {
     private double latitude;
     private double longitude;
 
-    private long timeStamp;
-
     public LatLon() {
 
     }
@@ -21,11 +19,7 @@ public class LatLon implements Parcelable {
     public LatLon(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
 
-    public LatLon(double latitude, double longitude, long timeStamp) {
-        this(latitude, longitude);
-        this.timeStamp = timeStamp;
     }
 
     public double getLatitude() {
@@ -44,13 +38,6 @@ public class LatLon implements Parcelable {
         this.longitude = longitude;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
 
     public static ArrayList<LatLng> latLonToLatLng(List<LatLon> latlons) {
         ArrayList<LatLng> arrayList = new ArrayList<>();
@@ -63,7 +50,7 @@ public class LatLon implements Parcelable {
 
     @Override
     public String toString() {
-        return "LatLon{lat=" + latitude + ", lon=" + longitude + ", timeStamp=" + timeStamp + '}';
+        return "LatLon{lat=" + latitude + ", lon=" + longitude + '}';
     }
 
     // Parcelling part
@@ -71,7 +58,6 @@ public class LatLon implements Parcelable {
     public LatLon(Parcel in) {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
-        this.timeStamp = in.readLong();
     }
 
     @Override
@@ -83,7 +69,6 @@ public class LatLon implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
-        dest.writeLong(this.timeStamp);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

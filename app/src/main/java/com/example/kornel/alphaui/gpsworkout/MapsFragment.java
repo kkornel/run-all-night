@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,8 +30,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+
+import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadcastReceiver.LAST_LOCATION_EXTRA_BROADCAST_INTENT;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -52,6 +56,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private PolylineOptions mPolylineOptions;
     private Polyline mPolyline;
+
+    private ArrayList<LatLng> mPath;
 
     interface OnMapUpdate {
         void onFabClicked();
@@ -87,6 +93,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mLocationIntentFilter.addAction(ACTION_LOCATION_CHANGED);
         mLocationIntentFilter.addAction(ACTION_LAST_LOCATION);
         mLocationReceiver = new LocationBroadcastReceiver(new Handler());
+
+        mPath = new ArrayList<>();
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
@@ -127,6 +136,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        Location lastKnowLocation = LocationUtils.lastKnowLoacation;
+        Log.d("qwe", "onMapReady: location= " +lastKnowLocation);
+        if (lastKnowLocation != null) {
+            Log.d("qwe", "onSuccess: location= " + lastKnowLocation.toString());
+            centerMapOnTheLocationZoom(lastKnowLocation, ZOOM_VALUE);
+        }
     }
 
     public void setCallback(OnMapUpdate mCallback) {
@@ -138,7 +154,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return super.getUserVisibleHint();
     }
 
-    // TODO: Przesyłać całą tablice? Czy tylko pojedyncze LatLng?
     public class LocationBroadcastReceiver extends BroadcastReceiver {
         private static final String TAG = "LocationBroadcastReceiv";
 
@@ -168,21 +183,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     break;
 
                 case ACTION_LOCATION_CHANGED:
-                    final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
-                    final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
+                    LatLon latLon = intent.getParcelableExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    mPath.add(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
+                    // final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
+                    // final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
 
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             // If user is looking and map do not move camera, just update path.
                             // Otherwise move and zoom camera to the new location.
-                            updatePath(path);
+                            updatePath(mPath);
 
                             Log.d(TAG, "run: " + getUserVisibleHint());
 
                             if (!getUserVisibleHint()) {
-                                int idxOfNewLocation = path.size() - 1;
-                                LatLng newLatLng = path.get(idxOfNewLocation);
+                                int idxOfNewLocation = mPath.size() - 1;
+                                LatLng newLatLng = mPath.get(idxOfNewLocation);
 
                                 Location newLocation = new Location(LocationManager.GPS_PROVIDER);
                                 newLocation.setLatitude(newLatLng.latitude);

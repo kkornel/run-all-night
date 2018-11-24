@@ -54,14 +54,17 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
             paceViewHolder.mLapNumberTextView.setText("ERROR");
         } else {
             paceViewHolder.mLapNumberTextView.setText(String.valueOf(position));
-            paceViewHolder.mLapTimeTextView.setText(mLapsList.get(position).getTimeString());
+            Lap lap = mLapsList.get(position);
+            paceViewHolder.mLapTimeTextView.setText(lap.getTimeString());
             if (mLapsList.size() < 2) {
-                paceViewHolder.mLapProgressBar.setMax((int)mLapsList.get(position).getTime());
-                paceViewHolder.mLapProgressBar.setProgress((int)mLapsList.get(position).getTime());
+                int secProgress = (int) lap.getTime() / 1000;
+                paceViewHolder.mLapProgressBar.setMax(secProgress);
+                paceViewHolder.mLapProgressBar.setProgress(secProgress);
             } else {
-                long longestLap = searchForLongestLap();
-                paceViewHolder.mLapProgressBar.setMax((int) longestLap);
-                paceViewHolder.mLapProgressBar.setProgress((int)mLapsList.get(position).getTime());
+                int secLongestLap = (int) searchForLongestLap() / 1000;
+                paceViewHolder.mLapProgressBar.setMax(secLongestLap);
+                int secProgress = (int) lap.getTime() / 1000;
+                paceViewHolder.mLapProgressBar.setProgress(secProgress);
             }
 
         }

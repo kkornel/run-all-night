@@ -49,6 +49,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
     private static final int RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER = 2;
 
+    private static final int OFF_SCREEN_PAGE_LIMIT = 3;
+
     private static final int MAPS_FRAGMENT_INDEX_IN_VIEW_PAGER = 0;
     private static final int MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 1;
     private static final int PACE_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 2;
@@ -195,17 +197,26 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
 
+        mViewPager.setOffscreenPageLimit(OFF_SCREEN_PAGE_LIMIT);
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
 
         mTimeHandler = new Handler();
         mTimeRunnable = new Runnable() {
             @Override
             public void run() {
-                mMainDetailsFragment.setTime(mService.getTimeString());
-                mMainDetailsFragment.setDistance(mService.getDistanceString());
-                mMainDetailsFragment.setCurrent(mService.getPace());
-                mPaceDetailsFragment.setTime(mService.getTimeString());
-                mPaceDetailsFragment.setCurrent(mService.getPace());
+                String time = mService.getTimeString();
+                String distance = mService.getDistanceString();
+                String avgPace = mService.getAvgPace();
+                String currentPace = mService.getCurrentPace();
+
+                mMainDetailsFragment.setTime(time);
+                mMainDetailsFragment.setDistance(distance);
+                mMainDetailsFragment.setAvgPace(avgPace);
+                mMainDetailsFragment.setCurrentPace(currentPace);
+                mPaceDetailsFragment.setTime(time);
+                mPaceDetailsFragment.setAvgPace(avgPace);
+                mPaceDetailsFragment.setCurrentPace(currentPace);
+                // mPaceDetailsFragment.setLapsList(mService.getLaps());
 
                 mTimeHandler.postDelayed(this, 500);
             }

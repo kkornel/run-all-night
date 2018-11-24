@@ -5,28 +5,28 @@ import android.os.Parcelable;
 
 
 public class Lap implements Parcelable {
-    private LatLon latLon;
+    private Position position;
     private long time;
 
     public Lap() {
 
     }
 
-    public Lap(LatLon latLon, long time) {
-        this.latLon = latLon;
+    public Lap(Position position, long time) {
+        this.position = position;
         this.time = time;
     }
 
-    public LatLon getLatLon() {
-        return latLon;
+    public Position getLatLon() {
+        return position;
     }
 
     public long getTime() {
         return time;
     }
 
-    public long getLatLonTimeStamp() {
-        return latLon.getTimeStamp();
+    public long getPositionTimeStamp() {
+        return position.getTimeStamp();
     }
 
     public String getTimeString() {
@@ -69,13 +69,13 @@ public class Lap implements Parcelable {
 
     @Override
     public String toString() {
-        return "Lap{" + "latLng=" + latLon +", time=" + time +'}';
+        return "Lap{" + "position=" + position +", time=" + time +'}';
     }
 
     // Parcelling part
 
     public Lap(Parcel in) {
-        this.latLon = in.readParcelable(LatLon.class.getClassLoader());
+        this.position = in.readParcelable(Position.class.getClassLoader());
         this.time = in.readLong();
     }
 
@@ -86,17 +86,17 @@ public class Lap implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.latLon, flags);
+        dest.writeParcelable(this.position, flags);
         dest.writeLong(this.time);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public LatLon createFromParcel(Parcel in) {
-            return new LatLon(in);
+        public Lap createFromParcel(Parcel in) {
+            return new Lap(in);
         }
 
-        public LatLon[] newArray(int size) {
-            return new LatLon[size];
+        public Lap[] newArray(int size) {
+            return new Lap[size];
         }
     };
 }
