@@ -36,6 +36,8 @@ public class LocationUtils {
     private boolean mNetworkEnabled = false;
     private LocationErrorType mErrorType = null;
 
+    public static Location lastKnowLoacation = null;
+
     public interface MyLocationResult {
         void gotLocation(Location location, LocationErrorType errorType);
     }
@@ -57,6 +59,7 @@ public class LocationUtils {
                 if (locationResult == null) {
                     return;
                 }
+                Log.d("qwe", "mLocationCallback: locationResult= " + locationResult.getLastLocation().toString() + " " + mErrorType);
                 mLocationResult.gotLocation(locationResult.getLastLocation(), mErrorType);
             }
         };
@@ -120,6 +123,8 @@ public class LocationUtils {
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
                                     // Logic to handle location object
+                                    lastKnowLoacation = location;
+                                    Log.d("qwe", "onSuccess: location= " + location.toString());
                                     WeatherLog.d(location.toString());
                                     mLocationResult.gotLocation(location, mErrorType);
                                 }

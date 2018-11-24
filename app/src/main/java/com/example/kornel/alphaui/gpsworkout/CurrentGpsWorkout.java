@@ -93,8 +93,6 @@ public class CurrentGpsWorkout {
                 newLocation.getLatitude(),
                 newLocation.getLongitude());
 
-        NewLocationLog.d("onNewLocation: newLatLon=" + newLatLon.toString());
-
         mCurrentPosition = new Position(
                 newLatLon,
                 mStopWatch.getTotalMilliSecs());
@@ -145,8 +143,20 @@ public class CurrentGpsWorkout {
 
         checkForLap(newLocation);
 
+        if (mTotalDistance < 1.5) {
+            NewLocationLog.d("2d", "mTotalDistance < 1.5 : " + mTotalDistance + " ZAWRACAM!");
+            return;
+        }
+
         mAvgPace = durationMin / totalDistanceKm;
         mAvgPaceString = paceToString(mAvgPace);
+
+        mAvgSpeed = totalDistanceKm / durationHour;
+
+        if (distanceBetweenTwoLocations < 1.5) {
+            NewLocationLog.d("2d", "distanceBetweenTwoLocations < 1.5 : " + distanceBetweenTwoLocations + " ZAWRACAM!");
+            return;
+        }
 
         long msBetweenTwoLastPositions = timeBetweenTwoLastPositions();
         int secBetweenTwoPositions = (int) (msBetweenTwoLastPositions / 1000);
@@ -162,15 +172,16 @@ public class CurrentGpsWorkout {
             mMaxPaceString = paceToString(mMaxPace);
         }
 
-
-        mAvgSpeed = totalDistanceKm / durationHour;
-
         mCurrentSpeed = kmBetweenTwoLocations / hourBetweenTwoPositions;
 
         if (mCurrentSpeed > mMaxSpeed) {
             mMaxSpeed = mCurrentSpeed;
         }
 
+        double secBetweenTwoPositions2 = (double) msBetweenTwoLastPositions / 1000.0;
+        NewLocationLog.d("secBetweenTwoPositions2", "distanceBetweenTwoLocations: " + distanceBetweenTwoLocations);
+        NewLocationLog.d("secBetweenTwoPositions2", "msBetweenTwoLastPositions: " + msBetweenTwoLastPositions);
+        NewLocationLog.d("secBetweenTwoPositions2", "secBetweenTwoPositions2: " + secBetweenTwoPositions2);
 
         NewLocationLog.d("calculateNewDetails: msBetweenTwoLastPositions: " + msBetweenTwoLastPositions);
         NewLocationLog.d("calculateNewDetails: secBetweenTwoPositions: " + secBetweenTwoPositions);
@@ -258,6 +269,7 @@ public class CurrentGpsWorkout {
         double correctSecs = 60 * secPartOfMinPerKm;
         double correctSecsRounded = Math.round(correctSecs);
 
+        NewLocationLog.d("calculateNewDetails: minPerKm: " + minPerKm);
         NewLocationLog.d("calculateNewDetails: minPartOfMinPerKm: " + minPartOfMinPerKm);
         NewLocationLog.d("calculateNewDetails: correctSecs: " + correctSecs);
         NewLocationLog.d("calculateNewDetails: correctSecsRounded: " + correctSecsRounded);
@@ -355,4 +367,29 @@ public class CurrentGpsWorkout {
         return mLaps;
     }
 
+    @Override
+    public String toString() {
+        return "CurrentGpsWorkout{" +
+                "mWorkoutName='" + mWorkoutName + '\'' +
+                ", mDuration=" + mDuration +
+                ", mTotalDistance=" + mTotalDistance +
+                ", mAvgPace=" + mAvgPace +
+                ", mAvgPaceString='" + mAvgPaceString + '\'' +
+                ", mCurrentPace=" + mCurrentPace +
+                ", mCurrentPaceString='" + mCurrentPaceString + '\'' +
+                ", mMaxPace=" + mMaxPace +
+                ", mMaxPaceString='" + mMaxPaceString + '\'' +
+                ", mAvgSpeed=" + mAvgSpeed +
+                ", mCurrentSpeed=" + mCurrentSpeed +
+                ", mMaxSpeed=" + mMaxSpeed +
+                ", mPath=" + mPath +
+                ", mLaps=" + mLaps +
+                ", mStopWatch=" + mStopWatch +
+                ", mPreviousLocation=" + mPreviousLocation +
+                ", mCurrentPosition=" + mCurrentPosition +
+                ", mPreviousPosition=" + mPreviousPosition +
+                ", mCurrentLap=" + mCurrentLap +
+                ", mCurrentNewLatLon=" + mCurrentNewLatLon +
+                '}';
+    }
 }

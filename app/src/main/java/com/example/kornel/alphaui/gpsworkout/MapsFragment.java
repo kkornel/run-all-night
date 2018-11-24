@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,8 +30,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+
+import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadcastReceiver.LAST_LOCATION_EXTRA_BROADCAST_INTENT;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -91,6 +95,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mLocationReceiver = new LocationBroadcastReceiver(new Handler());
 
         mPath = new ArrayList<>();
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
@@ -131,6 +136,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        Location lastKnowLocation = LocationUtils.lastKnowLoacation;
+        Log.d("qwe", "onMapReady: location= " +lastKnowLocation);
+        if (lastKnowLocation != null) {
+            Log.d("qwe", "onSuccess: location= " + lastKnowLocation.toString());
+            centerMapOnTheLocationZoom(lastKnowLocation, ZOOM_VALUE);
+        }
     }
 
     public void setCallback(OnMapUpdate mCallback) {

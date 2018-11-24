@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.NotificationUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,7 +24,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,6 +159,7 @@ public class LocationTrackingService extends Service {
         mIsTrainingPaused = false;
 
         // Google Location Services API
+        getLastLocation();
         startLocationUpdates();
         startNotificationHandler();
     }
@@ -211,17 +212,19 @@ public class LocationTrackingService extends Service {
     private static final int DISTANCE_MIN_DIFF_METERS = 15;
     private static final int DISTANCE_MAX_DIFF_METERS = 20;
 
-    private Location mPreviousLoation = null;
+    private Location mPreviousLocation = null;
 
     private void onNewLocation(Location newLocation) {
-
         NewLocationLog.d("==================================================================");
         NewLocationLog.d("onNewLocation: newLocation: " + newLocation.toString());
 
-        if (mPreviousLoation != null) {
-            float distance = mPreviousLoation.distanceTo(newLocation);
-            if (distance < 2) {
-                NewLocationLog.d("onNewLocation: POMIJAM dystans: " + distance);
+
+        if (mPreviousLocation != null) {
+            long prevStamp = mPreviousLocation.getTime();
+            long newStamp = newLocation.getTime();
+            long msBetweenPrevAndNew = newStamp - prevStamp;
+            if (msBetweenPrevAndNew < 4500) {
+                NewLocationLog.d("onNewLocation: OMITTING because timeBetweenUpdates = : " + msBetweenPrevAndNew);
                 return;
             }
         }
@@ -236,7 +239,7 @@ public class LocationTrackingService extends Service {
         intent.putExtra(LOCATION_EXTRA_BROADCAST_INTENT, newLatLon);
         sendBroadcast(intent);
 
-        mPreviousLoation = newLocation;
+        mPreviousLocation = newLocation;
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +285,7 @@ public class LocationTrackingService extends Service {
     // Google Location Services API
     private void startLocationUpdates() {
         try {
-            getLastLocation();
+            //getLastLocation();
 
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback,
@@ -396,6 +399,14 @@ public class LocationTrackingService extends Service {
             return mCurrentGpsWorkout.getCurrentPaceString();
         } else {
             return "0:00";
+        }
+    }
+
+    public ArrayList<Lap> getLaps() {
+        if (mCurrentGpsWorkout != null) {
+            return mCurrentGpsWorkout.getLaps();
+        } else {
+            return new ArrayList<>();
         }
     }
 

@@ -17,6 +17,7 @@ public class Stopwatch {
 
     // ms buffer for pause
     private long timeBuff;
+    // timeBuff + millisecondsTime
     private long updateTime;
 
     // actual values
@@ -82,7 +83,7 @@ public class Stopwatch {
     }
 
     public long getTotalMilliSecs() {
-        return millisecondsTime;
+        return updateTime;
     }
 
     public String getDurationString() {

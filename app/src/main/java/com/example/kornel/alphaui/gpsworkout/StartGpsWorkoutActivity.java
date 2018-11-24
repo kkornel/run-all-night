@@ -49,6 +49,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
     private static final int RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER = 2;
 
+    private static final int OFF_SCREEN_PAGE_LIMIT = 3;
+
     private static final int MAPS_FRAGMENT_INDEX_IN_VIEW_PAGER = 0;
     private static final int MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 1;
     private static final int PACE_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER = 2;
@@ -195,6 +197,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {/*empty*/}
         });
 
+        mViewPager.setOffscreenPageLimit(OFF_SCREEN_PAGE_LIMIT);
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
 
         mTimeHandler = new Handler();
@@ -213,6 +216,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mPaceDetailsFragment.setTime(time);
                 mPaceDetailsFragment.setAvgPace(avgPace);
                 mPaceDetailsFragment.setCurrentPace(currentPace);
+                // mPaceDetailsFragment.setLapsList(mService.getLaps());
 
                 mTimeHandler.postDelayed(this, 500);
             }
