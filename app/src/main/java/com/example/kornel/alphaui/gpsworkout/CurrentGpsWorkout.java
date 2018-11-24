@@ -35,7 +35,7 @@ public class CurrentGpsWorkout {
     private double mCurrentPace;
     private String mCurrentPaceString;
 
-    // the largest of current paces
+    // the smallest of current paces
     private double mMaxPace;
     private String mMaxPaceString;
 
@@ -167,7 +167,7 @@ public class CurrentGpsWorkout {
         mCurrentPace = minBetweenTwoPositions / kmBetweenTwoPositions;
         mCurrentPaceString = paceToString(mCurrentPace);
 
-        if (mCurrentPace > mMaxPace) {
+        if (mCurrentPace < mMaxPace) {
             mMaxPace = mCurrentPace;
             mMaxPaceString = paceToString(mMaxPace);
         }
