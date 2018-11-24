@@ -31,8 +31,10 @@ import android.widget.ViewFlipper;
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.weather.LocationUtils;
+import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
+import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WEATHER_INFO_EXTRA_INTENT;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 
 
@@ -110,6 +112,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     // Timer
     private Handler mTimeHandler;
     private Runnable mTimeRunnable;
+
+    private WeatherInfoCompressed mWeatherInfoCompressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mPaceDetailsFragment.setTime(time);
                 mPaceDetailsFragment.setAvgPace(avgPace);
                 mPaceDetailsFragment.setCurrentPace(currentPace);
+                // TODO: odkomenotwac
                 // mPaceDetailsFragment.setLapsList(mService.getLaps());
 
                 mTimeHandler.postDelayed(this, 500);
@@ -229,6 +234,8 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         } else if (!LocationUtils.isGpsEnabled(StartGpsWorkoutActivity.this)) {
             showSnackbarRequestGpsEnabled();
         }
+
+        mWeatherInfoCompressed = getIntent().getParcelableExtra(WEATHER_INFO_EXTRA_INTENT);
     }
 
     @Override
@@ -286,6 +293,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
         WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
+        workoutGpsSummary.setWeatherInfoCompressed(mWeatherInfoCompressed);
         Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
         summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
         startActivity(summaryActivity);

@@ -8,6 +8,7 @@ import com.example.kornel.alphaui.mainactivity.MainActivityLog;
 import com.example.kornel.alphaui.utils.DateUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.firebase.database.Exclude;
 
 import java.text.ParseException;
@@ -30,6 +31,7 @@ public class WorkoutGpsSummary implements Parcelable {
     private String maxSpeed;
     private ArrayList<LatLon> path;
     private ArrayList<Lap> laps;
+    private WeatherInfoCompressed weatherInfoCompressed;
 
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
@@ -46,6 +48,20 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.path = path;
         this.laps = laps;
+    }
+
+    public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
+        this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        this.workoutName = workoutName;
+        this.duration = duration;
+        this.distance = distance;
+        this.avgPace = avgPace;
+        this.maxPace = maxPace;
+        this.avgSpeed = avgSpeed;
+        this.maxSpeed = maxSpeed;
+        this.path = path;
+        this.laps = laps;
+        this.weatherInfoCompressed = weatherInfoCompressed;
     }
 
     @Exclude
@@ -179,6 +195,14 @@ public class WorkoutGpsSummary implements Parcelable {
         return laps;
     }
 
+    public WeatherInfoCompressed getWeatherInfoCompressed() {
+        return weatherInfoCompressed;
+    }
+
+    public void setWeatherInfoCompressed(WeatherInfoCompressed weatherInfoCompressed) {
+        this.weatherInfoCompressed = weatherInfoCompressed;
+    }
+
     @Override
     public String toString() {
         return "WorkoutGpsSummary{" +
@@ -192,6 +216,7 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", maxSpeed='" + maxSpeed + '\'' +
                 ", path=" + path +
                 ", laps=" + laps +
+                ", weatherInfoCompressed=" + weatherInfoCompressed +
                 '}';
     }
 
@@ -211,6 +236,7 @@ public class WorkoutGpsSummary implements Parcelable {
         in.readList(this.path, LatLon.class.getClassLoader());
         laps = new ArrayList<>();
         in.readList(this.laps, Lap.class.getClassLoader());
+        this.weatherInfoCompressed = in.readParcelable(WeatherInfoCompressed.class.getClassLoader());
     }
 
     @Override
@@ -231,6 +257,7 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.maxSpeed);
         dest.writeList(this.path);
         dest.writeList(this.laps);
+        dest.writeParcelable(this.weatherInfoCompressed, flags);
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public WorkoutGpsSummary createFromParcel(Parcel in) {

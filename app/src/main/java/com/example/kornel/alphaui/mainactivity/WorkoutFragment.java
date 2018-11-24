@@ -37,6 +37,7 @@ import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.Weather;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
+import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.example.kornel.alphaui.weather.WeatherInfoListener;
 import com.example.kornel.alphaui.weather.WeatherLog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +56,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private static final String TAG = "WorkoutFragment";
 
     public static final String WORKOUT_NAME_EXTRA_INTENT = "workout_name";
+    public static final String WEATHER_INFO_EXTRA_INTENT = "weather_info";
 
     public static final String WORKOUT_RESULT = "workout_result";
     public final int PICK_WORKOUT_REQUEST = 1;
@@ -89,6 +91,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private Weather mWeather = Weather.getInstance(true);
     private WeatherInfo mWeatherInfo;
+    private WeatherInfoCompressed mWeatherInfoCompressed;
 
     private boolean mHasMusicChosen = false;
 
@@ -176,6 +179,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 if (isGpsBased) {
                     Intent intent = new Intent(getContext(), StartGpsWorkoutActivity.class);
                     intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, workout);
+                    intent.putExtra(WEATHER_INFO_EXTRA_INTENT, mWeatherInfoCompressed);
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(getContext(), StartNonGpsWorkoutActivity.class);
@@ -207,6 +211,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         super.onStart();
         Log.d(TAG, "onStart: ");
         mWeatherInfo = null;
+        mWeatherInfoCompressed = null;
 
         if (!NetworkUtils.isConnected(getContext())) {
             mNoInternetTextView.setVisibility(View.VISIBLE);
@@ -304,6 +309,10 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
             mCurrentTimeLocationTextView.setText(fullAddress);
 
+            mWeatherInfoCompressed = new WeatherInfoCompressed(
+                    mWeatherInfo.getCurrentCode(),
+                    mWeatherInfo.getCurrentTempC(),
+                    mWeatherInfo.getCurrentConditionIconURL());
         } else {
             WeatherLog.e("gotWeatherInfo: NULL" + errorType);
         }

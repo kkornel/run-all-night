@@ -32,7 +32,10 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
+import com.example.kornel.alphaui.weather.WeatherConsts;
+import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -40,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +53,7 @@ import java.util.Map;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity.WORKOUT_DETAILS_EXTRA_INTENT;
+import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummaryActivity";
@@ -221,9 +226,20 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mWeatherImageView = findViewById(R.id.weatherImageView);
         mWeatherTempTextView = findViewById(R.id.weatherTempTextView);
 
+        WeatherInfoCompressed weatherInfoCompressed = workoutSummary.getWeatherInfoCompressed();
+
+        if (weatherInfoCompressed != null) {
+
+            mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
+            Picasso.get()
+                    .load(weatherInfoCompressed.getConditionIconURL())
+                    .into(mWeatherImageView);
+            mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
+        }
         mLapsCardView = findViewById(R.id.lapsCardView);
 
-
+        // TODO: wywalic
+        // saveWorkout(workoutSummary);
         //
         // mTimeTextView.setText(workoutSummary.getDuration());
         //
