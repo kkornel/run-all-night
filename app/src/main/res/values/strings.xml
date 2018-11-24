@@ -146,11 +146,11 @@
     <string name="no_friends_workouts">Twoi znajomi nie zrobili jeszcze żadnego treningu</string>
     <string name="summary">Podsumowanie</string>
     <string name="duration">Czas</string>
-    <string name="avg_pace">średnie tempo</string>
-    <string name="avg_speed">średnia prędkość</string>
-    <string name="distance">dystans</string>
-    <string name="max_pace">max tempo</string>
-    <string name="max_speed">max prędkość</string>
+    <string name="avg_pace">Średnie tempo</string>
+    <string name="avg_speed">Średnia prędkość</string>
+    <string name="distance">Dystans</string>
+    <string name="max_pace">Max tempo</string>
+    <string name="max_speed">Max prędkość</string>
     <string name="description">Opis</string>
     <string name="add_description">Dodaj opis</string>
     <string name="photo">Zdjęcie</string>

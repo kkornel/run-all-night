@@ -66,6 +66,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_017"
                     app:layout_constraintTop_toTopOf="@+id/activityIconImageView" />
 
@@ -138,7 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/duration"
                     app:layout_constraintStart_toEndOf="@+id/durationImageView"
                     app:layout_constraintTop_toTopOf="@+id/durationImageView" />
@@ -149,6 +151,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/durationImageView"
                     app:layout_constraintStart_toEndOf="@+id/durationImageView" />
 
@@ -166,7 +171,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/avg_pace"
                     app:layout_constraintStart_toEndOf="@+id/avgPaceImageView"
                     app:layout_constraintTop_toTopOf="@+id/avgPaceImageView" />
@@ -177,6 +182,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/avgPaceImageView"
                     app:layout_constraintStart_toEndOf="@+id/avgPaceImageView" />
 
@@ -197,7 +205,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/avg_speed"
                     app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView"
                     app:layout_constraintTop_toTopOf="@+id/avgSpeedImageView" />
@@ -208,6 +216,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/avgSpeedImageView"
                     app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView" />
 
@@ -233,7 +244,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/distance"
                     app:layout_constraintStart_toEndOf="@+id/distanceImageView"
                     app:layout_constraintTop_toTopOf="@+id/distanceImageView" />
@@ -244,6 +255,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/distanceImageView"
                     app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
 
@@ -261,7 +275,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/max_pace"
                     app:layout_constraintStart_toEndOf="@+id/maxPaceImageView"
                     app:layout_constraintTop_toTopOf="@+id/maxPaceImageView" />
@@ -272,6 +286,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/maxPaceImageView"
                     app:layout_constraintStart_toEndOf="@+id/maxPaceImageView" />
 
@@ -291,7 +308,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text="@string/max_speed"
                     app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView"
                     app:layout_constraintTop_toTopOf="@+id/maxSpeedImageView" />
@@ -302,6 +319,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="TextView"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/maxSpeedImageView"
                     app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView" />
 
