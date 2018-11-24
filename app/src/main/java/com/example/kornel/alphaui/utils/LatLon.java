@@ -68,7 +68,7 @@ public class LatLon implements Parcelable {
 
     // Parcelling part
 
-    public LatLon(Parcel in){
+    public LatLon(Parcel in) {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.timeStamp = in.readLong();

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.kornel.alphaui.mainactivity.MainActivityLog;
 import com.example.kornel.alphaui.utils.DateUtils;
+import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.google.firebase.database.Exclude;
 
@@ -24,14 +25,15 @@ public class WorkoutGpsSummary implements Parcelable {
     private String duration;
     private double distance;
     private double speed;
-    private double pace;
+    private String pace;
     private ArrayList<LatLon> path;
+    private ArrayList<Lap> laps;
 
     public WorkoutGpsSummary() {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
     }
 
-    public WorkoutGpsSummary(String workoutName, String duration, double distance, double pace, double speed, ArrayList<LatLon> path) {
+    public WorkoutGpsSummary(String workoutName, String duration, double distance, String pace, double speed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
         this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         this.workoutName = workoutName;
         this.duration = duration;
@@ -39,6 +41,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.path = path;
         this.speed = speed;
         this.pace = pace;
+        this.laps = laps;
     }
 
     @Exclude
@@ -148,12 +151,16 @@ public class WorkoutGpsSummary implements Parcelable {
         return speed;
     }
 
-    public double getPace() {
+    public String getPace() {
         return pace;
     }
 
     public ArrayList<LatLon> getPath() {
         return path;
+    }
+
+    public ArrayList<Lap> getLaps() {
+        return laps;
     }
 
     @Override
@@ -177,10 +184,12 @@ public class WorkoutGpsSummary implements Parcelable {
         this.workoutName = in.readString();
         this.duration = in.readString();
         this.distance = in.readDouble();
-        this.pace = in.readDouble();
+        this.pace = in.readString();
         this.speed = in.readDouble();
         path = new ArrayList<>();
         in.readList(this.path, LatLon.class.getClassLoader());
+        laps = new ArrayList<>();
+        in.readList(this.laps, Lap.class.getClassLoader());
     }
 
     @Override
@@ -195,9 +204,10 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.workoutName);
         dest.writeString(this.duration);
         dest.writeDouble(this.distance);
+        dest.writeString(this.pace);
         dest.writeDouble(this.speed);
-        dest.writeDouble(this.pace);
         dest.writeList(this.path);
+        dest.writeList(this.laps);
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public WorkoutGpsSummary createFromParcel(Parcel in) {

@@ -3,9 +3,12 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 
 
 public class Stopwatch {
+    private static final String TAG = "Stopwatch";
+
     // total ms elapsed since start
     private long millisecondsTime;
 
@@ -42,6 +45,16 @@ public class Stopwatch {
                 seconds = seconds % 60;
 
                 milliseconds = (int) (updateTime % 1000);
+
+                // Log.d(TAG, "startTime: " + startTime);
+                // Log.d(TAG, "timeBuff: " + timeBuff);
+                // Log.d(TAG, "millisecondsTime: " + millisecondsTime);
+                // Log.d(TAG, "updateTime: " + updateTime);
+                // Log.d(TAG, "seconds: " + seconds);
+                // Log.d(TAG, "hours: " + hours);
+                // Log.d(TAG, "minutes: " + minutes);
+                // Log.d(TAG, "seconds: " + seconds);
+                // Log.d(TAG, "milliseconds: " + milliseconds);
 
                 handler.postDelayed(this, 500);
             }

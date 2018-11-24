@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.Lap;
+import com.example.kornel.alphaui.utils.LatLon;
 
 
 public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListItemClickListener {
@@ -30,7 +32,7 @@ public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListIte
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
 
-    private List<String> mPaceList;
+    private ArrayList<Lap> mPaceList;
 
     private Toast mToast;
 
@@ -85,23 +87,21 @@ public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListIte
 
     void testPace() {
         mPaceList = new ArrayList<>();
-        mPaceList.add("3:01");
-        mPaceList.add("2:21");
-        mPaceList.add("1:41");
-        mPaceList.add("3:01");
-        mPaceList.add("5:54");
-        mPaceList.add("4:32");
-        mPaceList.add("2:12");
-        mPaceList.add("3:34");
-        mPaceList.add("3:41");
-        mPaceList.add("2:01");
-        mPaceList.add("3:21");
-        mPaceList.add("3:41");
-        mPaceList.add("3:21");
-        mPaceList.add("3:51");
-        mPaceList.add("2:01");
-        mPaceList.add("2:11");
-        mPaceList.add("3:21");
-        mPaceList.add("3:51");
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 303997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 203997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 103997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 203997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 503997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 333997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 533997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 313997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 103997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 603997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 903997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 803997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 663997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 963997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 153997785));
+        mPaceList.add(new Lap(new LatLon(21.3, 12.3), 123997785));
     }
 }

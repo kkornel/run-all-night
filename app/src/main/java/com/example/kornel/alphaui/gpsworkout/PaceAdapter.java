@@ -7,21 +7,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.Lap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder> {
 
     private final ListItemClickListener mOnClickListener;
-    private List<String> mPaceList;
+    private ArrayList<Lap> mLapsList;
 
-    public PaceAdapter(ListItemClickListener onClickListener, List<String> paceList) {
+    public PaceAdapter(ListItemClickListener onClickListener, ArrayList<Lap> lapsList) {
         mOnClickListener = onClickListener;
-        mPaceList = paceList;
+        mLapsList = lapsList;
     }
 
     public interface ListItemClickListener {
@@ -47,34 +50,57 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
     public void onBindViewHolder(@NonNull PaceViewHolder paceViewHolder, int position) {
         // Called by the layout manager when it wants new data in an existing row
 
-        if ((mPaceList == null) || (mPaceList.size() == 0)) {
-            paceViewHolder.paceItemTextView.setText("ERROR");
+        if ((mLapsList == null) || (mLapsList.size() == 0)) {
+            paceViewHolder.mLapNumberTextView.setText("ERROR");
         } else {
-            paceViewHolder.paceItemTextView.setText(mPaceList.get(position));
+            paceViewHolder.mLapNumberTextView.setText(String.valueOf(position));
+            paceViewHolder.mLapTimeTextView.setText(mLapsList.get(position).getTimeString());
+            if (mLapsList.size() < 2) {
+                paceViewHolder.mLapProgressBar.setMax((int)mLapsList.get(position).getTime());
+                paceViewHolder.mLapProgressBar.setProgress((int)mLapsList.get(position).getTime());
+            } else {
+                long longestLap = searchForLongestLap();
+                paceViewHolder.mLapProgressBar.setMax((int) longestLap);
+                paceViewHolder.mLapProgressBar.setProgress((int)mLapsList.get(position).getTime());
+            }
+
         }
 
         // Googles way
         // paceViewHolder.bind(position);
     }
 
-    @Override
-    public int getItemCount() {
-        return  ((mPaceList != null) && (mPaceList.size() != 0) ? mPaceList.size() : 1);
+    private long searchForLongestLap() {
+        long longest = mLapsList.get(0).getTime();
+        for (int i = 1; i < mLapsList.size(); i++) {
+            if (mLapsList.get(i).getTime() > longest) {
+                longest = mLapsList.get(i).getTime();
+            }
+        }
+        return longest;
     }
 
-    void loadNewData(List<String> newPaceList) {
-        mPaceList = newPaceList;
+    @Override
+    public int getItemCount() {
+        return  ((mLapsList != null) && (mLapsList.size() != 0) ? mLapsList.size() : 1);
+    }
+
+    void loadNewData(ArrayList<Lap> newLapsList) {
+        mLapsList = newLapsList;
         notifyDataSetChanged();
     }
 
-    class PaceViewHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener {
-        private TextView paceItemTextView;
+    class PaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView mLapNumberTextView;
+        private TextView mLapTimeTextView;
+        private ProgressBar mLapProgressBar;
 
         public PaceViewHolder(View itemView) {
             super(itemView);
 
-            paceItemTextView = itemView.findViewById(R.id.paceItemTextView);
+            mLapNumberTextView = itemView.findViewById(R.id.lapNumberTextView);
+            mLapTimeTextView = itemView.findViewById(R.id.lapTimeTextView);
+            mLapProgressBar = itemView.findViewById(R.id.lapProgressBar);
             itemView.setOnClickListener(this);
         }
 
@@ -84,10 +110,9 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
             mOnClickListener.onListItemClick(clickedPosition);
         }
 
-        private void bind(int listIndex) {
-
-            paceItemTextView.setText(String.valueOf(listIndex));
-        }
+        // private void bind(int listIndex) {
+        //     paceItemTextView.setText(String.valueOf(listIndex));
+        // }
     }
 }
 

@@ -22,7 +22,7 @@ public class CurrentGpsWorkout {
     private ArrayList<LatLon> mPath;
 
     // Array of all laps. Lap = 1 km
-    private List<Lap> mLaps;
+    private ArrayList<Lap> mLaps;
 
     // Total distance since started tracking in meters
     // private double mTotalDistance;
@@ -38,6 +38,9 @@ public class CurrentGpsWorkout {
         mLaps = new ArrayList<>();
         mTotalDistance = 0.00;
         mDuration = 0;
+        mPace = 0.0;
+        mSpeed = 0.0;
+        mPaceString = "0:00";
         mStopWatch = new Stopwatch();
         startStopwatch();
     }
@@ -58,20 +61,6 @@ public class CurrentGpsWorkout {
         return previous.distanceTo(newLocation);
     }
 
-    public long getDuration() {
-        return mDuration;
-    }
-
-    public double getPace() {
-        Log.d("getSpeed", "getPace: " + mPace);
-        return mPace;
-    }
-
-    public double getSpeed() {
-        Log.d("getSpeed", "getSpeed: " + mSpeed);
-        return mSpeed;
-    }
-
     private long timeBetweenTwoLastLocations() {
         int pathSize = mPath.size();
         if (pathSize <= 1) {
@@ -80,10 +69,6 @@ public class CurrentGpsWorkout {
         long previousLocationTimeStamp = mPath.get(pathSize - 2).getTimeStamp();
         long currentLocationTimeStamp = mPath.get(pathSize - 1).getTimeStamp();
         return currentLocationTimeStamp - previousLocationTimeStamp;
-    }
-
-    public long getTimeStamp() {
-        return mStopWatch.getTotalMilliSecs();
     }
 
     // duration [ms]
@@ -95,7 +80,46 @@ public class CurrentGpsWorkout {
     // speed [km/h]
     private double mSpeed;
 
+    private String mPaceString = "0:00";
 
+    private int laps = 1;
+
+    private void checkForLap(Location newLocation) {
+        /*
+         * mTotalDistance = 854
+         * km = 0
+         * 1 == 0
+         * laps ++
+         */
+        /*
+         * mTotalDistance = 1054
+         * km = 1
+         * 1 == 1
+         * LAP!
+         * laps ++
+         * ale zostaje 54m!
+         */
+        int km = (int) mTotalDistance / 1000;
+
+        if (laps == km) {
+            Log.d(TAG, "checkForLap: new LAP! at: " + mTotalDistance);
+            LatLon newLatLon = new LatLon(
+                    newLocation.getLatitude(),
+                    newLocation.getLongitude(),
+                    mDuration);
+            Lap newLap = null;
+            if (mLaps.size() == 0) {
+                newLap = new Lap(newLatLon, mDuration);
+            } else {
+                newLap = new Lap(newLatLon, mDuration - mLaps.get(mLaps.size()-1).getLatLonTimeStamp());
+            }
+            mLaps.add(newLap);
+            laps++;
+            for (Lap lap : mLaps) {
+                Log.d(TAG, "checkForLap: " + lap);
+            }
+        }
+    }
 
     // avg pace
     // max pace
@@ -108,6 +132,8 @@ public class CurrentGpsWorkout {
         float distanceBetweenTwoLocations = distanceBetweenTwoLastLocations(previous, newLocation);
 
         mTotalDistance += distanceBetweenTwoLocations;
+
+        checkForLap(newLocation);
 
         long timeBetweenTwoLastLocations = timeBetweenTwoLastLocations();
 
@@ -123,7 +149,14 @@ public class CurrentGpsWorkout {
 
         double minIntPerKm = (double) (minInt / km);
         double minDoublePerKm = (double) minDouble / km;
+
+        long mins = (long) minDoublePerKm;
+        double secs = minDoublePerKm - mins;
+        double correctSecs = 60 * secs;
+        double correctSecsRounded = Math.round(correctSecs);
+        mPaceString = mins + ":" + (int) correctSecsRounded;
         mPace = minDoublePerKm;
+
 
         double kmPerHourInt = (double) km / hourInt;
         double kmPerHourDouble = (double) km / hourDouble;
@@ -143,6 +176,13 @@ public class CurrentGpsWorkout {
         Log.d("calculateNewDetails", "minDoublePerKm: " + minDoublePerKm);
         Log.d("calculateNewDetails", "kmPerHourInt: " + kmPerHourInt);
         Log.d("calculateNewDetails", "kmPerHourDouble: " + kmPerHourDouble);
+        Log.d("calculateNewDetails", "========================================================================");
+        Log.d("calculateNewDetails", "minDoublePerKm: " + minDoublePerKm);
+        Log.d("calculateNewDetails", "mins: " + mins);
+        Log.d("calculateNewDetails", "secs: " + secs);
+        Log.d("calculateNewDetails", "correctSecs: " + correctSecs);
+        Log.d("calculateNewDetails", "correctSecsRounded: " + correctSecsRounded);
+        Log.d("calculateNewDetails", "mPaceString: " + mPaceString);
         Log.d("calculateNewDetails", "========================================================================");
     }
 
@@ -184,7 +224,7 @@ public class CurrentGpsWorkout {
 
             long previousLapTimeStamp = 0;
             if (mLaps.size() > 1) {
-                previousLapTimeStamp = mLaps.get(mLaps.size() - 1).getTimeStamp();
+                // previousLapTimeStamp = mLaps.get(mLaps.size() - 1).getTimeStamp();
             }
             // Lap newLap = new Lap(currentLatLng, mDuration, mDuration - previousLapTimeStamp);
             // mLaps.add(newLap);
@@ -196,6 +236,18 @@ public class CurrentGpsWorkout {
         mPath.add(newLatLng);
     }
 
+    public String getWorkoutName() {
+        return mWorkoutName;
+    }
+
+    public double getTotalDistance() {
+        return mTotalDistance;
+    }
+
+    public long getDuration() {
+        return mDuration;
+    }
+
     public String getDurationString() {
         return mStopWatch.getDurationString();
     }
@@ -204,12 +256,24 @@ public class CurrentGpsWorkout {
         return mPath;
     }
 
-    public String getWorkoutName() {
-        return mWorkoutName;
+    public double getPace() {
+        return mPace;
     }
 
-    public double getTotalDistance() {
-        return mTotalDistance;
+    public double getSpeed() {
+        return mSpeed;
+    }
+
+    public String getPaceString() {
+        return mPaceString;
+    }
+
+    public ArrayList<Lap> getLaps() {
+        return mLaps;
+    }
+
+    public long getTimeStamp() {
+        return mStopWatch.getTotalMilliSecs();
     }
 
     public ArrayList<LatLon> getTestLatLng() {

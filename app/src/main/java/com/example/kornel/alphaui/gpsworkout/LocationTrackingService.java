@@ -432,10 +432,11 @@ public class LocationTrackingService extends Service {
                 mCurrentGpsWorkout.getWorkoutName(),
                 mCurrentGpsWorkout.getDurationString(),
                 mCurrentGpsWorkout.getTotalDistance(),
-                mCurrentGpsWorkout.getPace(),
+                mCurrentGpsWorkout.getPaceString(),
                 mCurrentGpsWorkout.getSpeed(),
-                mCurrentGpsWorkout.getPath());
-        Log.d("getSpeed", "getWorkOutSummary: " + workoutGpsSummary);
+                mCurrentGpsWorkout.getPath(),
+                mCurrentGpsWorkout.getLaps());
+        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
         return workoutGpsSummary;
     }
 
@@ -466,6 +467,14 @@ public class LocationTrackingService extends Service {
         // String.format("%.5g%n", distance);
         DecimalFormat df = new DecimalFormat("#.##");
         return df.format(distance);
+    }
+
+    public String getPace() {
+        if (mCurrentGpsWorkout != null) {
+            return mCurrentGpsWorkout.getPaceString();
+        } else {
+            return "0:00";
+        }
     }
 
     public boolean isTrainingPaused() {

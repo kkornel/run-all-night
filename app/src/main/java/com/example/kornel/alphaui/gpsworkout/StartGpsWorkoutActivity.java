@@ -105,6 +105,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         }
     };
 
+    // Timer
     private Handler mTimeHandler;
     private Runnable mTimeRunnable;
 
@@ -202,7 +203,9 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
             public void run() {
                 mMainDetailsFragment.setTime(mService.getTimeString());
                 mMainDetailsFragment.setDistance(mService.getDistanceString());
+                mMainDetailsFragment.setCurrent(mService.getPace());
                 mPaceDetailsFragment.setTime(mService.getTimeString());
+                mPaceDetailsFragment.setCurrent(mService.getPace());
 
                 mTimeHandler.postDelayed(this, 500);
             }
@@ -272,7 +275,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
         WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
-        Log.d("getSpeed", "finishWorkout: " + workoutGpsSummary);
+        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
         summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
         startActivity(summaryActivity);
     }

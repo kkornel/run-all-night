@@ -47,10 +47,10 @@ public class MainDetailsFragment extends Fragment {
     }
 
     public void setAvg(String avg) {
-        mCurrentTextView.setText(avg);
+        mAvgTextView.setText(avg);
     }
 
     public void setCurrent(String current) {
-        mAvgTextView.setText(current);
+        mCurrentTextView.setText(current);
     }
 }

@@ -170,9 +170,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mLapsCardView = findViewById(R.id.lapsCardView);
 
         final WorkoutGpsSummary workoutSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
-
-        Log.d("getSpeed", "onCreate: " + workoutSummary);
-
+        Log.d("finishWorkout", "finishWorkout: " + workoutSummary);
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
