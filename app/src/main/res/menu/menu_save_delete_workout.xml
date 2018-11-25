@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/save_workout"
+    <item
+        android:id="@+id/save_workout"
+        android:icon="@android:drawable/ic_menu_save"
         android:title="@string/save"
-        android:icon="@drawable/ic_menu_send"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/delete_workout"
-        android:icon="@drawable/ic_menu_manage"
+    <item
+        android:id="@+id/delete_workout"
+        android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/delete" />
 </menu>

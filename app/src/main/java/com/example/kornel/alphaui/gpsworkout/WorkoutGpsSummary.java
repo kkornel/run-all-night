@@ -29,6 +29,9 @@ public class WorkoutGpsSummary implements Parcelable {
     private String maxPace;
     private String avgSpeed;
     private String maxSpeed;
+    private String status;
+    private String picUrl;
+    private boolean isPrivate;
     private ArrayList<LatLon> path;
     private ArrayList<Lap> laps;
     private WeatherInfoCompressed weatherInfoCompressed;
@@ -48,20 +51,10 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.path = path;
         this.laps = laps;
-    }
-
-    public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
-        this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
-        this.workoutName = workoutName;
-        this.duration = duration;
-        this.distance = distance;
-        this.avgPace = avgPace;
-        this.maxPace = maxPace;
-        this.avgSpeed = avgSpeed;
-        this.maxSpeed = maxSpeed;
-        this.path = path;
-        this.laps = laps;
-        this.weatherInfoCompressed = weatherInfoCompressed;
+        this.picUrl = "";
+        this.status = "";
+        this.isPrivate = false;
+        weatherInfoCompressed = null;
     }
 
     @Exclude
@@ -187,6 +180,18 @@ public class WorkoutGpsSummary implements Parcelable {
         return maxSpeed;
     }
 
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
     public ArrayList<LatLon> getPath() {
         return path;
     }
@@ -201,6 +206,18 @@ public class WorkoutGpsSummary implements Parcelable {
 
     public void setWeatherInfoCompressed(WeatherInfoCompressed weatherInfoCompressed) {
         this.weatherInfoCompressed = weatherInfoCompressed;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 
     @Override

@@ -4,13 +4,16 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -43,8 +46,6 @@ import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
-import com.example.kornel.alphaui.utils.Position;
-import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
@@ -56,10 +57,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -131,6 +140,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private AlertDialog mCameraGalleryDialog;
     private Bitmap mSelectedPhotoBitmap;
     private String mCurrentPhotoPath;
+    private String mPhotoName;
     private Uri mCurrentPhotoUri;
 
     private WorkoutGpsSummary mWorkoutGpsSummary;
@@ -233,18 +243,16 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        // TODO wywalić:
-        ArrayList test = test();
+
         ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
-        // mPaceAdapter = new PaceAdapter(laps);
-        mPaceAdapter = new PaceAdapter(test);
+        mPaceAdapter = new PaceAdapter(laps);
         mRecyclerView.setAdapter(mPaceAdapter);
 
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveWorkout(mWorkoutGpsSummary);
+                saveWorkout();
             }
         });
         mDeleteButton = findViewById(R.id.deleteButton);
@@ -255,6 +263,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         });
 
+        mPhotoName = "";
+        mSelectedPhotoBitmap = null;
     }
 
     private void deleteWorkout() {
@@ -271,122 +281,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 .setNegativeButton("Nie", null).show();
     }
 
-    ArrayList<Lap> test() {
-        ArrayList<Lap> mLapsList = new ArrayList<>();
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 324922));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 424722));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 524522));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 724422));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 124322));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 224822));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 924922));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 024422));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        return mLapsList;
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -399,6 +293,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 && data != null && data.getData() != null) {
             Uri uri = data.getData();
 
+            mPhotoName = getFileName(uri);
             showSelectedPhotoCardView();
 
             try {
@@ -469,7 +364,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_workout:
-                saveWorkout(mWorkoutGpsSummary);
+                saveWorkout();
                 return true;
             case R.id.delete_workout:
                 deleteWorkout();
@@ -479,40 +374,117 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
-    private void saveWorkout(WorkoutGpsSummary workoutSummary) {
+    DatabaseReference mWorkoutRef;
+    DatabaseReference mUserRef;
+    String mUserUid;
+    DatabaseReference mRootRef;
+
+    private void saveWorkout() {
         if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
             requestInternetConnection();
             return;
         }
 
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference rootRef = database.getReference();
-        DatabaseReference workoutRef = rootRef.child(Database.WORKOUTS);
-        DatabaseReference userRef = rootRef.child(Database.USERS);
 
-        String userUid = user.getUid();
-        String key = workoutRef.child(userUid).push().getKey();
+        mRootRef = database.getReference();
+        mWorkoutRef = mRootRef.child(Database.WORKOUTS);
+        mUserRef = mRootRef.child(Database.USERS);
 
+        mUserUid = user.getUid();
+        final String key = mWorkoutRef.child(mUserUid).push().getKey();
+
+        String status = mStatusEditText.getText().toString();
+        if (status != null && !status.equals("")) {
+            mWorkoutGpsSummary.setStatus(status);
+        }
+
+        String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
+        if (privacy.equals("Znajomi")) {
+            mWorkoutGpsSummary.setPrivate(false);
+        } else {
+            mWorkoutGpsSummary.setPrivate(true);
+        }
+
+        if (!mPhotoName.equals("") && mSelectedPhotoBitmap != null) {
+            uploadImage(key);
+        }
+    }
+
+    private void uploadImage(final String key) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference picsRef = storageRef.child("pictures");
+
+        String[] separated = mPhotoName.split("\\.");
+
+        String newPhotoName = key + "." + separated[separated.length - 1];
+
+        final StorageReference userWorkoutPicRef = picsRef.child(mUserUid + "/" + newPhotoName);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mSelectedPhotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = userWorkoutPicRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "onFailure: " + exception.getMessage());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return userWorkoutPicRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    String photoUrl = downloadUri.toString();
+                    onUploadCompleted(photoUrl, key);
+                } else {
+                    Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void onUploadCompleted(String photoUri, String key) {
         // HashMap<String, Object> result = new HashMap<>();
         // result.put("name", workoutSummary.getWorkoutName());
         // result.put("time", workoutSummary.getDuration());
         // result.put("distance", workoutSummary.getDistance());
         // result.put("path", workoutSummary.g);
 
-        userRef.child(userUid).child("lastWorkout").setValue(key);
+        mUserRef.child(mUserUid).child("lastWorkout").setValue(key);
+
+        mWorkoutGpsSummary.setPicUrl(photoUri);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/workouts/" + userUid + "/" + key, workoutSummary);
+        childUpdates.put("/workouts/" + mUserUid + "/" + key, mWorkoutGpsSummary);
         // childUpdates.put("/users/" + userUid, key);
 
-        database.getReference().updateChildren(childUpdates);
-
-
-
-
+        mRootRef.updateChildren(childUpdates);
 
         Toast.makeText(WorkoutSummaryActivity.this, "Zapisano trening", Toast.LENGTH_SHORT).show();
 
@@ -556,6 +528,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
+        mPhotoName = getFileName(contentUri);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
@@ -728,5 +701,27 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     }
                 })
                 .show();
+    }
+
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 }
