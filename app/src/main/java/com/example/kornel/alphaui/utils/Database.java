@@ -13,5 +13,8 @@ public class Database {
     public static final String WORKOUTS = "workouts";
     public static final String STORAGE_AVATARS = "avatars";
     public static final String DEFAULT_IMG_NAME = "default.jpg";
+    public static final String PICTURES = "pictures";
+    public static final String LAST_WORKOUT = "lastWorkout";
+
 
 }

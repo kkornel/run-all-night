@@ -28,6 +28,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -95,6 +96,9 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private static final int REQUEST_PICK_IMAGE = 123;
     private static final int REQUEST_IMAGE_CAPTURE = 321;
 
+    private static final String SELECTED_PHOTO_BITMAP_STATE = "bitmap";
+    private static final String SELECTED_PHOTO_NAME_STATE = "name";
+
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
     private TextView mActivityTypeTextView;
@@ -146,6 +150,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private String mCurrentPhotoPath;
     private String mPhotoName;
     private Uri mCurrentPhotoUri;
+
+    private DatabaseReference mWorkoutRef;
+    private DatabaseReference mUserRef;
+    private String mUserUid;
+    private DatabaseReference mRootRef;
 
     private WorkoutGpsSummary mWorkoutGpsSummary;
 
@@ -217,7 +226,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         });
         mSelectedPhotoCardView = findViewById(R.id.selectedPhotoCardView);
-        hideSelectedPhotoCardView();
         mSelectedImageImageVIew = findViewById(R.id.selectedImageImageView);
         mDeletePhotoButton = findViewById(R.id.deletePhotoButton);
         mDeletePhotoButton.setOnClickListener(new View.OnClickListener() {
@@ -272,22 +280,26 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         });
 
-        mPhotoName = "";
-        mSelectedPhotoBitmap = null;
+        if (savedInstanceState != null) {
+            mSelectedPhotoBitmap = savedInstanceState.getParcelable(SELECTED_PHOTO_BITMAP_STATE);
+            mPhotoName = savedInstanceState.getString(SELECTED_PHOTO_NAME_STATE);
+        } else {
+            mPhotoName = "";
+            mSelectedPhotoBitmap = null;
+        }
+
+        if (mSelectedPhotoBitmap == null && mPhotoName.equals("")) {
+            hideSelectedPhotoCardView();
+        } else {
+            mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
+        }
     }
 
-    private void deleteWorkout() {
-        new AlertDialog.Builder(WorkoutSummaryActivity.this)
-                .setTitle("Potwierdź")
-                .setMessage("Czy na pewno chcesz usunąć trening?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(WorkoutSummaryActivity.this, "Usunięto treing.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }})
-                .setNegativeButton("Nie", null).show();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(SELECTED_PHOTO_BITMAP_STATE, mSelectedPhotoBitmap);
+        outState.putString(SELECTED_PHOTO_NAME_STATE, mPhotoName);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -331,7 +343,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        deleteWorkout();
         return true;
     }
 
@@ -345,7 +357,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             return;
         }
 
-        int padding = 20; // or prefer padding
+        int padding = 20;
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -366,12 +378,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         mMap.addMarker(new MarkerOptions()
                 .position(startPoint)
-                .title("Początek")
+                .title(getString(R.string.beginning))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         mMap.addMarker(new MarkerOptions()
                 .position(endPoint)
-                .title("Koniec")
+                .title(getString(R.string.end))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
         ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
@@ -411,11 +423,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
-    DatabaseReference mWorkoutRef;
-    DatabaseReference mUserRef;
-    String mUserUid;
-    DatabaseReference mRootRef;
-
     private void saveWorkout() {
         if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
             requestInternetConnection();
@@ -439,7 +446,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
-        if (privacy.equals("Znajomi")) {
+        if (privacy.equals(getString(R.string.friends))) {
             mWorkoutGpsSummary.setPrivate(false);
         } else {
             mWorkoutGpsSummary.setPrivate(true);
@@ -455,7 +462,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private void uploadImage(final String key) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        StorageReference picsRef = storageRef.child("pictures");
+        StorageReference picsRef = storageRef.child(Database.PICTURES);
 
         String[] separated = mPhotoName.split("\\.");
 
@@ -472,7 +479,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
                 Log.e(TAG, "onFailure: " + exception.getMessage());
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -487,7 +494,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WorkoutSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
                     throw task.getException();
                 }
 
@@ -502,20 +509,14 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     String photoUrl = downloadUri.toString();
                     onUploadCompleted(photoUrl, key);
                 } else {
-                    Toast.makeText(WorkoutSummaryActivity.this, "Coś poszło nie tak", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WorkoutSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
     private void onUploadCompleted(String photoUri, String key) {
-        // HashMap<String, Object> result = new HashMap<>();
-        // result.put("name", workoutSummary.getWorkoutName());
-        // result.put("time", workoutSummary.getDuration());
-        // result.put("distance", workoutSummary.getDistance());
-        // result.put("path", workoutSummary.g);
-
-        mUserRef.child(mUserUid).child("lastWorkout").setValue(key);
+        mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
 
         mWorkoutGpsSummary.setPicUrl(photoUri);
 
@@ -524,15 +525,28 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
     private void uploadWorkout(String key) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/workouts/" + mUserUid + "/" + key, mWorkoutGpsSummary);
-        // childUpdates.put("/users/" + userUid, key);
+        childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + key, mWorkoutGpsSummary);
 
         mRootRef.updateChildren(childUpdates);
 
-        Toast.makeText(WorkoutSummaryActivity.this, "Zapisano trening", Toast.LENGTH_SHORT).show();
+        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.workout_saved), Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void deleteWorkout() {
+        new AlertDialog.Builder(WorkoutSummaryActivity.this)
+                .setTitle(R.string.confirm)
+                .setMessage(R.string.confirm_delete_workout)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }})
+                .setNegativeButton(R.string.no, null).show();
     }
 
     private void browseForImageIntent() {
@@ -609,6 +623,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 }
             }
         });
+
         final Button galleryButton = vView.findViewById(R.id.galleryButton);
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -617,14 +632,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         });
 
-
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView).setTitle(R.string.pick_camera_gallery);
 
         mCameraGalleryDialog = builder.create();
         mCameraGalleryDialog.show();
-
     }
 
     private void deleteSelectedPhoto() {
