@@ -447,6 +447,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         if (!mPhotoName.equals("") && mSelectedPhotoBitmap != null) {
             uploadImage(key);
+        } else {
+            uploadWorkout(key);
         }
     }
 
@@ -517,6 +519,10 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         mWorkoutGpsSummary.setPicUrl(photoUri);
 
+        uploadWorkout(key);
+    }
+
+    private void uploadWorkout(String key) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/workouts/" + mUserUid + "/" + key, mWorkoutGpsSummary);
         // childUpdates.put("/users/" + userUid, key);
