@@ -31,6 +31,7 @@ import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
+import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
@@ -324,6 +325,11 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra(WORKOUT_RESULT);
                 mWorkoutNameTextView.setText(result);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result), getActivity().getApplicationContext().getTheme()));
+                } else {
+                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result)));
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result

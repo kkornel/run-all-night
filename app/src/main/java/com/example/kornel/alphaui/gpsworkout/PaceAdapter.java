@@ -47,7 +47,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
         if ((mLapsList == null) || (mLapsList.size() == 0)) {
             paceViewHolder.mLapNumberTextView.setText("ERROR");
         } else {
-            paceViewHolder.mLapNumberTextView.setText(String.valueOf(position));
+            paceViewHolder.mLapNumberTextView.setText(String.valueOf(position + 1));
             Lap lap = mLapsList.get(position);
             paceViewHolder.mLapTimeTextView.setText(lap.getTimeString());
             if (mLapsList.size() < 2) {
@@ -79,7 +79,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
 
     @Override
     public int getItemCount() {
-        return  ((mLapsList != null) && (mLapsList.size() != 0) ? mLapsList.size() : 1);
+        return  ((mLapsList != null) && (mLapsList.size() != 0) ? mLapsList.size() : 0);
     }
 
     void loadNewData(ArrayList<Lap> newLapsList) {

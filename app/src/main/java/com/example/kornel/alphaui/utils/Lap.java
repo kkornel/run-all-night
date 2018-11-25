@@ -3,6 +3,7 @@ package com.example.kornel.alphaui.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 
@@ -19,12 +20,17 @@ public class Lap implements Parcelable {
         this.time = time;
     }
 
-    public Position getLatLon() {
+    public Position getPosition() {
         return position;
     }
 
     public long getTime() {
         return time;
+    }
+
+    @Exclude
+    public LatLon getLatLon() {
+        return this.position.getLatLon();
     }
 
     @Exclude

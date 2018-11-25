@@ -135,7 +135,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_stopwatch_59" />
 
                 <TextView
                     android:id="@+id/durationLabel"
@@ -167,7 +167,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="@+id/durationImageView"
                     app:layout_constraintTop_toBottomOf="@+id/durationImageView"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_avg_pace_64" />
 
                 <TextView
                     android:id="@+id/avgPaceLabel"
@@ -202,7 +202,7 @@
                     app:layout_constraintStart_toStartOf="@+id/avgPaceImageView"
                     app:layout_constraintTop_toBottomOf="@+id/avgPaceImageView"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_avg_speed_64" />
 
                 <TextView
                     android:id="@+id/avgSpeedLabel"
@@ -242,7 +242,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_05"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_path_64" />
 
                 <TextView
                     android:id="@+id/distanceLabel"
@@ -274,7 +274,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="@+id/distanceImageView"
                     app:layout_constraintTop_toBottomOf="@+id/distanceImageView"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_max_pace_64" />
 
                 <TextView
                     android:id="@+id/maxPaceLabel"
@@ -308,7 +308,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/maxPaceImageView"
                     app:layout_constraintTop_toBottomOf="@+id/maxPaceImageView"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_max_speed_64" />
 
                 <TextView
                     android:id="@+id/maxSpeedLabel"
@@ -482,7 +482,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@color/design_default_color_primary_dark" />
+                    app:srcCompat="@drawable/ic_photo_camera_58" />
 
                 <Button
                     android:id="@+id/browseButton"

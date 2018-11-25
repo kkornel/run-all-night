@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -44,6 +45,7 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.weather.NetworkUtils;
@@ -53,8 +55,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Continuation;
@@ -161,6 +165,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mActivityTypeTextView = findViewById(R.id.activityTypeTextView);
         mDateTextView = findViewById(R.id.dateTextView);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName()), getApplicationContext().getTheme()));
+        } else {
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName())));
+        }
         mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
         mDateTextView.setText(mWorkoutGpsSummary.getDateStringPlWithTime());
 
@@ -350,6 +359,34 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         Polyline polyline = mMap.addPolyline(polylineOptions);
         LatLngBounds bounds = builder.build();
+
+        LatLng startPoint = new LatLng(path.get(0).getLatitude(), path.get(0).getLongitude());
+        LatLng endPoint = new LatLng(path.get(path.size()-1).getLatitude(), path.get(path.size()-1).getLongitude());
+
+
+        mMap.addMarker(new MarkerOptions()
+                .position(startPoint)
+                .title("Początek")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+        mMap.addMarker(new MarkerOptions()
+                .position(endPoint)
+                .title("Koniec")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        if (laps != null || laps.size() > 1) {
+            int i = 1;
+            for (Lap lap : laps) {
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lap.getLatLon().getLatitude(), lap.getLatLon().getLongitude()))
+                        .title("KM: " + i++)
+                        .snippet(lap.getTimeString())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+
+            }
+        }
+
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 

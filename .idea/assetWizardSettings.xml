@@ -33,11 +33,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="64" />
-                            <entry key="outputName" value="ic_music_black_64dp" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="height" value="59" />
+                            <entry key="outputName" value="ic_stopwatch_59" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\Software\System\Downloads\umbrella.svg" />
-                            <entry key="width" value="64" />
+                            <entry key="sourceFile" value="D:\Software\System\Downloads\stopwatch.svg" />
+                            <entry key="width" value="59" />
                           </map>
                         </option>
                       </PersistentState>

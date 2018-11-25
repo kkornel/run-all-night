@@ -220,8 +220,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mPaceDetailsFragment.setTime(time);
                 mPaceDetailsFragment.setAvgPace(avgPace);
                 mPaceDetailsFragment.setCurrentPace(currentPace);
-                // TODO: odkomenotwac
-                // mPaceDetailsFragment.setLapsList(mService.getLaps());
+                mPaceDetailsFragment.setLapsList(mService.getLaps());
 
                 mTimeHandler.postDelayed(this, 500);
             }

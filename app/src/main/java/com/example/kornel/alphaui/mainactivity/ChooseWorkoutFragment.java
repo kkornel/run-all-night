@@ -47,7 +47,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mWorkoutAdapter = new WorkoutAdapter(this, mWorkoutsList);
+        mWorkoutAdapter = new WorkoutAdapter(getContext(), this, mWorkoutsList);
         mRecyclerView.setAdapter(mWorkoutAdapter);
 
         return rootView;

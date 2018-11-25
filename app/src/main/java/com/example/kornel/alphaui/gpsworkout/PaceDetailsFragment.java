@@ -53,7 +53,7 @@ public class PaceDetailsFragment extends Fragment {
 
         mLapsList = new ArrayList<>();
         // TODO wywalić
-        test();
+        //test();
         mPaceAdapter = new PaceAdapter(mLapsList);
         mRecyclerView.setAdapter(mPaceAdapter);
 
