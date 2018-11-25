@@ -8,10 +8,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
