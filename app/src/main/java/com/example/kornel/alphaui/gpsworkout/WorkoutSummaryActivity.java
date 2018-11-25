@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui.gpsworkout;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,6 +21,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +41,9 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.Position;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
@@ -117,6 +122,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private TextView mWeatherTempTextView;
 
     private CardView mLapsCardView;
+    private RecyclerView mRecyclerView;
+    private PaceAdapter mPaceAdapter;
 
     private Button mSaveButton;
     private Button mDeleteButton;
@@ -221,85 +228,165 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
 
         mLapsCardView = findViewById(R.id.lapsCardView);
+        mRecyclerView = findViewById(R.id.recyclerViewPace);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        // TODO wywalić:
+        ArrayList test = test();
+        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        // mPaceAdapter = new PaceAdapter(laps);
+        mPaceAdapter = new PaceAdapter(test);
+        mRecyclerView.setAdapter(mPaceAdapter);
 
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
-                    requestInternetConnection();
-                    return;
-                }
-
                 saveWorkout(mWorkoutGpsSummary);
-
-                Toast.makeText(WorkoutSummaryActivity.this, "Workout saved", Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
-                startActivity(intent);
             }
         });
         mDeleteButton = findViewById(R.id.deleteButton);
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(WorkoutSummaryActivity.this, "Workout not saved", Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
-                startActivity(intent);
+                deleteWorkout();
             }
         });
 
-
-
-
-
-
-
-
-
-
-        // TODO: wywalic
-        // saveWorkout(workoutSummary);
-        //
-        // mTimeTextView.setText(workoutSummary.getDuration());
-        //
-        // double distance = workoutSummary.getDistance();
-        // distance /= 1000;
-        // // String.format("%.5g%n", distance);
-        // DecimalFormat df = new DecimalFormat("#.##");
-        // mDistanceTextView.setText(df.format(distance));
-        //
-        // mSaveButton.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View v) {
-        //
-        //         if (!hasInternetConnection()) {
-        //             requestInternetConnection();
-        //             return;
-        //         }
-        //
-        //         saveWorkout(workoutSummary);
-        //
-        //         Toast.makeText(WorkoutSummaryActivity.this, "Workout saved", Toast.LENGTH_LONG).show();
-        //
-        //         Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
-        //         startActivity(intent);
-        //     }
-        // });
-        //
-        // mDontSaveButton.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View v) {
-        //         Toast.makeText(WorkoutSummaryActivity.this, "Workout not saved", Toast.LENGTH_LONG).show();
-        //
-        //         Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
-        //         startActivity(intent);
-        //     }
-        // });
     }
 
+    private void deleteWorkout() {
+        new AlertDialog.Builder(WorkoutSummaryActivity.this)
+                .setTitle("Potwierdź")
+                .setMessage("Czy na pewno chcesz usunąć trening?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(WorkoutSummaryActivity.this, "Usunięto treing.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }})
+                .setNegativeButton("Nie", null).show();
+    }
+
+    ArrayList<Lap> test() {
+        ArrayList<Lap> mLapsList = new ArrayList<>();
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 324922));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 424722));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 524522));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 724422));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 124322));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 224822));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 924922));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 024422));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
+        return mLapsList;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -380,13 +467,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.save_workout:
-                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                saveWorkout(mWorkoutGpsSummary);
                 return true;
             case R.id.delete_workout:
-                Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
+                deleteWorkout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -394,11 +480,18 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void saveWorkout(WorkoutGpsSummary workoutSummary) {
+        if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
+            requestInternetConnection();
+            return;
+        }
+
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference workoutRef = database.getReference("workouts");
-        DatabaseReference userRef = database.getReference(Database.USERS);
+        DatabaseReference rootRef = database.getReference();
+        DatabaseReference workoutRef = rootRef.child(Database.WORKOUTS);
+        DatabaseReference userRef = rootRef.child(Database.USERS);
 
         String userUid = user.getUid();
         String key = workoutRef.child(userUid).push().getKey();
@@ -416,6 +509,15 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         // childUpdates.put("/users/" + userUid, key);
 
         database.getReference().updateChildren(childUpdates);
+
+
+
+
+
+        Toast.makeText(WorkoutSummaryActivity.this, "Zapisano trening", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void browseForImageIntent() {

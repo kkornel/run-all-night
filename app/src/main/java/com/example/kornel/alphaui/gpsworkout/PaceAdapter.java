@@ -19,16 +19,10 @@ import java.util.List;
 
 public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder> {
 
-    private final ListItemClickListener mOnClickListener;
     private ArrayList<Lap> mLapsList;
 
-    public PaceAdapter(ListItemClickListener onClickListener, ArrayList<Lap> lapsList) {
-        mOnClickListener = onClickListener;
+    public PaceAdapter(ArrayList<Lap> lapsList) {
         mLapsList = lapsList;
-    }
-
-    public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
     }
 
     @NonNull
@@ -93,7 +87,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
         notifyDataSetChanged();
     }
 
-    class PaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class PaceViewHolder extends RecyclerView.ViewHolder {
         private TextView mLapNumberTextView;
         private TextView mLapTimeTextView;
         private ProgressBar mLapProgressBar;
@@ -104,18 +98,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
             mLapNumberTextView = itemView.findViewById(R.id.lapNumberTextView);
             mLapTimeTextView = itemView.findViewById(R.id.lapTimeTextView);
             mLapProgressBar = itemView.findViewById(R.id.lapProgressBar);
-            itemView.setOnClickListener(this);
         }
-
-        @Override
-        public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
-        }
-
-        // private void bind(int listIndex) {
-        //     paceItemTextView.setText(String.valueOf(listIndex));
-        // }
     }
 }
 

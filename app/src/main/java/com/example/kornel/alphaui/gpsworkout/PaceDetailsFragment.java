@@ -21,7 +21,7 @@ import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.Position;
 
 
-public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListItemClickListener {
+public class PaceDetailsFragment extends Fragment {
     private static final String TAG = "PaceDetailsFragment";
 
     private TextView mTimeTextView;
@@ -32,8 +32,6 @@ public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListIte
     private PaceAdapter mPaceAdapter;
 
     private ArrayList<Lap> mLapsList;
-
-    private Toast mToast;
 
     public PaceDetailsFragment() {
 
@@ -54,22 +52,12 @@ public class PaceDetailsFragment extends Fragment implements PaceAdapter.ListIte
         mRecyclerView.setHasFixedSize(true);
 
         mLapsList = new ArrayList<>();
+        // TODO wywalić
         test();
-        mPaceAdapter = new PaceAdapter(this, mLapsList);
+        mPaceAdapter = new PaceAdapter(mLapsList);
         mRecyclerView.setAdapter(mPaceAdapter);
 
         return rootView;
-    }
-
-    @Override
-    public void onListItemClick(int clickedItemIndex) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
-
-        String msg = "Clicked: " + clickedItemIndex;
-        mToast = Toast.makeText(getContext(), msg, Toast.LENGTH_LONG);
-        mToast.show();
     }
 
     public void setTime(String time) {
