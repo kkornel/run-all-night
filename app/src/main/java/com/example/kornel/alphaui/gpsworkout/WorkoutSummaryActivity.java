@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -250,6 +251,15 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     .load(weatherInfoCompressed.getConditionIconURL())
                     .into(mWeatherImageView);
             mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
+        } else {
+            mWeatherSummaryTextView.setText("Brak informacji o pogodzie.");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mWeatherImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_umbrella, getApplicationContext().getTheme()));
+            } else {
+                mWeatherImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_umbrella));
+            }
+            mWeatherTempTextView.setText(":(");
+
         }
 
 
@@ -330,6 +340,9 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             try {
                 mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
 
+                mSelectedPhotoBitmap = rotateImage(mSelectedPhotoBitmap, 90);
+
+                // mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
                 mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -338,6 +351,13 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             mSelectedPhotoBitmap = null;
             hideSelectedPhotoCardView();
         }
+    }
+
+    public Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
     }
 
     @Override
