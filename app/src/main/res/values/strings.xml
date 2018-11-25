@@ -177,6 +177,9 @@
     <string name="activity">Aktywność</string>
     <string name="music">Muzyka</string>
     <string name="no_internet">Nie masz połączenia z Internetem</string>
+    <string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>
+    <string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>
+    <string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>
 
 
 </resources>

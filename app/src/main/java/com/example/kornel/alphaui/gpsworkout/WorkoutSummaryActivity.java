@@ -1,6 +1,8 @@
 package com.example.kornel.alphaui.gpsworkout;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
 import java.text.SimpleDateFormat;
@@ -9,7 +11,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,17 +33,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -47,6 +59,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +70,9 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummaryActivity";
+
+    private static final int REQUEST_CODE_PERMISSIONS_WRITE_STORAGE = 79;
+    private static final int REQUEST_CODE_PERMISSIONS_CAMERA = 80;
 
     private static final int REQUEST_PICK_IMAGE = 123;
     private static final int REQUEST_IMAGE_CAPTURE = 321;
@@ -110,6 +126,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private String mCurrentPhotoPath;
     private Uri mCurrentPhotoUri;
 
+    private WorkoutGpsSummary mWorkoutGpsSummary;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,13 +137,20 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        mWorkoutGpsSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
+
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
         mActivityTypeTextView = findViewById(R.id.activityTypeTextView);
         mDateTextView = findViewById(R.id.dateTextView);
 
+        mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
+        mDateTextView.setText(mWorkoutGpsSummary.getDateStringPlWithTime());
+
+
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));
         map.getMapAsync(this);
+
 
         mSummaryCardView = findViewById(R.id.summaryCardView);
         mDurationImageView = findViewById(R.id.durationImageView);
@@ -141,6 +166,14 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);
         mMaxSpeedTextView = findViewById(R.id.maxSpeedTextView);
 
+        mDurationTextView.setText(mWorkoutGpsSummary.getDuration());
+        mDistanceTextView.setText(mWorkoutGpsSummary.getDistance());
+        mAvgPaceTextView.setText(mWorkoutGpsSummary.getAvgPace());
+        mMaxPaceTextView.setText(mWorkoutGpsSummary.getMaxPace());
+        mAvgSpeedTextView.setText(mWorkoutGpsSummary.getAvgSpeed());
+        mMaxSpeedTextView.setText(mWorkoutGpsSummary.getMaxSpeed());
+
+
         mStatusCardView = findViewById(R.id.statusCardView);
         mStatusEditText = findViewById(R.id.statusEditText);
 
@@ -150,7 +183,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mBrowseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCameraGalleryDialog();
+                if(!hasWriteStoragePermissions()) {
+                    requestWriteStoragePermissions();
+                } else {
+                    showCameraGalleryDialog();
+                }
             }
         });
         mSelectedPhotoCardView = findViewById(R.id.selectedPhotoCardView);
@@ -167,15 +204,24 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacySettingsSpinner = findViewById(R.id.privacySettingsSpinner);
 
+
         mWeatherCardView = findViewById(R.id.weatherCardView);
         mWeatherSummaryTextView = findViewById(R.id.weatherSummaryTextView);
         mWeatherImageView = findViewById(R.id.weatherImageView);
         mWeatherTempTextView = findViewById(R.id.weatherTempTextView);
 
+        WeatherInfoCompressed weatherInfoCompressed = mWorkoutGpsSummary.getWeatherInfoCompressed();
+        if (weatherInfoCompressed != null) {
+            mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
+            Picasso.get()
+                    .load(weatherInfoCompressed.getConditionIconURL())
+                    .into(mWeatherImageView);
+            mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
+        }
+
+
         mLapsCardView = findViewById(R.id.lapsCardView);
 
-        final WorkoutGpsSummary workoutSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
-        Log.d("finishWorkout", "finishWorkout: " + workoutSummary);
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +232,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     return;
                 }
 
-                saveWorkout(workoutSummary);
+                saveWorkout(mWorkoutGpsSummary);
 
                 Toast.makeText(WorkoutSummaryActivity.this, "Workout saved", Toast.LENGTH_LONG).show();
 
@@ -206,37 +252,13 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         });
 
 
-        mWorkoutCardView = findViewById(R.id.workoutCardView);
-        mActivityIconImageView = findViewById(R.id.activityIconImageView);
-        mActivityTypeTextView.setText(workoutSummary.getWorkoutName());
-        mDateTextView.setText(workoutSummary.getDateStringPlWithTime());
 
 
 
-        mDurationTextView.setText(workoutSummary.getDuration());
-        mDistanceTextView.setText(workoutSummary.getDistance());
-        mAvgPaceTextView.setText(workoutSummary.getAvgPace());
-        mMaxPaceTextView.setText(workoutSummary.getMaxPace());
-        mAvgSpeedTextView.setText(workoutSummary.getAvgSpeed());
-        mMaxSpeedTextView.setText(workoutSummary.getMaxSpeed());
 
 
-        mWeatherCardView = findViewById(R.id.weatherCardView);
-        mWeatherSummaryTextView = findViewById(R.id.weatherSummaryTextView);
-        mWeatherImageView = findViewById(R.id.weatherImageView);
-        mWeatherTempTextView = findViewById(R.id.weatherTempTextView);
 
-        WeatherInfoCompressed weatherInfoCompressed = workoutSummary.getWeatherInfoCompressed();
 
-        if (weatherInfoCompressed != null) {
-
-            mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
-            Picasso.get()
-                    .load(weatherInfoCompressed.getConditionIconURL())
-                    .into(mWeatherImageView);
-            mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
-        }
-        mLapsCardView = findViewById(R.id.lapsCardView);
 
         // TODO: wywalic
         // saveWorkout(workoutSummary);
@@ -325,6 +347,28 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        ArrayList<LatLon> path = mWorkoutGpsSummary.getPath();
+
+        if (path == null || path.size() == 0) {
+            return;
+        }
+
+        int padding = 20; // or prefer padding
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        for (int i = 0; i < path.size(); i++) {
+            LatLon latLon = path.get(i);
+            polylineOptions.add(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
+            builder.include(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
+        }
+
+        Polyline polyline = mMap.addPolyline(polylineOptions);
+        LatLngBounds bounds = builder.build();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 
     @Override
@@ -440,7 +484,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                if (!hasCameraPermissions()) {
+                    requestCameraPermissions();
+                } else {
+                    dispatchTakePictureIntent();
+                }
             }
         });
         final Button galleryButton = vView.findViewById(R.id.galleryButton);
@@ -485,6 +533,96 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     public void onClick(View view) {
                         Intent viewIntent = new Intent(Settings.ACTION_DATA_USAGE_SETTINGS);
                         startActivity(viewIntent);
+                    }
+                })
+                .show();
+    }
+
+    private boolean hasCameraPermissions() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA);
+    }
+
+    private void requestCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            boolean shouldProvideRationale =
+                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutSummaryActivity.this,
+                            Manifest.permission.CAMERA);
+
+            if (shouldProvideRationale) {
+                ActivityCompat.requestPermissions(WorkoutSummaryActivity.this,
+                        new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CODE_PERMISSIONS_CAMERA);
+            } else {
+                showApplicationSettingsSnackBar();
+            }
+        }
+    }
+
+    private boolean hasWriteStoragePermissions() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    private void requestWriteStoragePermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            boolean shouldProvideRationale =
+                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutSummaryActivity.this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (shouldProvideRationale) {
+                ActivityCompat.requestPermissions(WorkoutSummaryActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CODE_PERMISSIONS_WRITE_STORAGE);
+            } else {
+                showApplicationSettingsSnackBar();
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_PERMISSIONS_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.camera_permission_rationale), Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+            case REQUEST_CODE_PERMISSIONS_WRITE_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.storage_permission_rationale), Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void openApplicationSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package",
+                BuildConfig.APPLICATION_ID, null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    private void showApplicationSettingsSnackBar(){
+        Snackbar.make(
+                mSaveButton,
+                R.string.permission_rationale_settings,
+                Snackbar.LENGTH_LONG)
+                .setAction(R.string.settings, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openApplicationSettings();
                     }
                 })
                 .show();
