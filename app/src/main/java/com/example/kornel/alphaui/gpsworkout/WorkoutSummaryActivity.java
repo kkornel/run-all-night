@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -28,7 +30,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -330,11 +331,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
             try {
                 mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
+
+                mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
-
         } else {
             mSelectedPhotoBitmap = null;
             hideSelectedPhotoCardView();
