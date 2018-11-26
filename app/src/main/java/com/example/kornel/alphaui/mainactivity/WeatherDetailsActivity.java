@@ -68,7 +68,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
                     .into(mCurrentWeatherIconImageView);
             mCurrentTemperatureTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
             mCurrentWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
-            mCurrentUpdateTimeTextView.setText(getString(R.string.updated) + weatherInfo.getTimeFormatted());
+            mCurrentUpdateTimeTextView.setText(getString(R.string.updated) + " "+ weatherInfo.getTimeFormatted());
 
             mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
             mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
