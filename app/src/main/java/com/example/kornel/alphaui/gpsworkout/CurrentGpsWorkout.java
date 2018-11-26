@@ -167,7 +167,10 @@ public class CurrentGpsWorkout {
         mCurrentPace = minBetweenTwoPositions / kmBetweenTwoPositions;
         mCurrentPaceString = paceToString(mCurrentPace);
 
-        if (mCurrentPace < mMaxPace) {
+        // TODO: Problem here is that I can get the maxPace = 0.0 ..
+        // Now I am only taking in consideration paces after 13s from starting workout
+        // It should omit 2 first location updates
+        if (mCurrentPace < mMaxPace && durationSec > 13) {
             mMaxPace = mCurrentPace;
             mMaxPaceString = paceToString(mMaxPace);
         }

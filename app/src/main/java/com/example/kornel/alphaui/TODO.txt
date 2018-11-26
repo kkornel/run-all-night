@@ -1,1 +1,4 @@
+1) Think about database structure.
+2) Load profile before starting activity.
+3) Detach listeners (?)
 
