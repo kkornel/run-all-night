@@ -48,10 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".mainactivity.ChooseWorkoutActivity"
-            android:label="@string/title_activity_choose_sport"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".RegisterActivity" />
 
         <meta-data
@@ -103,7 +99,7 @@
         </provider>
 
         <activity
-            android:name=".mainactivity.ChooseWorkoutActivity2"
+            android:name=".mainactivity.ChooseWorkoutActivity"
             android:label="@string/title_activity_choose_workout2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".StartNonGpsWorkoutActivity"></activity>
