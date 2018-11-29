@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".gpsworkout.WorkoutSummaryActivity"
+    tools:context=".WorkoutGpsDetails"
     tools:layout_editor_absoluteX="64dp"
     tools:layout_editor_absoluteY="121dp">
 
@@ -424,19 +424,18 @@
                 tools:layout_editor_absoluteX="49dp"
                 tools:layout_editor_absoluteY="122dp">
 
-                <EditText
-                    android:id="@+id/statusEditText"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/statusTextView"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:ems="10"
-                    android:hint="@string/add_description"
-                    android:inputType="textPersonName"
+                    android:text="TextView"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
@@ -472,73 +471,18 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/photoIconImageView"
+                    android:id="@+id/photoImageView"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/ic_photo_camera_58" />
-
-                <Button
-                    android:id="@+id/browseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/select"
-                    app:layout_constraintBottom_toBottomOf="@+id/photoIconImageView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/photoIconImageView"
-                    app:layout_constraintTop_toTopOf="@+id/photoIconImageView" />
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/selectedPhotoCardView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@android:color/darker_gray"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/photoIconImageView">
-
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/selectedImageImageView"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@color/design_default_color_primary_dark" />
-
-                        <Button
-                            android:id="@+id/deletePhotoButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/delete"
-                            app:layout_constraintBottom_toBottomOf="@+id/selectedImageImageView"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/selectedImageImageView" />
-
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
+                    app:srcCompat="@color/colorAccent" />
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 
@@ -581,19 +525,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <Spinner
-                    android:id="@+id/privacySettingsSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/holo_red_light"
-                    android:entries="@array/privacy_settings_array"
-                    app:layout_constraintBottom_toBottomOf="@+id/privacyTextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/privacyTextView"
-                    app:layout_constraintTop_toTopOf="@+id/privacyTextView" />
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
@@ -769,30 +700,6 @@
             </android.support.constraint.ConstraintLayout>
 
         </android.support.v7.widget.CardView>
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/save"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lapsCardView" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveButton" />
 
         <!--<TextView-->
         <!--android:id="@+id/timetv"-->

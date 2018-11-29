@@ -33,6 +33,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.Weather;
@@ -175,7 +176,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             @Override
             public void onClick(View v) {
                 String workout = mWorkoutNameTextView.getText().toString();
-                boolean isGpsBased = isGpsBased(workout);
+                boolean isGpsBased = WorkoutUtils.isGpsBased(workout);
 
                 if (isGpsBased) {
                     Intent intent = new Intent(getContext(), StartGpsWorkoutActivity.class);
@@ -545,15 +546,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             }
         };
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
-    }
-
-    private boolean isGpsBased(String workout) {
-        for (GpsBasedWorkout gpsWorkout : GpsBasedWorkout.values()) {
-            if (gpsWorkout.toString().equals(workout)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void showNoGpsSnackBar() {

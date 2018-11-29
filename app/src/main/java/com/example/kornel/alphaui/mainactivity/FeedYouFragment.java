@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui.mainactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,12 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.WorkoutGpsDetails;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +34,8 @@ import java.util.List;
 
 public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedYouFragment";
+
+    public static final String WORKOUT_INTENT_EXTRA = "workout-details";
 
     private TextView mNoDataInfoTextView;
     private FeedYouAdapter mFeedYouAdapter;
@@ -60,7 +64,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mFeedYouAdapter = new FeedYouAdapter(this, mFeedYouList);
+        mFeedYouAdapter = new FeedYouAdapter(getContext(), this, mFeedYouList);
         mRecyclerView.setAdapter(mFeedYouAdapter);
 
         mNoDataInfoTextView.setText(getString(R.string.loading));
@@ -85,8 +89,15 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: ");
-        Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
+        boolean isGpsBased = WorkoutUtils.isGpsBased(mFeedYouList.get(clickedItemIndex).getWorkoutName());
+        if (isGpsBased) {
+            Intent i = new Intent(getActivity(), WorkoutGpsDetails.class);
+            i.putExtra(WORKOUT_INTENT_EXTRA, mFeedYouList.get(clickedItemIndex));
+            startActivity(i);
+        } else {
+            // Intent i = new Intent(getActivity(), WorkoutNonGpsDeatils.class);
+            // startActivity(i);
+        }
     }
 
     public void fetchNewData() {

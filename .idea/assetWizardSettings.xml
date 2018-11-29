@@ -60,9 +60,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_night_24" />
+                            <entry key="height" value="60" />
+                            <entry key="outputName" value="ic_stopwatch" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\Software\System\Downloads\night (1).svg" />
+                            <entry key="sourceFile" value="D:\Software\System\Downloads\stopwatch.svg" />
+                            <entry key="width" value="60" />
                           </map>
                         </option>
                       </PersistentState>

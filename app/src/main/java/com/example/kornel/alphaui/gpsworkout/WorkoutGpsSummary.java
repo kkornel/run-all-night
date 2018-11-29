@@ -58,7 +58,7 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     @Exclude
-    public String getDateStringPlWithTime() {
+    public String getFullDateStringPlWithTime() {
         String now = new SimpleDateFormat(DATE_FORMAT).format(getDate());
         String[] separated = now.split(" ");
         String dayName = separated[0].substring(0, separated[0].length() - 1);
@@ -69,6 +69,18 @@ public class WorkoutGpsSummary implements Parcelable {
         String year = separated[3];
         String time = separated[4];
         return dayName + ", " + day + " " + month + " " + year + " " + time;
+    }
+
+    @Exclude
+    public String getDateStringPlWithTime() {
+        String now = new SimpleDateFormat(DATE_FORMAT).format(getDate());
+        String[] separated = now.split(" ");
+        String day = separated[1];
+        String month = separated[2];
+        month = DateUtils.convertMonthToFullName(month);
+        String year = separated[3];
+        String time = separated[4];
+        return day + " " + month + " " + year + " | " + time;
     }
 
     @Exclude

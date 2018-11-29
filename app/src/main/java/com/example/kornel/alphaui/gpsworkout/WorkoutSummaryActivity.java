@@ -180,7 +180,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName())));
         }
         mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutGpsSummary.getDateStringPlWithTime());
+        mDateTextView.setText(mWorkoutGpsSummary.getFullDateStringPlWithTime());
 
 
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));
