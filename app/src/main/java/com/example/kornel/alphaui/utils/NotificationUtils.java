@@ -52,7 +52,7 @@ public class NotificationUtils {
 
         mNotificationBuilder =
                 new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
-                        .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                        .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
                         .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
                         .setLargeIcon(largeIcon(context))
                         .addAction(mPauseAction)
