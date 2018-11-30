@@ -17,6 +17,7 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.WorkoutGpsDetails;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -135,7 +136,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
                     loadNewData(mFeedYouList);
                 } else {
                     for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
-                        mFeedYouList.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
+                        WorkoutGpsSummary workout = workoutSnapshot.getValue(WorkoutGpsSummary.class);
+                        workout.setKey(workoutSnapshot.getKey());
+                        mFeedYouList.add(workout);
                         if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
                             loadNewData(mFeedYouList);
                         }

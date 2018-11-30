@@ -21,6 +21,8 @@ public class WorkoutGpsSummary implements Parcelable {
 
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
 
+    private String key;
+
     private String dateString;
     private String workoutName;
     private String duration;
@@ -181,6 +183,15 @@ public class WorkoutGpsSummary implements Parcelable {
         }
     }
 
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getWorkoutName() {
         return workoutName;
     }
@@ -273,6 +284,7 @@ public class WorkoutGpsSummary implements Parcelable {
 
     public WorkoutGpsSummary(Parcel in){
         // this.date = new Date(in.readLong());
+        this.key = in.readString();
         this.dateString = in.readString();
         this.workoutName = in.readString();
         this.duration = in.readString();
@@ -299,6 +311,7 @@ public class WorkoutGpsSummary implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         // dest.writeLong(this.date.getTime());
+        dest.writeString(this.key);
         dest.writeString(this.dateString);
         dest.writeString(this.workoutName);
         dest.writeString(this.duration);

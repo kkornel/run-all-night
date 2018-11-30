@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,12 +21,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummaryActivity;
+import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,7 +44,17 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,7 +66,7 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "WorkoutGpsDetails";
-    
+
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
     private TextView mActivityTypeTextView;
@@ -93,12 +109,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private CardView mLapsCardView;
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
-
-
-    private DatabaseReference mWorkoutRef;
-    private DatabaseReference mUserRef;
-    private String mUserUid;
-    private DatabaseReference mRootRef;
 
     private WorkoutGpsSummary mWorkoutGpsSummary;
 
@@ -317,8 +327,115 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        delete();
+
                         finish();
                     }})
                 .setNegativeButton(R.string.no, null).show();
+    }
+
+    private void delete() {
+        if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {
+            NetworkUtils.requestInternetConnection(mWorkoutCardView);
+            return;
+        }
+
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        final FirebaseUser user = auth.getCurrentUser();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        final DatabaseReference rootRef = database.getReference();
+        final DatabaseReference userRef = rootRef.child(Database.USERS);
+        final DatabaseReference workoutRef = rootRef.child(Database.WORKOUTS);
+
+        final String userUid = user.getUid();
+        final String key = mWorkoutGpsSummary.getKey();
+
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user.getLastWorkout().equals(key)) {
+
+                    ValueEventListener workoutListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long i = 1;
+                            long childrenCount = dataSnapshot.getChildrenCount();
+                            for (DataSnapshot workout : dataSnapshot.getChildren()) {
+                                if (i == childrenCount - 1) {
+                                    userRef.child(userUid).child(Database.LAST_WORKOUT).setValue(workout.getKey());
+                                }
+                                i++;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                            throw databaseError.toException();
+                        }
+                    };
+
+                    workoutRef.child(userUid).addListenerForSingleValueEvent(workoutListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+        userRef.child(userUid).addListenerForSingleValueEvent(userListener);
+
+        ValueEventListener workoutListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                WorkoutGpsSummary workout = dataSnapshot.getValue(WorkoutGpsSummary.class);
+
+                if (workout.getPicUrl() != null && !workout.getPicUrl().equals("")) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    StorageReference picsRef = storageRef.child(Database.PICTURES);
+
+                    picsRef.child(userUid).child(key + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: PICTURE DELETED");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.e(TAG, "onCancelled: " + exception.getMessage());
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");
+                }
+
+                workoutRef.child(userUid).child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(WorkoutGpsDetails.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e(TAG, "onCancelled: " + exception.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+        workoutRef.child(userUid).child(key).addListenerForSingleValueEvent(workoutListener);
+
+
     }
 }
