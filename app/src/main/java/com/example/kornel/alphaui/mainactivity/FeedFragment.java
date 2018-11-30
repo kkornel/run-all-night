@@ -52,7 +52,7 @@ public class FeedFragment extends Fragment {
             mFeedFriendsFragment.fetchNewData();
         }
         if (mFeedYouFragment != null) {
-            mFeedYouFragment.fetchNewData();
+            //mFeedYouFragment.fetchNewData();
         }
     }
 
