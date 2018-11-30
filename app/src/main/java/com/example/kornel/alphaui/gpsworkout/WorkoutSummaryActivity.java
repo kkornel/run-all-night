@@ -290,8 +290,14 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         });
 
         if (savedInstanceState != null) {
-            mSelectedPhotoBitmap = savedInstanceState.getParcelable(SELECTED_PHOTO_BITMAP_STATE);
-            mPhotoName = savedInstanceState.getString(SELECTED_PHOTO_NAME_STATE);
+            // mSelectedPhotoBitmap = savedInstanceState.getParcelable(SELECTED_PHOTO_BITMAP_STATE);
+            // mPhotoName = savedInstanceState.getString(SELECTED_PHOTO_NAME_STATE);
+            mCurrentPhotoUri = savedInstanceState.getParcelable(SELECTED_PHOTO_NAME_STATE);
+            try {
+                mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             mPhotoName = "";
             mSelectedPhotoBitmap = null;
@@ -306,8 +312,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(SELECTED_PHOTO_BITMAP_STATE, mSelectedPhotoBitmap);
-        outState.putString(SELECTED_PHOTO_NAME_STATE, mPhotoName);
+        // outState.putParcelable(SELECTED_PHOTO_BITMAP_STATE, mSelectedPhotoBitmap);
+        outState.putParcelable(SELECTED_PHOTO_NAME_STATE, mCurrentPhotoUri);
         super.onSaveInstanceState(outState);
     }
 
@@ -376,7 +382,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             return;
         }
 
-        int padding = 20;
+        final int padding = 40;
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -389,7 +395,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
 
         Polyline polyline = mMap.addPolyline(polylineOptions);
-        LatLngBounds bounds = builder.build();
+        final LatLngBounds bounds = builder.build();
 
         LatLng startPoint = new LatLng(path.get(0).getLatitude(), path.get(0).getLongitude());
         LatLng endPoint = new LatLng(path.get(path.size()-1).getLatitude(), path.get(path.size()-1).getLongitude());
@@ -418,7 +424,13 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         }
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+            }
+        });
     }
 
     @Override
@@ -471,7 +483,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             mWorkoutGpsSummary.setPrivate(true);
         }
 
-        if (!mPhotoName.equals("") && mSelectedPhotoBitmap != null) {
+        if ((mPhotoName != null  || !mPhotoName.equals("") ) && mSelectedPhotoBitmap != null) {
             uploadImage(key);
         } else {
             uploadWorkout(key);

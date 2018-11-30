@@ -51,10 +51,27 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.path = path;
         this.laps = laps;
-        this.picUrl = "";
-        this.status = "";
-        this.isPrivate = false;
-        weatherInfoCompressed = null;
+        // this.picUrl = null;
+        // this.status = null;
+        // this.isPrivate = false;
+        // weatherInfoCompressed = null;
+    }
+
+    public WorkoutGpsSummary(String dateString, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, String status, String picUrl, boolean isPrivate, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
+        this.dateString = dateString;
+        this.workoutName = workoutName;
+        this.duration = duration;
+        this.distance = distance;
+        this.avgPace = avgPace;
+        this.maxPace = maxPace;
+        this.avgSpeed = avgSpeed;
+        this.maxSpeed = maxSpeed;
+        this.status = status;
+        this.picUrl = picUrl;
+        this.isPrivate = isPrivate;
+        this.path = path;
+        this.laps = laps;
+        this.weatherInfoCompressed = weatherInfoCompressed;
     }
 
     @Exclude
@@ -243,6 +260,9 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", maxPace='" + maxPace + '\'' +
                 ", avgSpeed='" + avgSpeed + '\'' +
                 ", maxSpeed='" + maxSpeed + '\'' +
+                ", status='" + status + '\'' +
+                ", picUrl='" + picUrl + '\'' +
+                ", isPrivate=" + isPrivate +
                 ", path=" + path +
                 ", laps=" + laps +
                 ", weatherInfoCompressed=" + weatherInfoCompressed +
@@ -257,10 +277,13 @@ public class WorkoutGpsSummary implements Parcelable {
         this.workoutName = in.readString();
         this.duration = in.readString();
         this.distance = in.readString();
-        this.avgPace = in.readString();;
-        this.maxPace = in.readString();;
-        this.avgSpeed = in.readString();;
-        this.maxSpeed = in.readString();;
+        this.avgPace = in.readString();
+        this.maxPace = in.readString();
+        this.avgSpeed = in.readString();
+        this.maxSpeed = in.readString();
+        this.status = in.readString();
+        this.picUrl = in.readString();
+        this.isPrivate = in.readByte() != 0;
         path = new ArrayList<>();
         in.readList(this.path, LatLon.class.getClassLoader());
         laps = new ArrayList<>();
@@ -284,10 +307,14 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.maxPace);
         dest.writeString(this.avgSpeed);
         dest.writeString(this.maxSpeed);
+        dest.writeString(this.status);
+        dest.writeString(this.picUrl);
+        dest.writeByte((byte) (isPrivate ? 1 : 0));
         dest.writeList(this.path);
         dest.writeList(this.laps);
         dest.writeParcelable(this.weatherInfoCompressed, flags);
     }
+
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public WorkoutGpsSummary createFromParcel(Parcel in) {
             return new WorkoutGpsSummary(in);

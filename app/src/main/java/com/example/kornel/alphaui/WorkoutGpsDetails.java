@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,6 +49,8 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "WorkoutGpsDetails";
+    
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
     private TextView mActivityTypeTextView;
@@ -69,20 +72,24 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private ImageView mMaxSpeedImageView;
     private TextView mMaxSpeedTextView;
 
+    private TextView mStatusLabel;
     private CardView mStatusCardView;
     private TextView mStatusTextView;
 
+    private TextView mPhotoLabel;
     private CardView mPhotoCardView;
     private ImageView mPhotoImageView;
 
     private CardView mPrivacyCardView;
     private TextView mPrivacyTextView;
 
+    private TextView mWeatherLabel;
     private CardView mWeatherCardView;
     private TextView mWeatherSummaryTextView;
     private ImageView mWeatherImageView;
     private TextView mWeatherTempTextView;
 
+    private TextView mLapsLabel;
     private CardView mLapsCardView;
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
@@ -145,18 +152,42 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mAvgSpeedTextView.setText(mWorkoutGpsSummary.getAvgSpeed());
         mMaxSpeedTextView.setText(mWorkoutGpsSummary.getMaxSpeed());
 
+        Log.d(TAG, "onCreate: " +mWorkoutGpsSummary);
 
+        mStatusLabel = findViewById(R.id.statusLabel);
         mStatusCardView = findViewById(R.id.statusCardView);
         mStatusTextView = findViewById(R.id.statusTextView);
 
+        if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
+            mStatusLabel.setVisibility(View.GONE);
+            mStatusCardView.setVisibility(View.GONE);
+            Log.d(TAG, "mStatusLabel.setVisibility(View.GONE);: ");
+        } else {
+            mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
+            Log.d(TAG, "mWorkoutGpsSummary.getStatus(): ");
+        }
+
+        mPhotoLabel = findViewById(R.id.photoLabel);
         mPhotoCardView = findViewById(R.id.photoCardView);
         mPhotoImageView = findViewById(R.id.photoImageView);
 
+        if (mWorkoutGpsSummary.getPicUrl() == null || mWorkoutGpsSummary.getPicUrl().equals("")) {
+            mPhotoLabel.setVisibility(View.GONE);
+            mPhotoCardView.setVisibility(View.GONE);
+            Log.d(TAG, "mPhotoLabel.setVisibility(View.GONE);: ");
+        } else {
+            Picasso.get()
+                    .load(mWorkoutGpsSummary.getPicUrl())
+                    .into(mPhotoImageView);
+            Log.d(TAG, "Picasso.get(): ");
+        }
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
+        mPrivacyTextView.setText(mWorkoutGpsSummary.isPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
 
 
+        mWeatherLabel = findViewById(R.id.weatherLabel);
         mWeatherCardView = findViewById(R.id.weatherCardView);
         mWeatherSummaryTextView = findViewById(R.id.weatherSummaryTextView);
         mWeatherImageView = findViewById(R.id.weatherImageView);
@@ -170,17 +201,12 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                     .into(mWeatherImageView);
             mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
         } else {
-            mWeatherSummaryTextView.setText("Brak informacji o pogodzie.");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mWeatherImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_umbrella, getApplicationContext().getTheme()));
-            } else {
-                mWeatherImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_umbrella));
-            }
-            mWeatherTempTextView.setText(":(");
-
+            mWeatherLabel.setVisibility(View.GONE);
+            mWeatherCardView.setVisibility(View.GONE);
         }
 
 
+        mLapsLabel = findViewById(R.id.lapsLabel);
         mLapsCardView = findViewById(R.id.lapsCardView);
         mRecyclerView = findViewById(R.id.recyclerViewPace);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -189,14 +215,19 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
 
         ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
-        mPaceAdapter = new PaceAdapter(laps);
-        mRecyclerView.setAdapter(mPaceAdapter);
-
+        if (laps == null || laps.size() == 0) {
+            mLapsLabel.setVisibility(View.GONE);
+            mLapsCardView.setVisibility(View.GONE);
+        } else {
+            mPaceAdapter = new PaceAdapter(laps);
+            mRecyclerView.setAdapter(mPaceAdapter);
+        }
 
     }
 
     @Override
     public boolean onSupportNavigateUp() {
+        onBackPressed();
         return true;
     }
 
@@ -210,7 +241,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             return;
         }
 
-        int padding = 20;
+        final int padding = 40;
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -223,7 +254,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         }
 
         Polyline polyline = mMap.addPolyline(polylineOptions);
-        LatLngBounds bounds = builder.build();
+        final LatLngBounds bounds = builder.build();
 
         LatLng startPoint = new LatLng(path.get(0).getLatitude(), path.get(0).getLongitude());
         LatLng endPoint = new LatLng(path.get(path.size()-1).getLatitude(), path.get(path.size()-1).getLongitude());
@@ -252,7 +283,13 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             }
         }
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+            }
+        });
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,8 +91,6 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
     }
 
     class FeedYouViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final String TAG = "FeedYouViewHolder";
-
         private ImageView mWorkoutImageView;
         private TextView mDateTextView;
         private TextView mDistanceTextView;

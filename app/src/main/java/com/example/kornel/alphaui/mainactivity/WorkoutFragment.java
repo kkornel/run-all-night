@@ -523,7 +523,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     workoutsRef.child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                             // String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateStringPl();
                             // mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                             String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).gapBetweenWorkouts();

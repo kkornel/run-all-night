@@ -84,6 +84,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         mRootRef = database.getReference();
         mWorkoutsRef = mRootRef.child(Database.WORKOUTS);
 
+
         readYourWorkouts();
     }
 
@@ -101,7 +102,6 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     }
 
     public void fetchNewData() {
-        Log.d(TAG, "fetchNewData: ");
         readYourWorkouts();
     }
 
