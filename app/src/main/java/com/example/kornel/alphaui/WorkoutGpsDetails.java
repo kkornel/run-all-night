@@ -70,7 +70,6 @@ import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_IN
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCallback {
-
     private static final String TAG = "WorkoutGpsDetails";
 
     private CardView mWorkoutCardView;
@@ -193,8 +192,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         });
 
         if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
-            // mStatusLabel.setVisibility(View.GONE);
-            // mStatusCardView.setVisibility(View.GONE);
             mStatusTextView.setText(getString(R.string.edit_to_add_description));
         } else {
             mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
@@ -222,7 +219,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        // mPrivacyTextView.setText(mWorkoutGpsSummary.getIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
         mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? getString(R.string.only_me) :  getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
@@ -293,7 +289,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             return;
         }
 
-        final int padding = 40;
+        final int padding = 60;
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -338,7 +334,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                // mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
             }
         });
@@ -378,10 +373,9 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
     private void onDeletePhoto() {
         new AlertDialog.Builder(WorkoutGpsDetails.this)
-                .setTitle("Czy na pewno chcesz usunąć zdjęćie?")
+                .setTitle(R.string.photo_delete_confirmation)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         deletePhoto();
@@ -392,17 +386,11 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .show();
     }
 
-
-
     private void deletePhoto() {
-
         mPhotoLabel.setVisibility(View.GONE);
         mPhotoCardView.setVisibility(View.GONE);
-
         mPhotoDeleted = true;
         onWorkoutEdited();
-
-
     }
 
     private void onEditStatus() {
@@ -410,7 +398,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_change_description, null);
         final EditText editText = view.findViewById(R.id.editStatusEditText);
-        if (mStatusTextView.getText().toString().equals(getString(R.string.add_description))) {
+        if (mStatusTextView.getText().toString().equals(getString(R.string.edit_to_add_description))) {
             editText.setText("");
         } else {
             editText.setText(mStatusTextView.getText());
@@ -444,21 +432,18 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         // final int checkedItemId = mWorkoutGpsSummary.getIsPrivate() ? 1 :  0;
         final int checkedItemId = mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? 1 :  0;
         new AlertDialog.Builder(WorkoutGpsDetails.this)
-                .setTitle("Wybierz ustawienia")
+                .setTitle(R.string.pick_settings)
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "onClick: " + which);
-                        
+
                         if (checkedItemId != which) {
                             boolean isPrivate = which == 1 ? true : false;
-                            // mWorkoutGpsSummary.setPrivate(isPrivate);
                             mWorkoutGpsSummary.setPrivacy(isPrivate ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
                             if (isPrivate) {
                                 mPrivacyTextView.setText(getString(R.string.only_me));
                             } else {
                                 mPrivacyTextView.setText(getString(R.string.friends));
                             }
-
                             onWorkoutEdited();
                         }
 
@@ -468,7 +453,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .show();
     }
 
-
     private void onWorkoutEdited() {
         mWorkoutEdited = true;
         mMenu.getItem(0).setVisible(true);
@@ -476,8 +460,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
     private void dismissChangesDialogShow() {
         new AlertDialog.Builder(WorkoutGpsDetails.this)
-                .setTitle("Masz niezapisane zmiany!")
-                .setMessage("Czy chcesz nadal wyjść?")
+                .setTitle(R.string.have_unsaved_changes)
+                .setMessage(R.string.still_want_to_exit)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -485,8 +469,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                     }})
                 .setNegativeButton(R.string.no, null).show();
     }
-
-
 
     private void saveChanges() {
         if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {
@@ -502,7 +484,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             picsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "onSuccess: PICTURE DELETED");
                     mPhotoImageView.setVisibility(View.GONE);
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -524,7 +505,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mWorkoutEdited = false;
 
-        Toast.makeText(this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.changes_saved), Toast.LENGTH_SHORT).show();
 
         finish();
     }

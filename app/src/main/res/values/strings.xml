@@ -196,6 +196,11 @@
     <string name="refresh">Odświeżanie</string>
     <string name="change">Zmień</string>
     <string name="edit_to_add_description">Edytuj, aby dodać opis</string>
+    <string name="photo_delete_confirmation">Czy na pewno chcesz usunąć zdjęcie?</string>
+    <string name="pick_settings">Wybierz ustawienia</string>
+    <string name="have_unsaved_changes">Masz niezapisane zmiany!</string>
+    <string name="still_want_to_exit">Czy chcesz nadal wyjść?</string>
+    <string name="changes_saved">Zapisano zmiany</string>
 
 
 </resources>
