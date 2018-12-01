@@ -15,8 +15,6 @@ import com.example.kornel.alphaui.R;
 
 
 public class FeedFragment extends Fragment {
-    private static final String TAG = "FeedFragment";
-
     private FeedPagerAdapter mFeedPagerAdapter;
     private ViewPager mViewPager;
 
@@ -47,15 +45,6 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
-    public void fetchNewData() {
-        if (mFeedFriendsFragment != null) {
-            //mFeedFriendsFragment.fetchNewData();
-        }
-        if (mFeedYouFragment != null) {
-            //mFeedYouFragment.fetchNewData();
-        }
-    }
-
     // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
     // one of the sections/tabs/pages.
     public class FeedPagerAdapter extends FragmentPagerAdapter {
@@ -68,14 +57,9 @@ public class FeedFragment extends Fragment {
         public Fragment getItem(int position) {
             if (position == 0) {
                 mFeedFriendsFragment = new FeedFriendsFragment();
-                // FeedFriendsFragment feedFriendsFragment = new FeedFriendsFragment();
-                // mFeedFriendsFragment.setFeedFriendsList(friendWorkoutsList);
-                // return feedFriendsFragment;
                 return mFeedFriendsFragment;
             } else {
                 mFeedYouFragment = new FeedYouFragment();
-                // FeedYouFragment feedYouFragment = new FeedYouFragment();
-                // mFeedYouFragment.setFeedYouList(mMyWorkouts);
                 return mFeedYouFragment;
             }
         }

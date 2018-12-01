@@ -104,9 +104,17 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+    
+    @Override
     public void onStart() {
         super.onStart();
 
+        Log.d(TAG, "onStart: ");
+        
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         mUserUid = mUser.getUid();
