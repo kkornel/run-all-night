@@ -61,8 +61,6 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
                     WorkoutGpsSummary workout = workoutSnapshot.getValue(WorkoutGpsSummary.class);
                     workout.setKey(workoutSnapshot.getKey());
                     mFeedYouList.add(workout);
-                    Log.d(TAG, "dataSnapshot.getChildrenCount(): " + dataSnapshot.getChildrenCount());
-                                    Log.d(TAG, "mFeedYouList.size() " + mFeedYouList.size());
                     if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
                         loadNewData(mFeedYouList);
                     }
@@ -102,19 +100,11 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
 
         return rootView;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
     
     @Override
     public void onStart() {
         super.onStart();
 
-        Log.d(TAG, "onStart: ");
-        
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         mUserUid = mUser.getUid();
@@ -163,37 +153,6 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         } else {
             mNoDataInfoTextView.setVisibility(View.GONE);
         }
-    }
-
-    private void readYourWorkouts() {
-        // final DatabaseReference myWorkoutsRef = mWorkoutsRef.child(mUserUid);
-        // ValueEventListener myWorkoutsListener = new ValueEventListener() {
-        //     @Override
-        //     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        //         mFeedYouList = new ArrayList<>();
-        //         if (dataSnapshot.getValue() == null) {
-        //             loadNewData(mFeedYouList);
-        //         } else {
-        //             for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
-        //                 WorkoutGpsSummary workout = workoutSnapshot.getValue(WorkoutGpsSummary.class);
-        //                 workout.setKey(workoutSnapshot.getKey());
-        //                 mFeedYouList.add(workout);
-        //                 Log.d(TAG, "dataSnapshot.getChildrenCount(): " + dataSnapshot.getChildrenCount());
-        //                 Log.d(TAG, "mFeedYouList.size() " + mFeedYouList.size());
-        //                 if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
-        //                     loadNewData(mFeedYouList);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void onCancelled(@NonNull DatabaseError databaseError) {
-        //         Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-        //         throw databaseError.toException();
-        //     }
-        // };
-        // myWorkoutsRef.addListenerForSingleValueEvent(myWorkoutsListener);
     }
 
     private void sortListByDate(List<WorkoutGpsSummary> list) {

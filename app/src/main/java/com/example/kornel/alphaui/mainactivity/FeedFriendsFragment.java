@@ -94,7 +94,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        // mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mFeedFriendsAdapter = new FeedFriendsAdapter(getContext(), this, mFeedFriendsList);
         mRecyclerView.setAdapter(mFeedFriendsAdapter);
@@ -106,16 +106,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-
-        Log.d(TAG, "onStart: ");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
