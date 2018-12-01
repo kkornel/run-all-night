@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -89,6 +90,8 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummaryActivity";
+
+    private static final int MAX_CHARS_IN_EDIT_TEXT = 120;
 
     private static final int REQUEST_CODE_PERMISSIONS_WRITE_STORAGE = 79;
     private static final int REQUEST_CODE_PERMISSIONS_CAMERA = 80;
@@ -211,6 +214,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         mStatusCardView = findViewById(R.id.statusCardView);
         mStatusEditText = findViewById(R.id.statusEditText);
+        mStatusEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(MAX_CHARS_IN_EDIT_TEXT) });
 
         mPhotoCardView = findViewById(R.id.photoCardView);
         mPhotoIconImageView = findViewById(R.id.photoIconImageView);
