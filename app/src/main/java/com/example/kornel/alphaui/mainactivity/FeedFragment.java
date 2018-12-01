@@ -49,7 +49,7 @@ public class FeedFragment extends Fragment {
 
     public void fetchNewData() {
         if (mFeedFriendsFragment != null) {
-            mFeedFriendsFragment.fetchNewData();
+            //mFeedFriendsFragment.fetchNewData();
         }
         if (mFeedYouFragment != null) {
             //mFeedYouFragment.fetchNewData();

@@ -5,6 +5,12 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.kornel.alphaui.FriendWorkout;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class Utils {
 
     public static void hideKeyboard(Activity activity) {

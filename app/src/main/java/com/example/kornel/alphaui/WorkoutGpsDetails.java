@@ -296,8 +296,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-
+                // mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
             }
         });
     }
