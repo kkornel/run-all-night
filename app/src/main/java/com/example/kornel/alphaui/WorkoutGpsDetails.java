@@ -1,8 +1,7 @@
 package com.example.kornel.alphaui;
 
+import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -11,26 +10,29 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
-import com.example.kornel.alphaui.gpsworkout.WorkoutSummaryActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
@@ -58,8 +60,11 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity.WORKOUT_DETAILS_EXTRA_INTENT;
+import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
+import static com.example.kornel.alphaui.gpsworkout.WorkoutSummaryActivity.MAX_CHARS_IN_EDIT_TEXT;
 import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_INTENT_EXTRA;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
@@ -91,13 +96,16 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private TextView mStatusLabel;
     private CardView mStatusCardView;
     private TextView mStatusTextView;
+    private ImageButton mStatusEditButton;
 
     private TextView mPhotoLabel;
     private CardView mPhotoCardView;
     private ImageView mPhotoImageView;
+    private Button mPhotoDeleteButton;
 
     private CardView mPrivacyCardView;
     private TextView mPrivacyTextView;
+    private Button mPrivacyChangeButton;
 
     private TextView mWeatherLabel;
     private CardView mWeatherCardView;
@@ -111,6 +119,14 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private PaceAdapter mPaceAdapter;
 
     private WorkoutGpsSummary mWorkoutGpsSummary;
+    private boolean mWorkoutEdited = false;
+
+    private Menu mMenu;
+
+    private DatabaseReference mRootRef;
+
+    private String mUserUid;
+    private String mWorkoutKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,40 +178,57 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mAvgSpeedTextView.setText(mWorkoutGpsSummary.getAvgSpeed());
         mMaxSpeedTextView.setText(mWorkoutGpsSummary.getMaxSpeed());
 
-        Log.d(TAG, "onCreate: " +mWorkoutGpsSummary);
 
         mStatusLabel = findViewById(R.id.statusLabel);
         mStatusCardView = findViewById(R.id.statusCardView);
         mStatusTextView = findViewById(R.id.statusTextView);
+        mStatusEditButton = findViewById(R.id.editDescriptionButton);
+        mStatusEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onEditStatus();
+            }
+        });
 
         if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
-            mStatusLabel.setVisibility(View.GONE);
-            mStatusCardView.setVisibility(View.GONE);
-            Log.d(TAG, "mStatusLabel.setVisibility(View.GONE);: ");
+            // mStatusLabel.setVisibility(View.GONE);
+            // mStatusCardView.setVisibility(View.GONE);
+            mStatusTextView.setText(getString(R.string.add_description));
         } else {
             mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
-            Log.d(TAG, "mWorkoutGpsSummary.getStatus(): ");
         }
 
         mPhotoLabel = findViewById(R.id.photoLabel);
         mPhotoCardView = findViewById(R.id.photoCardView);
         mPhotoImageView = findViewById(R.id.photoImageView);
+        mPhotoDeleteButton = findViewById(R.id.deletePhotoButton);
+        mPhotoDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDeletePhoto();
+            }
+        });
 
         if (mWorkoutGpsSummary.getPicUrl() == null || mWorkoutGpsSummary.getPicUrl().equals("")) {
-            mPhotoLabel.setVisibility(View.GONE);
-            mPhotoCardView.setVisibility(View.GONE);
-            Log.d(TAG, "mPhotoLabel.setVisibility(View.GONE);: ");
+            // mPhotoLabel.setVisibility(View.GONE);
+            // mPhotoCardView.setVisibility(View.GONE);
+            setAddPhotoButton();
         } else {
             Picasso.get()
                     .load(mWorkoutGpsSummary.getPicUrl())
                     .into(mPhotoImageView);
-            Log.d(TAG, "Picasso.get(): ");
         }
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.isPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
-
+        mPrivacyTextView.setText(mWorkoutGpsSummary.isIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
+        mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
+        mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onChangePrivacy();
+            }
+        });
 
         mWeatherLabel = findViewById(R.id.weatherLabel);
         mWeatherCardView = findViewById(R.id.weatherCardView);
@@ -213,6 +246,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         } else {
             mWeatherLabel.setVisibility(View.GONE);
             mWeatherCardView.setVisibility(View.GONE);
+
         }
 
 
@@ -233,12 +267,20 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             mRecyclerView.setAdapter(mPaceAdapter);
         }
 
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        final FirebaseUser user = auth.getCurrentUser();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        mRootRef = database.getReference();
+
+        mUserUid = user.getUid();
+        mWorkoutKey = mWorkoutGpsSummary.getKey();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    private void setAddPhotoButton() {
+        mPhotoImageView.setVisibility(View.GONE);
+        mPhotoDeleteButton.setText("Dodaj");
+        mPhotoDeleteButton.setOnClickListener();
     }
 
     @Override
@@ -303,21 +345,178 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        if (mWorkoutEdited) {
+            dismissChangesDialogShow();
+        } else {
+            onBackPressed();
+        }
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mMenu = menu;
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_delete, menu);
+        inflater.inflate(R.menu.menu_save_delete_workout, menu);
+        menu.getItem(0).setVisible(false);
+        menu.getItem(1).setShowAsAction(SHOW_AS_ACTION_ALWAYS);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.deleteButton:
+            case R.id.save_workout:
+                saveChanges();
+                return true;
+            case R.id.delete_workout:
                 deleteWorkout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    private void onDeletePhoto() {
+        new AlertDialog.Builder(WorkoutGpsDetails.this)
+                .setTitle("Czy na pewno chcesz usunąć zdjęćie?")
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deletePhoto();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .create()
+                .show();
+    }
+
+
+    private void deletePhoto() {
+
+        mPhotoImageView.setVisibility(View.GONE);
+
+
+        mPhotoDeleteButton.setText("Dodaj");
+
+        // FirebaseStorage storage = FirebaseStorage.getInstance();
+        // StorageReference storageRef = storage.getReference();
+        // StorageReference picsRef = storageRef.child(Database.PICTURES);
+        //
+        // picsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        //     @Override
+        //     public void onSuccess(Void aVoid) {
+        //         Log.d(TAG, "onSuccess: PICTURE DELETED");
+        //         mPhotoImageView.setVisibility(View.GONE);
+        //     }
+        // }).addOnFailureListener(new OnFailureListener() {
+        //     @Override
+        //     public void onFailure(@NonNull Exception exception) {
+        //         Log.e(TAG, "onCancelled: " + exception.getMessage());
+        //     }
+        // });
+    }
+
+    private void onEditStatus() {
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_change_description, null);
+        final EditText editText = view.findViewById(R.id.editStatusEditText);
+        if (mStatusTextView.getText().toString().equals(getString(R.string.add_description))) {
+            editText.setText("");
+        } else {
+            editText.setText(mStatusTextView.getText());
+        }
+        editText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(MAX_CHARS_IN_EDIT_TEXT) });
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        new AlertDialog.Builder(WorkoutGpsDetails.this)
+                .setView(view)
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String newStatus = editText.getText().toString();
+                        mStatusTextView.setText(newStatus);
+                        mWorkoutGpsSummary.setStatus(newStatus);
+                        onWorkoutEdited();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create()
+                .show();
+
+        Utils.hideKeyboard(this);
+    }
+    
+    private void onChangePrivacy() {
+        CharSequence[] cs = {getString(R.string.friends), getString(R.string.just_you)};
+        final int checkedItemId = mWorkoutGpsSummary.isIsPrivate() ? 1 :  0;
+        new AlertDialog.Builder(WorkoutGpsDetails.this)
+                .setTitle("Wybierz ustawienia")
+                .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: " + which);
+                        
+                        if (checkedItemId != which) {
+                            boolean isPrivate = which == 1 ? true : false;
+                            mWorkoutGpsSummary.setPrivate(isPrivate);
+                            if (isPrivate) {
+                                mPrivacyTextView.setText(getString(R.string.just_you));
+                            } else {
+                                mPrivacyTextView.setText(getString(R.string.friends));
+                            }
+
+                            onWorkoutEdited();
+                        }
+
+                        dialog.dismiss();
+                    }})
+                .create()
+                .show();
+    }
+
+
+    private void onWorkoutEdited() {
+        mWorkoutEdited = true;
+        mMenu.getItem(0).setVisible(true);
+    }
+
+    private void dismissChangesDialogShow() {
+        new AlertDialog.Builder(WorkoutGpsDetails.this)
+                .setTitle("Masz niezapisane zmiany!")
+                .setMessage("Czy chcesz nadal wyjść?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        onBackPressed();
+                    }})
+                .setNegativeButton(R.string.no, null).show();
+    }
+
+
+
+    private void saveChanges() {
+        if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {
+            NetworkUtils.requestInternetConnection(mWorkoutCardView);
+            return;
+        }
+
+        Map<String, Object> workoutValues = mWorkoutGpsSummary.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + mWorkoutKey, workoutValues);
+
+        mRootRef.updateChildren(childUpdates);
+
+        mWorkoutEdited = false;
+
+        Toast.makeText(this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();
+
+        finish();
     }
 
     private void deleteWorkout() {
@@ -331,7 +530,13 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
                         finish();
                     }})
-                .setNegativeButton(R.string.no, null).show();
+                .setNegativeButton(R.string.no, null)
+                .create()
+                .show();
+    }
+
+    public CardView getSummaryCardView() {
+        return mSummaryCardView;
     }
 
     private void delete() {

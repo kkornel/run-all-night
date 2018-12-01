@@ -193,6 +193,8 @@
     <string name="today">Dzisiaj</string>
     <string name="just_you">Tylko ty</string>
     <string name="new_post_swipe_to_refresh">Nowy post! Odśwież stronę, aby zobaczyć</string>
+    <string name="refresh">Odświeżanie</string>
+    <string name="change">Zmień</string>
 
 
 </resources>

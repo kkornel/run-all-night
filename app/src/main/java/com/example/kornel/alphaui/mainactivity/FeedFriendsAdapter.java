@@ -40,10 +40,10 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
     @Override
     public int getItemViewType(int position) {
         FriendWorkout workout = mFriendsFeedList.get(position);
-        if (workout.getWorkout().getStatus() != null) {
-            return TYPE_WITH_DESCRIPTION;
+        if (workout.getWorkout().getStatus() == null || workout.getWorkout().getStatus().equals("")) {
+            return TYPE_WITHOUT_DESCRIPTION;
         }
-        return TYPE_WITHOUT_DESCRIPTION;
+        return TYPE_WITH_DESCRIPTION;
     }
 
     @Override

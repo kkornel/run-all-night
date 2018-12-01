@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,6 +55,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
     private List<FriendWorkout> mFeedFriendsList;
     private List<String> mFriendsIds;
+    private List<FriendInfo> mFriendsInfo;
 
     // I do it, because I want to call loadNewData() only when I get all the data from ALL friends
     // not every for every friend separately
@@ -63,6 +63,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private long mFriendsCount;
 
     private boolean mFragmentJustStarted;
+    private boolean mNewData = false;
+    private boolean mDataChanged = false;
 
     public FeedFriendsFragment() {
 
@@ -79,12 +81,24 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.refresh), Toast.LENGTH_SHORT).show();
 
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         // fetchNewData();
-                        readFriendsWorkouts(mFriendsIds);
+                        //readFriendsWorkouts(mFriendsIds);
+
+                        if (mDataChanged) {
+                            readFriendsWorkouts(mFriendsIds);
+                            mDataChanged = false;
+                        } else {
+                            if (mNewData) {
+                                mFragmentJustStarted = false;
+                                loadNewData(mFeedFriendsList);
+                                mNewData = false;
+                            }
+                        }
+                        mSwipeRefresh.setRefreshing(false);
                     }
                 }
         );
@@ -137,17 +151,48 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         ChildEventListener childWorkoutListener = new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildAdded: ");
+
                                 if (!mFragmentJustStarted) {
+                                    mNewData = true;
                                     Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
+                                    WorkoutGpsSummary workoutGpsSummary = dataSnapshot.getValue(WorkoutGpsSummary.class);
+                                    FriendInfo friendInfo = null;
+                                    for (FriendInfo info : mFriendsInfo) {
+                                        if (info.getUid().equals(friendUid)) {
+                                            friendInfo = info;
+                                            break;
+                                        }
+                                    }
+                                    if (friendInfo != null) {
+                                        mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutGpsSummary));
+                                    }
                                 }
                             }
 
+                            // @Override
+                            // public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
+                            // @Override
+                            // public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { /* EMPTY */}
+                            // @Override
+                            // public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
+
                             @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildChanged: ");
+                                mDataChanged = true;
+                            }
+
                             @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { /* EMPTY */}
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "onChildRemoved: ");
+                                mDataChanged = true;
+                            }
                             @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildMoved: ");
+                                mDataChanged = true;
+                            }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -179,6 +224,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         if (isGpsBased) {
             Intent i = new Intent(getActivity(), WorkoutGpsDetails.class);
             i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
+            Log.d(TAG, "onListItemClick: " + mFeedFriendsList.get(clickedItemIndex));
             startActivity(i);
         } else {
             // Intent i = new Intent(getActivity(), WorkoutNonGpsDeatils.class);
@@ -227,6 +273,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     // }
 
     private void readFriendsWorkouts(List<String> friendsIds) {
+        mFriendsInfo = new ArrayList<>();
         for (final String friendUid : friendsIds) {
             mFriendsCount = friendsIds.size();
 
@@ -239,13 +286,15 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                     final String avatarUrl = user.getAvatarUrl();
                     final String friendName = user.getFullName();
 
+                    mFriendsInfo.add(new FriendInfo(friendUid, avatarUrl, friendName));
+
                     DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
                     ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                if (!workout.isPrivate()) {
+                                if (!workout.isIsPrivate()) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);
@@ -304,6 +353,30 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private void showNoFriendsMsg() {
         mNoDataInfoTextView.setVisibility(View.VISIBLE);
         mNoDataInfoTextView.setText(getString(R.string.no_friends));
+    }
+
+    static class FriendInfo {
+        private String uid;
+        private String avatarUrl;
+        private String friendName;
+
+        public FriendInfo(String uid, String avatarUrl, String friendName) {
+            this.uid = uid;
+            this.avatarUrl = avatarUrl;
+            this.friendName = friendName;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public String getFriendName() {
+            return friendName;
+        }
     }
 
     // private void readFriendsWorkouts() {

@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorkoutGpsSummary implements Parcelable {
     private static final String TAG = "WorkoutGpsSummary";
@@ -55,11 +57,11 @@ public class WorkoutGpsSummary implements Parcelable {
         this.laps = laps;
         // this.picUrl = null;
         // this.status = null;
-        // this.isPrivate = false;
+        // this.isIsPrivate = false;
         // weatherInfoCompressed = null;
     }
 
-    public WorkoutGpsSummary(String dateString, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, String status, String picUrl, boolean isPrivate, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
+    public WorkoutGpsSummary(String dateString, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, String status, String picUrl, boolean aIsPrivate, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
         this.dateString = dateString;
         this.workoutName = workoutName;
         this.duration = duration;
@@ -70,7 +72,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.status = status;
         this.picUrl = picUrl;
-        this.isPrivate = isPrivate;
+        this.isPrivate = aIsPrivate;
         this.path = path;
         this.laps = laps;
         this.weatherInfoCompressed = weatherInfoCompressed;
@@ -228,7 +230,7 @@ public class WorkoutGpsSummary implements Parcelable {
         return status;
     }
 
-    public boolean isPrivate() {
+    public boolean isIsPrivate() {
         return isPrivate;
     }
 
@@ -257,7 +259,7 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
+        this.isPrivate = aPrivate;
     }
 
     @Override
@@ -273,11 +275,33 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", maxSpeed='" + maxSpeed + '\'' +
                 ", status='" + status + '\'' +
                 ", picUrl='" + picUrl + '\'' +
-                ", isPrivate=" + isPrivate +
+                ", isIsPrivate=" + isPrivate +
                 ", path=" + path +
                 ", laps=" + laps +
                 ", weatherInfoCompressed=" + weatherInfoCompressed +
                 '}';
+    }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("dateString", dateString);
+        result.put("workoutName", workoutName);
+        result.put("duration", duration);
+        result.put("distance", distance);
+        result.put("avgPace", avgPace);
+        result.put("maxPace", maxPace);
+        result.put("avgSpeed", avgSpeed);
+        result.put("maxSpeed", maxSpeed);
+        result.put("status", status);
+        result.put("picUrl", picUrl);
+        result.put("isIsPrivate", isPrivate);
+        result.put("path", path);
+        result.put("laps", laps);
+        result.put("weatherInfoCompressed", weatherInfoCompressed);
+
+        return result;
     }
 
     // Parcelling Part

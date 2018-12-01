@@ -91,7 +91,7 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummaryActivity";
 
-    private static final int MAX_CHARS_IN_EDIT_TEXT = 100;
+    public static final int MAX_CHARS_IN_EDIT_TEXT = 100;
 
     private static final int REQUEST_CODE_PERMISSIONS_WRITE_STORAGE = 79;
     private static final int REQUEST_CODE_PERMISSIONS_CAMERA = 80;
