@@ -21,6 +21,7 @@ import com.example.kornel.alphaui.WorkoutGpsDetails;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.Privacy;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -294,7 +295,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                if (!workout.getIsPrivate()) {
+                                if (!workout.getPrivacy().equals(Privacy.ONLY_ME.getValue())) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);

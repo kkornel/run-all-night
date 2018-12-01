@@ -50,6 +50,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.Privacy;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
@@ -480,11 +481,13 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
-        if (privacy.equals(getString(R.string.friends))) {
-            mWorkoutGpsSummary.setPrivate(false);
-        } else {
-            mWorkoutGpsSummary.setPrivate(true);
-        }
+        // if () {
+        //     mWorkoutGpsSummary.setPrivate(false);
+        // } else {
+        //     mWorkoutGpsSummary.setPrivate(true);
+        // }
+
+        mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)) ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
 
         if ((mPhotoName != null  || !mPhotoName.equals("") ) && mSelectedPhotoBitmap != null) {
             uploadImage(key);

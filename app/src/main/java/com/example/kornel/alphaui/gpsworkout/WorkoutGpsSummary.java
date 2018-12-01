@@ -35,6 +35,7 @@ public class WorkoutGpsSummary implements Parcelable {
     private String maxSpeed;
     private String status;
     private String picUrl;
+    private String privacy;
     private boolean isPrivate;
     private ArrayList<LatLon> path;
     private ArrayList<Lap> laps;
@@ -72,6 +73,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.status = status;
         this.picUrl = picUrl;
+        // this.isPrivate = aIsPrivate;
         this.isPrivate = aIsPrivate;
         this.path = path;
         this.laps = laps;
@@ -230,8 +232,17 @@ public class WorkoutGpsSummary implements Parcelable {
         return status;
     }
 
+    @Exclude
     public boolean getIsPrivate() {
         return isPrivate;
+    }
+
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(String p) {
+        this.privacy = p;
     }
 
     public ArrayList<LatLon> getPath() {
@@ -296,7 +307,7 @@ public class WorkoutGpsSummary implements Parcelable {
         result.put("maxSpeed", maxSpeed);
         result.put("status", status);
         result.put("picUrl", picUrl);
-        result.put("getIsPrivate", isPrivate);
+        result.put("privacy", privacy);
         result.put("path", path);
         result.put("laps", laps);
         result.put("weatherInfoCompressed", weatherInfoCompressed);
@@ -319,7 +330,8 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = in.readString();
         this.status = in.readString();
         this.picUrl = in.readString();
-        this.isPrivate = in.readByte() != 0;
+        this.privacy = in.readString();
+        // this.isPrivate = in.readByte() != 0;
         path = new ArrayList<>();
         in.readList(this.path, LatLon.class.getClassLoader());
         laps = new ArrayList<>();
@@ -346,7 +358,8 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.maxSpeed);
         dest.writeString(this.status);
         dest.writeString(this.picUrl);
-        dest.writeByte((byte) (isPrivate ? 1 : 0));
+        dest.writeString(this.privacy);
+        // dest.writeByte((byte) (isPrivate ? 1 : 0));
         dest.writeList(this.path);
         dest.writeList(this.laps);
         dest.writeParcelable(this.weatherInfoCompressed, flags);

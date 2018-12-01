@@ -31,6 +31,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.Privacy;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
@@ -194,7 +195,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
             // mStatusLabel.setVisibility(View.GONE);
             // mStatusCardView.setVisibility(View.GONE);
-            mStatusTextView.setText(getString(R.string.add_description));
+            mStatusTextView.setText(getString(R.string.edit_to_add_description));
         } else {
             mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
         }
@@ -221,7 +222,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.getIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
+        // mPrivacyTextView.setText(mWorkoutGpsSummary.getIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
+        mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? getString(R.string.only_me) :  getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -438,8 +440,9 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     }
     
     private void onChangePrivacy() {
-        CharSequence[] cs = {getString(R.string.friends), getString(R.string.just_you)};
-        final int checkedItemId = mWorkoutGpsSummary.getIsPrivate() ? 1 :  0;
+        CharSequence[] cs = {getString(R.string.friends), getString(R.string.only_me)};
+        // final int checkedItemId = mWorkoutGpsSummary.getIsPrivate() ? 1 :  0;
+        final int checkedItemId = mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? 1 :  0;
         new AlertDialog.Builder(WorkoutGpsDetails.this)
                 .setTitle("Wybierz ustawienia")
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
@@ -448,9 +451,10 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                         
                         if (checkedItemId != which) {
                             boolean isPrivate = which == 1 ? true : false;
-                            mWorkoutGpsSummary.setPrivate(isPrivate);
+                            // mWorkoutGpsSummary.setPrivate(isPrivate);
+                            mWorkoutGpsSummary.setPrivacy(isPrivate ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
                             if (isPrivate) {
-                                mPrivacyTextView.setText(getString(R.string.just_you));
+                                mPrivacyTextView.setText(getString(R.string.only_me));
                             } else {
                                 mPrivacyTextView.setText(getString(R.string.friends));
                             }
