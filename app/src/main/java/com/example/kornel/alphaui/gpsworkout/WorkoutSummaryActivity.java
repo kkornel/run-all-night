@@ -91,7 +91,7 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutSummaryActivity";
 
-    private static final int MAX_CHARS_IN_EDIT_TEXT = 120;
+    private static final int MAX_CHARS_IN_EDIT_TEXT = 100;
 
     private static final int REQUEST_CODE_PERMISSIONS_WRITE_STORAGE = 79;
     private static final int REQUEST_CODE_PERMISSIONS_CAMERA = 80;
@@ -99,8 +99,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private static final int REQUEST_PICK_IMAGE = 123;
     private static final int REQUEST_IMAGE_CAPTURE = 321;
 
-    private static final String SELECTED_PHOTO_BITMAP_STATE = "bitmap";
-    private static final String SELECTED_PHOTO_NAME_STATE = "name";
+    private static final String PHOTO_URI = "uri";
 
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
@@ -295,8 +294,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         if (savedInstanceState != null) {
             // mSelectedPhotoBitmap = savedInstanceState.getParcelable(SELECTED_PHOTO_BITMAP_STATE);
-            // mPhotoName = savedInstanceState.getString(SELECTED_PHOTO_NAME_STATE);
-            mCurrentPhotoUri = savedInstanceState.getParcelable(SELECTED_PHOTO_NAME_STATE);
+            // mPhotoName = savedInstanceState.getString(PHOTO_URI);
+            mCurrentPhotoUri = savedInstanceState.getParcelable(PHOTO_URI);
             try {
                 mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
             } catch (IOException e) {
@@ -317,7 +316,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // outState.putParcelable(SELECTED_PHOTO_BITMAP_STATE, mSelectedPhotoBitmap);
-        outState.putParcelable(SELECTED_PHOTO_NAME_STATE, mCurrentPhotoUri);
+        outState.putParcelable(PHOTO_URI, mCurrentPhotoUri);
         super.onSaveInstanceState(outState);
     }
 
@@ -431,7 +430,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
 
             }
         });
