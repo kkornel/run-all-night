@@ -57,7 +57,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.laps = laps;
         // this.picUrl = null;
         // this.status = null;
-        // this.isIsPrivate = false;
+        // this.getIsPrivate = false;
         // weatherInfoCompressed = null;
     }
 
@@ -230,7 +230,7 @@ public class WorkoutGpsSummary implements Parcelable {
         return status;
     }
 
-    public boolean isIsPrivate() {
+    public boolean getIsPrivate() {
         return isPrivate;
     }
 
@@ -275,7 +275,7 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", maxSpeed='" + maxSpeed + '\'' +
                 ", status='" + status + '\'' +
                 ", picUrl='" + picUrl + '\'' +
-                ", isIsPrivate=" + isPrivate +
+                ", getIsPrivate=" + isPrivate +
                 ", path=" + path +
                 ", laps=" + laps +
                 ", weatherInfoCompressed=" + weatherInfoCompressed +
@@ -296,7 +296,7 @@ public class WorkoutGpsSummary implements Parcelable {
         result.put("maxSpeed", maxSpeed);
         result.put("status", status);
         result.put("picUrl", picUrl);
-        result.put("isIsPrivate", isPrivate);
+        result.put("getIsPrivate", isPrivate);
         result.put("path", path);
         result.put("laps", laps);
         result.put("weatherInfoCompressed", weatherInfoCompressed);

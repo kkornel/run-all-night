@@ -294,7 +294,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                if (!workout.isIsPrivate()) {
+                                if (!workout.getIsPrivate()) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);

@@ -101,7 +101,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private TextView mPhotoLabel;
     private CardView mPhotoCardView;
     private ImageView mPhotoImageView;
-    private Button mPhotoDeleteButton;
+    private ImageButton mPhotoDeleteButton;
 
     private CardView mPrivacyCardView;
     private TextView mPrivacyTextView;
@@ -119,7 +119,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private PaceAdapter mPaceAdapter;
 
     private WorkoutGpsSummary mWorkoutGpsSummary;
-    private boolean mWorkoutEdited = false;
+    private boolean mWorkoutEdited;
+    private boolean mPhotoDeleted;
 
     private Menu mMenu;
 
@@ -210,9 +211,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         });
 
         if (mWorkoutGpsSummary.getPicUrl() == null || mWorkoutGpsSummary.getPicUrl().equals("")) {
-            // mPhotoLabel.setVisibility(View.GONE);
-            // mPhotoCardView.setVisibility(View.GONE);
-            setAddPhotoButton();
+            mPhotoLabel.setVisibility(View.GONE);
+            mPhotoCardView.setVisibility(View.GONE);
         } else {
             Picasso.get()
                     .load(mWorkoutGpsSummary.getPicUrl())
@@ -221,7 +221,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.isIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
+        mPrivacyTextView.setText(mWorkoutGpsSummary.getIsPrivate() ? getString(R.string.just_you) :  getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,13 +275,11 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mUserUid = user.getUid();
         mWorkoutKey = mWorkoutGpsSummary.getKey();
+
+        mPhotoDeleted = false;
+        mWorkoutEdited = false;
     }
 
-    private void setAddPhotoButton() {
-        mPhotoImageView.setVisibility(View.GONE);
-        mPhotoDeleteButton.setText("Dodaj");
-        mPhotoDeleteButton.setOnClickListener();
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -393,29 +391,16 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     }
 
 
+
     private void deletePhoto() {
 
-        mPhotoImageView.setVisibility(View.GONE);
+        mPhotoLabel.setVisibility(View.GONE);
+        mPhotoCardView.setVisibility(View.GONE);
+
+        mPhotoDeleted = true;
+        onWorkoutEdited();
 
 
-        mPhotoDeleteButton.setText("Dodaj");
-
-        // FirebaseStorage storage = FirebaseStorage.getInstance();
-        // StorageReference storageRef = storage.getReference();
-        // StorageReference picsRef = storageRef.child(Database.PICTURES);
-        //
-        // picsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-        //     @Override
-        //     public void onSuccess(Void aVoid) {
-        //         Log.d(TAG, "onSuccess: PICTURE DELETED");
-        //         mPhotoImageView.setVisibility(View.GONE);
-        //     }
-        // }).addOnFailureListener(new OnFailureListener() {
-        //     @Override
-        //     public void onFailure(@NonNull Exception exception) {
-        //         Log.e(TAG, "onCancelled: " + exception.getMessage());
-        //     }
-        // });
     }
 
     private void onEditStatus() {
@@ -454,7 +439,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     
     private void onChangePrivacy() {
         CharSequence[] cs = {getString(R.string.friends), getString(R.string.just_you)};
-        final int checkedItemId = mWorkoutGpsSummary.isIsPrivate() ? 1 :  0;
+        final int checkedItemId = mWorkoutGpsSummary.getIsPrivate() ? 1 :  0;
         new AlertDialog.Builder(WorkoutGpsDetails.this)
                 .setTitle("Wybierz ustawienia")
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
@@ -503,6 +488,27 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {
             NetworkUtils.requestInternetConnection(mWorkoutCardView);
             return;
+        }
+
+        if (mPhotoDeleted) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference picsRef = storageRef.child(Database.PICTURES);
+
+            picsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "onSuccess: PICTURE DELETED");
+                    mPhotoImageView.setVisibility(View.GONE);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e(TAG, "onCancelled: " + exception.getMessage());
+                }
+            });
+
+            mWorkoutGpsSummary.setPicUrl(null);
         }
 
         Map<String, Object> workoutValues = mWorkoutGpsSummary.toMap();
