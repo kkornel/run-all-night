@@ -38,8 +38,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_INTENT_EXTRA;
-
 public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedFriendsFragment";
 
@@ -73,7 +71,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view_swipe_refresh, container, false);
-        // View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -140,8 +137,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         ChildEventListener childWorkoutListener = new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: " + dataSnapshot);
-
                                 if (!mFragmentJustStarted) {
                                     Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
                                 }
