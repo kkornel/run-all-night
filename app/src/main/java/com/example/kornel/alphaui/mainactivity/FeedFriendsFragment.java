@@ -162,8 +162,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         };
 
                         friendUidWorkoutsRef.addChildEventListener(childWorkoutListener);
-                        readFriendsWorkouts(mFriendsIds);
                     }
+                    readFriendsWorkouts(mFriendsIds);
                 }
             }
 
