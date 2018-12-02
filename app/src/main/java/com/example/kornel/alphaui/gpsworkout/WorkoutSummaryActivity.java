@@ -481,11 +481,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         }
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
-        // if () {
-        //     mWorkoutGpsSummary.setPrivate(false);
-        // } else {
-        //     mWorkoutGpsSummary.setPrivate(true);
-        // }
 
         mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)) ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
 
@@ -553,14 +548,14 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void onUploadCompleted(String photoUri, String key) {
-        mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
-
         mWorkoutGpsSummary.setPicUrl(photoUri);
 
         uploadWorkout(key);
     }
 
     private void uploadWorkout(String key) {
+        mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
+
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + key, mWorkoutGpsSummary);
 

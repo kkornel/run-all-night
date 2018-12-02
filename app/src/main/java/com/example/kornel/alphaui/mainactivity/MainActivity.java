@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.weather.WeatherInfo;
+import com.example.kornel.alphaui.weather.WeatherLog;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -82,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: ");
+
+        WeatherLog.setDebuggable(false);
     }
 
     @Override

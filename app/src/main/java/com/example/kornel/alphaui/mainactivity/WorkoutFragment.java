@@ -515,16 +515,18 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 String welcomeMessage = getString(R.string.hello) + ", " + firstName + "!";
                 String noLastWorkoutDate = getString(R.string.no_workouts_yet);
 
+                final String lastWorkoutKey = user.getLastWorkout();
+                Log.d(TAG, "onDataChange: " + user);
+                Log.d(TAG, "onDataChange: " + user.getLastWorkout());
+
                 mWelcomeTextView.setText(welcomeMessage);
 
                 if (lastWorkoutId == null) {
                     mLastTrainingTextView.setText(noLastWorkoutDate);
                 } else {
-                    workoutsRef.child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    workoutsRef.child(userUid).child(lastWorkoutKey).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            // String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateStringPl();
-                            // mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                             String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).gapBetweenWorkouts();
                             mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                         }

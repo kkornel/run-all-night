@@ -145,7 +145,7 @@ public class WorkoutGpsSummary implements Parcelable {
 
             long elapsedSeconds = different / secondsInMilli;
 
-            MainActivityLog.d(elapsedDays + "days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " +  elapsedSeconds + "seconds");
+            MainActivityLog.d(elapsedDays + " days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " +  elapsedSeconds + " seconds");
 
             if (elapsedDays > 0) {
                 if (elapsedDays == 1) {

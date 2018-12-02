@@ -61,7 +61,10 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
@@ -128,6 +131,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
     private String mUserUid;
     private String mWorkoutKey;
+    private StorageReference mPicsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +277,10 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mUserUid = user.getUid();
         mWorkoutKey = mWorkoutGpsSummary.getKey();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        mPicsRef = storageRef.child(Database.PICTURES);
 
         mPhotoDeleted = false;
         mWorkoutEdited = false;
@@ -470,6 +478,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .setNegativeButton(R.string.no, null).show();
     }
 
+
     private void saveChanges() {
         if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {
             NetworkUtils.requestInternetConnection(mWorkoutCardView);
@@ -477,22 +486,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         }
 
         if (mPhotoDeleted) {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-            StorageReference picsRef = storageRef.child(Database.PICTURES);
-
-            picsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    mPhotoImageView.setVisibility(View.GONE);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.e(TAG, "onCancelled: " + exception.getMessage());
-                }
-            });
-
+            deletePhotoFromDatabase();
+            mPhotoImageView.setVisibility(View.GONE);
             mWorkoutGpsSummary.setPicUrl(null);
         }
 
@@ -526,8 +521,18 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .show();
     }
 
-    public CardView getSummaryCardView() {
-        return mSummaryCardView;
+    private void deletePhotoFromDatabase() {
+        mPicsRef.child(mUserUid).child(mWorkoutKey + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: photo deleted");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e(TAG, "onCancelled: " + exception.getMessage());
+            }
+        });
     }
 
     private void delete() {
@@ -536,35 +541,36 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             return;
         }
 
-        final FirebaseAuth auth = FirebaseAuth.getInstance();
-        final FirebaseUser user = auth.getCurrentUser();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final DatabaseReference rootRef = database.getReference();
-        final DatabaseReference userRef = rootRef.child(Database.USERS);
-        final DatabaseReference workoutRef = rootRef.child(Database.WORKOUTS);
-
-        final String userUid = user.getUid();
-        final String key = mWorkoutGpsSummary.getKey();
+        final DatabaseReference userRef = mRootRef.child(Database.USERS);
+        final DatabaseReference workoutRef = mRootRef.child(Database.WORKOUTS);
 
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
 
-                if (user.getLastWorkout().equals(key)) {
+                if (user.getLastWorkout().equals(mWorkoutKey)) {
 
+                    final ArrayList<WorkoutGpsSummary> workouts = new ArrayList<>();
                     ValueEventListener workoutListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long i = 1;
-                            long childrenCount = dataSnapshot.getChildrenCount();
+                            // long i = 1;
+                            // long childrenCount = dataSnapshot.getChildrenCount();
                             for (DataSnapshot workout : dataSnapshot.getChildren()) {
-                                if (i == childrenCount - 1) {
-                                    userRef.child(userUid).child(Database.LAST_WORKOUT).setValue(workout.getKey());
-                                }
-                                i++;
+                                Log.d(TAG, "onDataChange: " + workout);
+                                // if (i == childrenCount - 1) {
+                                //     userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(workout.getKey());
+                                // }
+                                // i++;
+                                WorkoutGpsSummary workoutGpsSummary = workout.getValue(WorkoutGpsSummary.class);
+                                workoutGpsSummary.setKey(workout.getKey());
+                                Log.d(TAG, "&&&&: " + workoutGpsSummary);
+                                workouts.add(workoutGpsSummary);
                             }
+                            sortListByDate(workouts);
+                            Log.d(TAG, "keya: " + workouts.get(workouts.size()-1).getKey());
+                            userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(workouts.get(workouts.size()-1).getKey());
                         }
 
                         @Override
@@ -574,7 +580,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                         }
                     };
 
-                    workoutRef.child(userUid).addListenerForSingleValueEvent(workoutListener);
+                    workoutRef.child(mUserUid).addListenerForSingleValueEvent(workoutListener);
                 }
             }
 
@@ -584,54 +590,34 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 throw databaseError.toException();
             }
         };
-        userRef.child(userUid).addListenerForSingleValueEvent(userListener);
+        userRef.child(mUserUid).addListenerForSingleValueEvent(userListener);
 
-        ValueEventListener workoutListener = new ValueEventListener() {
+        if (mWorkoutGpsSummary.getPicUrl() != null && !mWorkoutGpsSummary.getPicUrl().equals("")) {
+            deletePhotoFromDatabase();
+        } else {
+            Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");
+        }
+
+        workoutRef.child(mUserUid).child(mWorkoutKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                WorkoutGpsSummary workout = dataSnapshot.getValue(WorkoutGpsSummary.class);
-
-                if (workout.getPicUrl() != null && !workout.getPicUrl().equals("")) {
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference storageRef = storage.getReference();
-                    StorageReference picsRef = storageRef.child(Database.PICTURES);
-
-                    picsRef.child(userUid).child(key + ".jpg").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "onSuccess: PICTURE DELETED");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Log.e(TAG, "onCancelled: " + exception.getMessage());
-                        }
-                    });
-                } else {
-                    Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");
-                }
-
-                workoutRef.child(userUid).child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(WorkoutGpsDetails.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.e(TAG, "onCancelled: " + exception.getMessage());
-                    }
-                });
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(WorkoutGpsDetails.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
+            public void onFailure(@NonNull Exception exception) {
+                Log.e(TAG, "onCancelled: " + exception.getMessage());
             }
-        };
-        workoutRef.child(userUid).child(key).addListenerForSingleValueEvent(workoutListener);
+        });
+    }
 
-
+    private void sortListByDate(List<WorkoutGpsSummary> list) {
+        Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
+            public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
+                if (o1.getDate() == null || o2.getDate() == null)
+                    return 0;
+                return o2.getDate().compareTo(o1.getDate());
+            }
+        });
     }
 }
