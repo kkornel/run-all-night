@@ -357,6 +357,15 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     }
 
     @Override
+    public void onBackPressed() {
+        if (mWorkoutEdited) {
+            dismissChangesDialogShow();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         mMenu = menu;
         MenuInflater inflater = getMenuInflater();

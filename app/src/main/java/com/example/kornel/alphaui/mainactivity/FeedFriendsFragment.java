@@ -63,8 +63,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private long mFriendsCount;
 
     private boolean mFragmentJustStarted;
-    private boolean mNewData = false;
-    private boolean mDataChanged = false;
+    private boolean mNewData;
+    private boolean mDataChanged;
 
     public FeedFriendsFragment() {
 
@@ -131,6 +131,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mWorkoutsRef = mRootRef.child(Database.WORKOUTS);
 
         mFragmentJustStarted = true;
+        mNewData = false;
+        mDataChanged = false;
 
         mFriendsIds = new ArrayList<>();
 
@@ -213,7 +215,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
         friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
     }
-
 
     @Override
     public void onListItemClick(int clickedItemIndex) {

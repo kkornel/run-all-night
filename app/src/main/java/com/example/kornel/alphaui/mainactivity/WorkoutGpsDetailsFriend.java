@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -91,11 +90,9 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         FriendWorkout friendWorkout = getIntent().getExtras().getParcelable(FRIEND_WORKOUT_INTENT_EXTRA);
         mWorkout = friendWorkout.getWorkout();
 
-        getSupportActionBar().setTitle(R.string.summary);
+        getSupportActionBar().setTitle(mWorkout.getWorkoutName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
 
         mAvatarImageView = findViewById(R.id.avatarImageView);
         mNameTextView = findViewById(R.id.nameTextView);
@@ -116,7 +113,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         } else {
             mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkout.getWorkoutName())));
         }
-        mActivityTypeTextView.setText(mWorkout.getWorkoutName());
+        // mActivityTypeTextView.setText(mWorkout.getWorkoutName());
         mDateTextView.setText(mWorkout.getFullDateStringPlWithTime());
 
 
@@ -156,6 +153,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
 
         if (mWorkout.getPicUrl() == null || mWorkout.getPicUrl().equals("")) {
             mPhotoImageView.setVisibility(View.GONE);
+            mPhotoStatusDivider.setVisibility(View.GONE);
             noPhoto = true;
         } else {
             Picasso.get()
