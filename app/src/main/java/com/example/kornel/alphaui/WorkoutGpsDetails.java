@@ -554,22 +554,31 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                     ValueEventListener workoutListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            // long i = 1;
-                            // long childrenCount = dataSnapshot.getChildrenCount();
-                            for (DataSnapshot workout : dataSnapshot.getChildren()) {
-                                Log.d(TAG, "onDataChange: " + workout);
-                                // if (i == childrenCount - 1) {
-                                //     userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(workout.getKey());
-                                // }
-                                // i++;
-                                WorkoutGpsSummary workoutGpsSummary = workout.getValue(WorkoutGpsSummary.class);
-                                workoutGpsSummary.setKey(workout.getKey());
-                                Log.d(TAG, "&&&&: " + workoutGpsSummary);
-                                workouts.add(workoutGpsSummary);
+                            if (dataSnapshot.getValue() == null) {
+                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(null);
+                            } else {
+                                WorkoutGpsSummary w1 = null;
+                                WorkoutGpsSummary w2 = null;
+
+                                for (DataSnapshot workout : dataSnapshot.getChildren()) {
+                                    w1 = workout.getValue(WorkoutGpsSummary.class);
+
+                                    if (w2 == null) {
+                                        w2 = w1;
+                                        w2.setKey(workout.getKey());
+                                        continue;
+                                    }
+
+                                    if (w1.getDateMilliseconds() > w2.getDateMilliseconds()) {
+                                        Log.d(TAG, w1.getDateMilliseconds() + " > " + w2.getDateMilliseconds());
+                                        w2 = w1;
+                                        w2.setKey(workout.getKey());
+                                    }
+                                }
+
+
+                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(w2.getKey());
                             }
-                            sortListByDate(workouts);
-                            Log.d(TAG, "keya: " + workouts.get(workouts.size()-1).getKey());
-                            userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(workouts.get(workouts.size()-1).getKey());
                         }
 
                         @Override

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -50,6 +51,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.Timer;
 
 import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
@@ -219,7 +222,19 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             mNoInternetTextView.setVisibility(View.VISIBLE);
             buildAlertMessageNoInternetConnection();
         } else {
-            retrieveUserProfile();
+            Handler timerHandler = new Handler();
+            Runnable timerRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    retrieveUserProfile();
+
+
+                }
+            };
+
+            // I'm doing this after delay, because after deleting last workout from database
+            // it was fetching old, not updated data.
+            timerHandler.postDelayed(timerRunnable, 200);
         }
 
         if (!hasLocationPermissions()) {
@@ -516,8 +531,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 String noLastWorkoutDate = getString(R.string.no_workouts_yet);
 
                 final String lastWorkoutKey = user.getLastWorkout();
-                Log.d(TAG, "onDataChange: " + user);
-                Log.d(TAG, "onDataChange: " + user.getLastWorkout());
 
                 mWelcomeTextView.setText(welcomeMessage);
 
@@ -546,6 +559,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 throw databaseError.toException();
             }
         };
+        // usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
     }
 
