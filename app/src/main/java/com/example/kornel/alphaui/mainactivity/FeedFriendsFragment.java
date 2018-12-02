@@ -21,7 +21,6 @@ import com.example.kornel.alphaui.WorkoutGpsDetails;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
-import com.example.kornel.alphaui.utils.Privacy;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,7 +86,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         // fetchNewData();
-                        //readFriendsWorkouts(mFriendsIds);
+                        // readFriendsWorkouts(mFriendsIds);
 
                         if (mDataChanged) {
                             readFriendsWorkouts(mFriendsIds);
@@ -109,7 +108,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        // mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mFeedFriendsAdapter = new FeedFriendsAdapter(getContext(), this, mFeedFriendsList);
         mRecyclerView.setAdapter(mFeedFriendsAdapter);
@@ -157,7 +155,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                 if (!mFragmentJustStarted) {
                                     WorkoutGpsSummary workoutGpsSummary = dataSnapshot.getValue(WorkoutGpsSummary.class);
 
-                                    if (!workoutGpsSummary.getSecret()) {
+                                    if (!workoutGpsSummary.getPrivacy()) {
                                         mNewData = true;
                                         Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
 
@@ -175,13 +173,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                 }
                             }
 
-                            // @Override
-                            // public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
-                            // @Override
-                            // public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { /* EMPTY */}
-                            // @Override
-                            // public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { /* EMPTY */}
-
                             @Override
                             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                 Log.d(TAG, "onChildChanged: ");
@@ -193,6 +184,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                 Log.d(TAG, "onChildRemoved: ");
                                 mDataChanged = true;
                             }
+
                             @Override
                             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                 Log.d(TAG, "onChildMoved: ");
@@ -218,8 +210,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                 throw databaseError.toException();
             }
         };
+
         friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
-        //queryForFriends();
     }
 
 
@@ -237,10 +229,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         }
     }
 
-    // public void fetchNewData() {
-    //     queryForFriends();
-    // }
-
     public void setFeedFriendsList(List<FriendWorkout> feedFriendsList) {
         mFeedFriendsList = feedFriendsList;
     }
@@ -251,31 +239,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         checkIfListIsEmpty();
         mFeedFriendsAdapter.loadNewData(mFeedFriendsList);
     }
-
-    // private void queryForFriends() {
-    //     final List<String> friendsIds = new ArrayList<>();
-    //     final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
-    //     ValueEventListener friendsIdsListener = new ValueEventListener() {
-    //         @Override
-    //         public void onDataChange(DataSnapshot dataSnapshot) {
-    //             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                 friendsIds.add(ds.getKey());
-    //             }
-    //             if (friendsIds.size() == 0) {
-    //                 showNoFriendsMsg();
-    //             } else {
-    //                 readFriendsWorkouts(friendsIds);
-    //             }
-    //         }
-    //
-    //         @Override
-    //         public void onCancelled(@NonNull DatabaseError databaseError) {
-    //             Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-    //             throw databaseError.toException();
-    //         }
-    //     };
-    //     friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
-    // }
 
     private void readFriendsWorkouts(List<String> friendsIds) {
         mFriendsInfo = new ArrayList<>();
@@ -299,8 +262,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                // if (!workout.getPrivacy().equals(Privacy.ONLY_ME.getValue())) {
-                                if (!workout.getSecret()) {
+                                if (!workout.getPrivacy()) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);

@@ -50,7 +50,6 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
-import com.example.kornel.alphaui.utils.Privacy;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
@@ -294,8 +293,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         });
 
         if (savedInstanceState != null) {
-            // mSelectedPhotoBitmap = savedInstanceState.getParcelable(SELECTED_PHOTO_BITMAP_STATE);
-            // mPhotoName = savedInstanceState.getString(PHOTO_URI);
             mCurrentPhotoUri = savedInstanceState.getParcelable(PHOTO_URI);
             try {
                 mSelectedPhotoBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mCurrentPhotoUri);
@@ -316,7 +313,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // outState.putParcelable(SELECTED_PHOTO_BITMAP_STATE, mSelectedPhotoBitmap);
         outState.putParcelable(PHOTO_URI, mCurrentPhotoUri);
         super.onSaveInstanceState(outState);
     }
@@ -352,7 +348,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
                 mSelectedPhotoBitmap = rotateImage(mSelectedPhotoBitmap, 90);
 
-                // mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
                 mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -432,7 +427,6 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             @Override
             public void onMapLoaded() {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-
             }
         });
     }
@@ -482,8 +476,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
 
-        // mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)) ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
-        mWorkoutGpsSummary.setSecret(privacy.equals(getString(R.string.only_me)));
+        mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)));
 
         if ((mPhotoName != null  || !mPhotoName.equals("") ) && mSelectedPhotoBitmap != null) {
             uploadImage(key);
