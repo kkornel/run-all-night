@@ -335,9 +335,9 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private void sortListByDate(List<FriendWorkout> list) {
         Collections.sort(list, new Comparator<FriendWorkout>() {
             public int compare(FriendWorkout o1, FriendWorkout o2) {
-                if (o1.getWorkout().getDate() == null || o2.getWorkout().getDate() == null)
+                if (o1.getWorkout().getWorkoutDate() == null || o2.getWorkout().getWorkoutDate() == null)
                     return 0;
-                return o2.getWorkout().getDate().compareTo(o1.getWorkout().getDate());
+                return o2.getWorkout().getWorkoutDate().compareTo(o1.getWorkout().getWorkoutDate());
             }
         });
     }

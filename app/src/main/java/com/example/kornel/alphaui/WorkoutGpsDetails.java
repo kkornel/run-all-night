@@ -614,9 +614,9 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private void sortListByDate(List<WorkoutGpsSummary> list) {
         Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
             public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
-                if (o1.getDate() == null || o2.getDate() == null)
+                if (o1.getWorkoutDate() == null || o2.getWorkoutDate() == null)
                     return 0;
-                return o2.getDate().compareTo(o1.getDate());
+                return o2.getWorkoutDate().compareTo(o1.getWorkoutDate());
             }
         });
     }

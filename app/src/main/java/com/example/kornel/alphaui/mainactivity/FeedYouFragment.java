@@ -17,7 +17,6 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.WorkoutGpsDetails;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -158,9 +157,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private void sortListByDate(List<WorkoutGpsSummary> list) {
         Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
             public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
-                if (o1.getDate() == null || o2.getDate() == null)
+                if (o1.getWorkoutDate() == null || o2.getWorkoutDate() == null)
                     return 0;
-                return o2.getDate().compareTo(o1.getDate());
+                return o2.getWorkoutDate().compareTo(o1.getWorkoutDate());
             }
         });
     }

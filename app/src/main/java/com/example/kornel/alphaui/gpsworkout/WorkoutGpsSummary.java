@@ -11,7 +11,6 @@ import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.firebase.database.Exclude;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +24,8 @@ public class WorkoutGpsSummary implements Parcelable {
 
     private String key;
 
-    private String dateString;
+    // private String dateString;
+    private long dateMilliseconds;
     private String workoutName;
     private String duration;
     private String distance;
@@ -46,7 +46,8 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
-        this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        // this.dateString = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        this.dateMilliseconds = new Date().getTime();
         this.workoutName = workoutName;
         this.duration = duration;
         this.distance = distance;
@@ -56,33 +57,12 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.path = path;
         this.laps = laps;
-        // this.picUrl = null;
-        // this.status = null;
-        // this.getIsPrivate = false;
-        // weatherInfoCompressed = null;
-    }
-
-    public WorkoutGpsSummary(String dateString, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, String status, String picUrl, boolean aIsPrivate, ArrayList<LatLon> path, ArrayList<Lap> laps, WeatherInfoCompressed weatherInfoCompressed) {
-        this.dateString = dateString;
-        this.workoutName = workoutName;
-        this.duration = duration;
-        this.distance = distance;
-        this.avgPace = avgPace;
-        this.maxPace = maxPace;
-        this.avgSpeed = avgSpeed;
-        this.maxSpeed = maxSpeed;
-        this.status = status;
-        this.picUrl = picUrl;
-        // this.isPrivate = aIsPrivate;
-        this.isPrivate = aIsPrivate;
-        this.path = path;
-        this.laps = laps;
-        this.weatherInfoCompressed = weatherInfoCompressed;
     }
 
     @Exclude
     public String getFullDateStringPlWithTime() {
-        String now = new SimpleDateFormat(DATE_FORMAT).format(getDate());
+        String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
+
         String[] separated = now.split(" ");
         String dayName = separated[0].substring(0, separated[0].length() - 1);
         dayName = DateUtils.convertDayName(dayName);
@@ -91,24 +71,32 @@ public class WorkoutGpsSummary implements Parcelable {
         month = DateUtils.convertMonthToFullName(month);
         String year = separated[3];
         String time = separated[4];
-        return dayName + ", " + day + " " + month + " " + year + " " + time;
+
+        String date = dayName + ", " + day + " " + month + " " + year + " " + time;
+        Log.d(TAG, "getFullDateStringPlWithTime: " + date);
+        return date;
     }
 
     @Exclude
     public String getDateStringPlWithTime() {
-        String now = new SimpleDateFormat(DATE_FORMAT).format(getDate());
+        String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
+
         String[] separated = now.split(" ");
         String day = separated[1];
         String month = separated[2];
         month = DateUtils.convertMonthToFullName(month);
         String year = separated[3];
         String time = separated[4];
-        return day + " " + month + " " + year + " | " + time;
+
+        String date = day + " " + month + " " + year + " | " + time;
+        Log.d(TAG, "getFullDateStringPlWithTime: " + date);
+        return date;
     }
 
     @Exclude
     public String getDateStringPl() {
-        String now = new SimpleDateFormat(DATE_FORMAT).format(getDate());
+        String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
+
         String[] separated = now.split(" ");
         String dayName = separated[0].substring(0, separated[0].length() - 1);
         dayName = DateUtils.convertDayName(dayName);
@@ -116,84 +104,62 @@ public class WorkoutGpsSummary implements Parcelable {
         String month = separated[2];
         month = DateUtils.convertMonthToNumber(month);
         String year = separated[3];
-        return dayName + ", " + day + "." + month + "." + year;
+
+        String date = dayName + ", " + day + "." + month + "." + year;
+        Log.d(TAG, "getFullDateStringPlWithTime: " + date);
+        return date;
     }
 
     public String gapBetweenWorkouts() {
-        try {
-            Date todayDate = new Date();
-            Date lastWorkoutDate = new SimpleDateFormat(DATE_FORMAT).parse(dateString);
-            long different = todayDate.getTime() - lastWorkoutDate.getTime();
+        Date todayDate = new Date();
+        Date workoutDate = getWorkoutDate();
+        long different = todayDate.getTime() - workoutDate.getTime();
 
-            MainActivityLog.d("todayDate : " + todayDate);
-            MainActivityLog.d("lastWorkoutDate : "+ lastWorkoutDate);
-            MainActivityLog.d("different : " + different);
+        MainActivityLog.d("todayDate : " + todayDate);
+        MainActivityLog.d("workoutDate : " + workoutDate);
+        MainActivityLog.d("different : " + different);
 
-            long secondsInMilli = 1000;
-            long minutesInMilli = secondsInMilli * 60;
-            long hoursInMilli = minutesInMilli * 60;
-            long daysInMilli = hoursInMilli * 24;
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
 
-            long elapsedDays = different / daysInMilli;
-            different = different % daysInMilli;
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
 
-            long elapsedHours = different / hoursInMilli;
-            different = different % hoursInMilli;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
 
-            long elapsedMinutes = different / minutesInMilli;
-            different = different % minutesInMilli;
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
 
-            long elapsedSeconds = different / secondsInMilli;
+        long elapsedSeconds = different / secondsInMilli;
 
-            MainActivityLog.d(elapsedDays + " days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " +  elapsedSeconds + " seconds");
+        MainActivityLog.d(elapsedDays + " days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " + elapsedSeconds + " seconds");
 
-            if (elapsedDays > 0) {
-                if (elapsedDays == 1) {
-                    return "1 dzień temu";
-                } else {
-                    return String.valueOf(elapsedDays) + " dni temu";
-                }
+        if (elapsedDays > 0) {
+            if (elapsedDays == 1) {
+                return "1 dzień temu";
             } else {
-                if (elapsedHours < 1) {
-                    if (elapsedMinutes < 5) {
-                        return "Chwilę temu";
-                    } else {
-                        return String.valueOf(elapsedMinutes) + " minut temu";
-                    }
-                } else if (elapsedHours == 1) {
-                    return "1 godzinę temu";
-                } else {
-                    return String.valueOf(elapsedHours) + " godzin temu";
-                }
+                return String.valueOf(elapsedDays) + " dni temu";
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return getDateStringPl();
+        } else {
+            if (elapsedHours < 1) {
+                if (elapsedMinutes < 5) {
+                    return "Chwilę temu";
+                } else {
+                    return String.valueOf(elapsedMinutes) + " minut temu";
+                }
+            } else if (elapsedHours == 1) {
+                return "1 godzinę temu";
+            } else {
+                return String.valueOf(elapsedHours) + " godzin temu";
+            }
         }
     }
 
-    public String getDateString() {
-        return dateString;
-    }
-
-    @Exclude
-    public Date getDate() {
-        try {
-            Date date = new SimpleDateFormat(DATE_FORMAT).parse(this.dateString);
-            return date;
-        } catch (ParseException ex) {
-            Log.e(TAG, "getDate: " + ex.getMessage());
-            return new Date();
-        }
-    }
-
-    @Exclude
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public long getDateMilliseconds() {
+        return dateMilliseconds;
     }
 
     public String getWorkoutName() {
@@ -232,11 +198,6 @@ public class WorkoutGpsSummary implements Parcelable {
         return status;
     }
 
-    @Exclude
-    public boolean getIsPrivate() {
-        return isPrivate;
-    }
-
     public String getPrivacy() {
         return privacy;
     }
@@ -257,6 +218,16 @@ public class WorkoutGpsSummary implements Parcelable {
         return weatherInfoCompressed;
     }
 
+    @Exclude
+    public Date getWorkoutDate() {
+        return new Date(dateMilliseconds);
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
     public void setWeatherInfoCompressed(WeatherInfoCompressed weatherInfoCompressed) {
         this.weatherInfoCompressed = weatherInfoCompressed;
     }
@@ -273,10 +244,14 @@ public class WorkoutGpsSummary implements Parcelable {
         this.isPrivate = aPrivate;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public String toString() {
         return "WorkoutGpsSummary{" +
-                "dateString='" + dateString + '\'' +
+                "dateMilliseconds='" + dateMilliseconds + '\'' +
                 ", workoutName='" + workoutName + '\'' +
                 ", duration='" + duration + '\'' +
                 ", distance='" + distance + '\'' +
@@ -297,7 +272,7 @@ public class WorkoutGpsSummary implements Parcelable {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("dateString", dateString);
+        result.put("dateMilliseconds", dateMilliseconds);
         result.put("workoutName", workoutName);
         result.put("duration", duration);
         result.put("distance", distance);
@@ -317,10 +292,10 @@ public class WorkoutGpsSummary implements Parcelable {
 
     // Parcelling Part
 
-    public WorkoutGpsSummary(Parcel in){
+    public WorkoutGpsSummary(Parcel in) {
         // this.date = new Date(in.readLong());
         this.key = in.readString();
-        this.dateString = in.readString();
+        this.dateMilliseconds = in.readLong();
         this.workoutName = in.readString();
         this.duration = in.readString();
         this.distance = in.readString();
@@ -348,7 +323,7 @@ public class WorkoutGpsSummary implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         // dest.writeLong(this.date.getTime());
         dest.writeString(this.key);
-        dest.writeString(this.dateString);
+        dest.writeLong(this.dateMilliseconds);
         dest.writeString(this.workoutName);
         dest.writeString(this.duration);
         dest.writeString(this.distance);
