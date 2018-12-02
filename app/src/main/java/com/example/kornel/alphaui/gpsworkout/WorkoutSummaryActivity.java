@@ -482,7 +482,8 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
 
-        mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)) ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
+        // mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)) ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
+        mWorkoutGpsSummary.setSecret(privacy.equals(getString(R.string.only_me)));
 
         if ((mPhotoName != null  || !mPhotoName.equals("") ) && mSelectedPhotoBitmap != null) {
             uploadImage(key);

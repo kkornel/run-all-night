@@ -36,7 +36,7 @@ public class WorkoutGpsSummary implements Parcelable {
     private String status;
     private String picUrl;
     private String privacy;
-    private boolean isPrivate;
+    private boolean secret;
     private ArrayList<LatLon> path;
     private ArrayList<Lap> laps;
     private WeatherInfoCompressed weatherInfoCompressed;
@@ -198,8 +198,12 @@ public class WorkoutGpsSummary implements Parcelable {
         return status;
     }
 
-    public String getPrivacy() {
-        return privacy;
+    // public String getPrivacy() {
+    //     return privacy;
+    // }
+
+    public boolean getSecret() {
+        return secret;
     }
 
     public void setPrivacy(String p) {
@@ -240,8 +244,8 @@ public class WorkoutGpsSummary implements Parcelable {
         this.status = status;
     }
 
-    public void setPrivate(boolean aPrivate) {
-        this.isPrivate = aPrivate;
+    public void setSecret(boolean sec) {
+        this.secret = sec;
     }
 
     public void setKey(String key) {
@@ -261,7 +265,7 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", maxSpeed='" + maxSpeed + '\'' +
                 ", status='" + status + '\'' +
                 ", picUrl='" + picUrl + '\'' +
-                ", getIsPrivate=" + isPrivate +
+                ", secret=" + secret +
                 ", path=" + path +
                 ", laps=" + laps +
                 ", weatherInfoCompressed=" + weatherInfoCompressed +
@@ -282,7 +286,8 @@ public class WorkoutGpsSummary implements Parcelable {
         result.put("maxSpeed", maxSpeed);
         result.put("status", status);
         result.put("picUrl", picUrl);
-        result.put("privacy", privacy);
+        // result.put("privacy", privacy);
+        result.put("secret", secret);
         result.put("path", path);
         result.put("laps", laps);
         result.put("weatherInfoCompressed", weatherInfoCompressed);
@@ -305,8 +310,8 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = in.readString();
         this.status = in.readString();
         this.picUrl = in.readString();
-        this.privacy = in.readString();
-        // this.isPrivate = in.readByte() != 0;
+        // this.privacy = in.readString();
+        this.secret = in.readByte() != 0;
         path = new ArrayList<>();
         in.readList(this.path, LatLon.class.getClassLoader());
         laps = new ArrayList<>();
@@ -333,8 +338,8 @@ public class WorkoutGpsSummary implements Parcelable {
         dest.writeString(this.maxSpeed);
         dest.writeString(this.status);
         dest.writeString(this.picUrl);
-        dest.writeString(this.privacy);
-        // dest.writeByte((byte) (isPrivate ? 1 : 0));
+        // dest.writeString(this.privacy);
+        dest.writeByte((byte) (secret ? 1 : 0));
         dest.writeList(this.path);
         dest.writeList(this.laps);
         dest.writeParcelable(this.weatherInfoCompressed, flags);

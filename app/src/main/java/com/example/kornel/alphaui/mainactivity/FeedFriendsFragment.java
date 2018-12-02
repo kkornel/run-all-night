@@ -155,18 +155,22 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                 Log.d(TAG, "onChildAdded: ");
 
                                 if (!mFragmentJustStarted) {
-                                    mNewData = true;
-                                    Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
                                     WorkoutGpsSummary workoutGpsSummary = dataSnapshot.getValue(WorkoutGpsSummary.class);
-                                    FriendInfo friendInfo = null;
-                                    for (FriendInfo info : mFriendsInfo) {
-                                        if (info.getUid().equals(friendUid)) {
-                                            friendInfo = info;
-                                            break;
+
+                                    if (!workoutGpsSummary.getSecret()) {
+                                        mNewData = true;
+                                        Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
+
+                                        FriendInfo friendInfo = null;
+                                        for (FriendInfo info : mFriendsInfo) {
+                                            if (info.getUid().equals(friendUid)) {
+                                                friendInfo = info;
+                                                break;
+                                            }
                                         }
-                                    }
-                                    if (friendInfo != null) {
-                                        mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutGpsSummary));
+                                        if (friendInfo != null) {
+                                            mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutGpsSummary));
+                                        }
                                     }
                                 }
                             }
@@ -295,7 +299,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                if (!workout.getPrivacy().equals(Privacy.ONLY_ME.getValue())) {
+                                // if (!workout.getPrivacy().equals(Privacy.ONLY_ME.getValue())) {
+                                if (!workout.getSecret()) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);

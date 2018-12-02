@@ -223,7 +223,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? getString(R.string.only_me) :  getString(R.string.friends));
+        // mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? getString(R.string.only_me) :  getString(R.string.friends));
+        mPrivacyTextView.setText(mWorkoutGpsSummary.getSecret() ? getString(R.string.only_me) :  getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -438,7 +439,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private void onChangePrivacy() {
         CharSequence[] cs = {getString(R.string.friends), getString(R.string.only_me)};
         // final int checkedItemId = mWorkoutGpsSummary.getIsPrivate() ? 1 :  0;
-        final int checkedItemId = mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? 1 :  0;
+        // final int checkedItemId = mWorkoutGpsSummary.getPrivacy().equals(Privacy.ONLY_ME.getValue()) ? 1 :  0;
+        final int checkedItemId = mWorkoutGpsSummary.getSecret() ? 1 :  0;
         new AlertDialog.Builder(WorkoutGpsDetails.this)
                 .setTitle(R.string.pick_settings)
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
@@ -446,7 +448,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
                         if (checkedItemId != which) {
                             boolean isPrivate = which == 1 ? true : false;
-                            mWorkoutGpsSummary.setPrivacy(isPrivate ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
+                            // mWorkoutGpsSummary.setPrivacy(isPrivate ? Privacy.ONLY_ME.getValue() : Privacy.FRIENDS.getValue());
+                            mWorkoutGpsSummary.setSecret(isPrivate);
                             if (isPrivate) {
                                 mPrivacyTextView.setText(getString(R.string.only_me));
                             } else {
