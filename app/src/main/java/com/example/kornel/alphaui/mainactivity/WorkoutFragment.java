@@ -559,7 +559,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 throw databaseError.toException();
             }
         };
-        // usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
+        
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
     }
 

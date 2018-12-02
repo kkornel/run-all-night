@@ -219,7 +219,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     public void onListItemClick(int clickedItemIndex) {
         boolean isGpsBased = WorkoutUtils.isGpsBased(mFeedFriendsList.get(clickedItemIndex).getWorkout().getWorkoutName());
         if (isGpsBased) {
-            Intent i = new Intent(getActivity(), WorkoutGpsDetails.class);
+            Intent i = new Intent(getActivity(), WorkoutGpsDetailsFriend.class);
             i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
             Log.d(TAG, "onListItemClick: " + mFeedFriendsList.get(clickedItemIndex));
             startActivity(i);
