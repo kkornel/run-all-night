@@ -128,8 +128,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
             i.putExtra(WORKOUT_INTENT_EXTRA, mFeedYouList.get(clickedItemIndex));
             startActivity(i);
         } else {
-            // Intent i = new Intent(getActivity(), WorkoutNonGpsDeatils.class);
-            // startActivity(i);
+            Intent i = new Intent(getActivity(), WorkoutNonGpsDetails.class);
+            i.putExtra(WORKOUT_INTENT_EXTRA, mFeedYouList.get(clickedItemIndex));
+            startActivity(i);
         }
     }
 

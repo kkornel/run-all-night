@@ -221,11 +221,11 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         if (isGpsBased) {
             Intent i = new Intent(getActivity(), WorkoutGpsDetailsFriend.class);
             i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
-            Log.d(TAG, "onListItemClick: " + mFeedFriendsList.get(clickedItemIndex));
             startActivity(i);
         } else {
-            // Intent i = new Intent(getActivity(), WorkoutNonGpsDeatils.class);
-            // startActivity(i);
+            Intent i = new Intent(getActivity(), WorkoutNonGpsDetailsFriend.class);
+            i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
+            startActivity(i);
         }
     }
 
