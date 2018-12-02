@@ -38,7 +38,7 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 
 public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapReadyCallback {
-    private static final String TAG = "WorkoutGpsDetails";
+    private static final String TAG = "WorkoutGpsDetailsFriend";
 
     private ImageView mAvatarImageView;
     private TextView mNameTextView;
@@ -46,6 +46,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
     private CardView mWorkoutCardView;
     private ImageView mActivityIconImageView;
     private TextView mActivityTypeTextView;
+    private TextView mTimeTextView;
     private TextView mDateTextView;
 
     private GoogleMap mMap;
@@ -106,6 +107,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
         mActivityTypeTextView = findViewById(R.id.activityTypeTextView);
+        mTimeTextView = findViewById(R.id.timeTextView);
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -113,8 +115,8 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         } else {
             mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkout.getWorkoutName())));
         }
-        // mActivityTypeTextView.setText(mWorkout.getWorkoutName());
-        mDateTextView.setText(mWorkout.getFullDateStringPlWithTime());
+        mTimeTextView.setText(mWorkout.getTimeHourMin());
+        mDateTextView.setText(mWorkout.getDateStringPl());
 
 
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));

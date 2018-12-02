@@ -103,8 +103,10 @@
             android:label="@string/title_activity_choose_workout2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".StartNonGpsWorkoutActivity" />
-        <activity android:name=".WorkoutGpsDetails" />
-        <activity android:name=".mainactivity.WorkoutGpsDetailsFriend"></activity>
+        <activity android:name=".mainactivity.WorkoutGpsDetails" />
+        <activity android:name=".mainactivity.WorkoutGpsDetailsFriend" />
+        <activity android:name=".mainactivity.WorkoutNonGpsDetailsFriend" />
+        <activity android:name=".mainactivity.WorkoutNonGpsDetails"></activity>
     </application>
 
 </manifest>

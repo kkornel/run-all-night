@@ -3,6 +3,8 @@ package com.example.kornel.alphaui.mainactivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.kornel.alphaui.R;
+
 public class WorkoutNonGpsDetails extends AppCompatActivity {
 
     @Override

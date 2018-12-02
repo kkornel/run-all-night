@@ -57,8 +57,7 @@ public class WorkoutGpsSummary implements Parcelable {
         this.laps = laps;
     }
 
-    @Exclude
-    public String getFullDateStringPlWithTime() {
+    private String[] getDateSeparated() {
         String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
 
         String[] separated = now.split(" ");
@@ -70,6 +69,23 @@ public class WorkoutGpsSummary implements Parcelable {
         String year = separated[3];
         String time = separated[4];
 
+        return new String[] {dayName, day, month, year, time};
+    }
+
+    @Exclude
+    public String getFullDateStringPlWithTime() {
+        String[] separated = getDateSeparated();
+        String dayName = separated[0];
+        String day = separated[1];
+        String month = separated[2];
+        String year = separated[3];
+        String time = separated[4];
+        time = getTimeHourMin();
+
+        if (day.startsWith("0")) {
+            day = day.substring(1);
+        }
+
         String date = dayName + ", " + day + " " + month + " " + year + " " + time;
         Log.d(TAG, "getFullDateStringPlWithTime: " + date);
         return date;
@@ -77,18 +93,57 @@ public class WorkoutGpsSummary implements Parcelable {
 
     @Exclude
     public String getDateStringPlWithTime() {
-        String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
-
-        String[] separated = now.split(" ");
+        String[] separated = getDateSeparated();
+        String dayName = separated[0];
         String day = separated[1];
         String month = separated[2];
-        month = DateUtils.convertMonthToFullName(month);
         String year = separated[3];
         String time = separated[4];
+        time = getTimeHourMin();
+
+        if (day.startsWith("0")) {
+            day = day.substring(1);
+        }
 
         String date = day + " " + month + " " + year + " | " + time;
         Log.d(TAG, "getFullDateStringPlWithTime: " + date);
         return date;
+    }
+
+    @Exclude
+    public String getDateStringPl() {
+        String[] separated = getDateSeparated();
+        String dayName = separated[0];
+        String day = separated[1];
+        String month = separated[2];
+        String year = separated[3];
+        String time = separated[4];
+        time = getTimeHourMin();
+
+        if (day.startsWith("0")) {
+            day = day.substring(1);
+        }
+
+        String date = day + " " + month + " " + year;
+        Log.d(TAG, "getDateStringPl: " + date);
+        return date;
+    }
+
+    @Exclude
+    public String getTimeHourMin() {
+        String now = new SimpleDateFormat(DATE_FORMAT).format(getWorkoutDate());
+
+        String[] separated = now.split(" ");
+        String time = separated[4];
+
+        String[] separatedTime = time.split(":");
+        String hours = separatedTime[0];
+        String mins = separatedTime[1];
+        String secs = separatedTime[2];
+
+        String timeHourMin = hours + ":" + mins;
+        Log.d(TAG, "getTimeHourMin: " + timeHourMin);
+        return timeHourMin;
     }
 
     public String gapBetweenWorkouts() {
