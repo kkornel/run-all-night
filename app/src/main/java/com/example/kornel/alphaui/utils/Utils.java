@@ -5,8 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.kornel.alphaui.FriendWorkout;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,9 +30,9 @@ public class Utils {
         imm.hideSoftInputFromWindow(fragment.getView().getRootView().getWindowToken(), 0);
     }
 
-    private void sortListByDate(List<WorkoutGpsSummary> list) {
-        Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
-            public int compare(WorkoutGpsSummary w1, WorkoutGpsSummary w2) {
+    private void sortListByDate(List<WorkoutSummary> list) {
+        Collections.sort(list, new Comparator<WorkoutSummary>() {
+            public int compare(WorkoutSummary w1, WorkoutSummary w2) {
                 if (w1.getWorkoutDate() == null || w2.getWorkoutDate() == null)
                     return 0;
                 return w2.getWorkoutDate().compareTo(w1.getWorkoutDate());

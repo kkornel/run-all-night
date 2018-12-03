@@ -35,12 +35,45 @@ public class NotificationUtils {
     private static NotificationCompat.Action mResumeAction;
     private static NotificationCompat.Action mPauseAction;
 
-    public static Notification createNotification(Context context) {
+    // public static Notification createNotification(Context context) {
+    //     mNotificationManager = (NotificationManager)
+    //             context.getSystemService(Context.NOTIFICATION_SERVICE);
+    //
+    //     mResumeAction = resumeWorkout(context);
+    //     mPauseAction = pauseWorkout(context);
+    //
+    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    //         NotificationChannel mChannel = new NotificationChannel(
+    //                 MOON_RUNNER_CHANNEL_ID,
+    //                 context.getString(R.string.main_notification_channel_name),
+    //                 NotificationManager.IMPORTANCE_HIGH);
+    //         mNotificationManager.createNotificationChannel(mChannel);
+    //     }
+    //
+    //     mNotificationBuilder =
+    //             new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
+    //                     .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
+    //                     .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
+    //                     .setLargeIcon(largeIcon(context))
+    //                     .addAction(mPauseAction)
+    //                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+    //                     .setOnlyAlertOnce(true)
+    //                     .setContentIntent(contentIntent(context));
+    //
+    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+    //             && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+    //         mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+    //     }
+    //
+    //     return mNotificationBuilder.build();
+    // }
+
+    public static Notification createNotification(Context context, Class<?> cls) {
         mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mResumeAction = resumeWorkout(context);
-        mPauseAction = pauseWorkout(context);
+        mResumeAction = resumeWorkout(context, cls);
+        mPauseAction = pauseWorkout(context, cls);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
@@ -68,40 +101,7 @@ public class NotificationUtils {
         return mNotificationBuilder.build();
     }
 
-    public static Notification createIndoorNotification(Context context, Class<?> cls) {
-        mNotificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mResumeAction = resumeIndoorWorkout(context, cls);
-        mPauseAction = pauseIndoorWorkout(context, cls);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(
-                    MOON_RUNNER_CHANNEL_ID,
-                    context.getString(R.string.main_notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH);
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-        mNotificationBuilder =
-                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
-                        .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
-                        .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
-                        .setLargeIcon(largeIcon(context))
-                        .addAction(mPauseAction)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                        .setOnlyAlertOnce(true)
-                        .setContentIntent(contentIntent(context));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        }
-
-        return mNotificationBuilder.build();
-    }
-
-    private static NotificationCompat.Action resumeIndoorWorkout(Context context, Class<?> cls) {
+    private static NotificationCompat.Action resumeWorkout(Context context, Class<?> cls) {
         Intent resumeSportActivityIntent = new Intent(context, cls);
         resumeSportActivityIntent.setAction(ACTION_RESUME_WORKOUT);
 
@@ -119,7 +119,7 @@ public class NotificationUtils {
         return resumeAction;
     }
 
-    private static NotificationCompat.Action pauseIndoorWorkout(Context context, Class<?> cls) {
+    private static NotificationCompat.Action pauseWorkout(Context context, Class<?> cls) {
         Intent pauseSportActivityIntent = new Intent(context, cls);
         pauseSportActivityIntent.setAction(ACTION_PAUSE_WORKOUT);
 

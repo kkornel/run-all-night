@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
@@ -23,9 +23,9 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
 
     private final ListItemClickListener mOnClickListener;
 
-    private List<WorkoutGpsSummary> mWorkouts;
+    private List<WorkoutSummary> mWorkouts;
 
-    public FeedYouAdapter(Context context, ListItemClickListener onClickListener, List<WorkoutGpsSummary> workouts) {
+    public FeedYouAdapter(Context context, ListItemClickListener onClickListener, List<WorkoutSummary> workouts) {
         mContext = context;
         mOnClickListener = onClickListener;
         mWorkouts = workouts;
@@ -84,7 +84,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
         return ((mWorkouts != null) && (mWorkouts.size() != 0) ? mWorkouts.size() : 0);
     }
 
-    void loadNewData(List<WorkoutGpsSummary> newActivities) {
+    void loadNewData(List<WorkoutSummary> newActivities) {
         mWorkouts = newActivities;
         notifyDataSetChanged();
     }

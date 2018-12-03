@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 
 import static com.example.kornel.alphaui.mainactivity.FeedFriendsFragment.FRIEND_WORKOUT_INTENT_EXTRA;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
-
 
 public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutGpsDetailsFriend";
@@ -70,18 +69,16 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
     private View mPhotoStatusDivider;
     private TextView mStatusTextView;
 
-    private TextView mLapsLabel;
     private CardView mLapsCardView;
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
 
-    private TextView mWeatherLabel;
     private CardView mWeatherCardView;
     private TextView mWeatherSummaryTextView;
     private ImageView mWeatherImageView;
     private TextView mWeatherTempTextView;
 
-    private WorkoutGpsSummary mWorkout;
+    private WorkoutSummary mWorkout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +173,6 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         }
 
 
-        mLapsLabel = findViewById(R.id.lapsLabel);
         mLapsCardView = findViewById(R.id.lapsCardView);
         mRecyclerView = findViewById(R.id.recyclerViewPace);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -185,7 +181,6 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
 
         ArrayList<Lap> laps = mWorkout.getLaps();
         if (laps == null || laps.size() == 0) {
-            mLapsLabel.setVisibility(View.GONE);
             mLapsCardView.setVisibility(View.GONE);
         } else {
             mPaceAdapter = new PaceAdapter(laps);
@@ -193,7 +188,6 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         }
 
 
-        mWeatherLabel = findViewById(R.id.weatherLabel);
         mWeatherCardView = findViewById(R.id.weatherCardView);
         mWeatherSummaryTextView = findViewById(R.id.weatherSummaryTextView);
         mWeatherImageView = findViewById(R.id.weatherImageView);
@@ -207,7 +201,6 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
                     .into(mWeatherImageView);
             mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
         } else {
-            mWeatherLabel.setVisibility(View.GONE);
             mWeatherCardView.setVisibility(View.GONE);
         }
     }

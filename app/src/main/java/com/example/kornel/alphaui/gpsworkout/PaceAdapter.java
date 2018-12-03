@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +13,6 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Lap;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder> {
 
@@ -79,7 +76,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
 
     @Override
     public int getItemCount() {
-        return  ((mLapsList != null) && (mLapsList.size() != 0) ? mLapsList.size() : 0);
+        return ((mLapsList != null) && (mLapsList.size() != 0) ? mLapsList.size() : 0);
     }
 
     void loadNewData(ArrayList<Lap> newLapsList) {

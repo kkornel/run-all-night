@@ -158,18 +158,18 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private String mUserUid;
     private DatabaseReference mRootRef;
 
-    private WorkoutGpsSummary mWorkoutGpsSummary;
+    private WorkoutSummary mWorkoutSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workout_summary);
+        setContentView(R.layout.activity_workout_gps_summary);
 
         getSupportActionBar().setTitle(R.string.summary);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mWorkoutGpsSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
+        mWorkoutSummary = getIntent().getExtras().getParcelable(WORKOUT_DETAILS_EXTRA_INTENT);
 
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
@@ -177,12 +177,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName()), getApplicationContext().getTheme()));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName()), getApplicationContext().getTheme()));
         } else {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName())));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName())));
         }
-        mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutGpsSummary.getFullDateStringPlWithTime());
+        mActivityTypeTextView.setText(mWorkoutSummary.getWorkoutName());
+        mDateTextView.setText(mWorkoutSummary.getFullDateStringPlWithTime());
 
 
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));
@@ -203,12 +203,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);
         mMaxSpeedTextView = findViewById(R.id.maxSpeedTextView);
 
-        mDurationTextView.setText(mWorkoutGpsSummary.getDuration());
-        mDistanceTextView.setText(mWorkoutGpsSummary.getDistance());
-        mAvgPaceTextView.setText(mWorkoutGpsSummary.getAvgPace());
-        mMaxPaceTextView.setText(mWorkoutGpsSummary.getMaxPace());
-        mAvgSpeedTextView.setText(mWorkoutGpsSummary.getAvgSpeed());
-        mMaxSpeedTextView.setText(mWorkoutGpsSummary.getMaxSpeed());
+        mDurationTextView.setText(mWorkoutSummary.getDuration());
+        mDistanceTextView.setText(mWorkoutSummary.getDistance());
+        mAvgPaceTextView.setText(mWorkoutSummary.getAvgPace());
+        mMaxPaceTextView.setText(mWorkoutSummary.getMaxPace());
+        mAvgSpeedTextView.setText(mWorkoutSummary.getAvgSpeed());
+        mMaxSpeedTextView.setText(mWorkoutSummary.getMaxSpeed());
 
 
         mStatusCardView = findViewById(R.id.statusCardView);
@@ -247,7 +247,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mWeatherImageView = findViewById(R.id.weatherImageView);
         mWeatherTempTextView = findViewById(R.id.weatherTempTextView);
 
-        WeatherInfoCompressed weatherInfoCompressed = mWorkoutGpsSummary.getWeatherInfoCompressed();
+        WeatherInfoCompressed weatherInfoCompressed = mWorkoutSummary.getWeatherInfoCompressed();
         if (weatherInfoCompressed != null) {
             mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
             Picasso.get()
@@ -273,7 +273,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mRecyclerView.setHasFixedSize(true);
 
 
-        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        ArrayList<Lap> laps = mWorkoutSummary.getLaps();
         mPaceAdapter = new PaceAdapter(laps);
         mRecyclerView.setAdapter(mPaceAdapter);
 
@@ -375,7 +375,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        ArrayList<LatLon> path = mWorkoutGpsSummary.getPath();
+        ArrayList<LatLon> path = mWorkoutSummary.getPath();
 
         if (path == null || path.size() == 0) {
             return;
@@ -410,7 +410,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 .title(getString(R.string.end))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        ArrayList<Lap> laps = mWorkoutSummary.getLaps();
         if (laps != null || laps.size() > 1) {
             int i = 1;
             for (Lap lap : laps) {
@@ -471,12 +471,12 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         String status = mStatusEditText.getText().toString();
         if (status != null && !status.equals("")) {
-            mWorkoutGpsSummary.setStatus(status);
+            mWorkoutSummary.setStatus(status);
         }
 
         String privacy = mPrivacySettingsSpinner.getItemAtPosition(mPrivacySettingsSpinner.getSelectedItemPosition()).toString();
 
-        mWorkoutGpsSummary.setPrivacy(privacy.equals(getString(R.string.only_me)));
+        mWorkoutSummary.setPrivacy(privacy.equals(getString(R.string.only_me)));
 
         if ((mPhotoName != null  || !mPhotoName.equals("") ) && mSelectedPhotoBitmap != null) {
             uploadImage(key);
@@ -542,7 +542,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void onUploadCompleted(String photoUri, String key) {
-        mWorkoutGpsSummary.setPicUrl(photoUri);
+        mWorkoutSummary.setPicUrl(photoUri);
 
         uploadWorkout(key);
     }
@@ -551,7 +551,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + key, mWorkoutGpsSummary);
+        childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + key, mWorkoutSummary);
 
         mRootRef.updateChildren(childUpdates);
 
@@ -805,5 +805,14 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         }
         return result;
+    }
+
+    public static class WorkoutNonGpsSummary extends AppCompatActivity {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_workout_non_gps_summary);
+        }
     }
 }

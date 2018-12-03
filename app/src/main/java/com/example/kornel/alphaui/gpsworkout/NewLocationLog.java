@@ -34,5 +34,4 @@ public class NewLocationLog {
         if (!isDebuggable) return;
         e.printStackTrace();
     }
-
 }

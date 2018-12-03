@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,15 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Lap;
-import com.example.kornel.alphaui.utils.LatLon;
-import com.example.kornel.alphaui.utils.Position;
-
 
 public class PaceDetailsFragment extends Fragment {
     private static final String TAG = "PaceDetailsFragment";
@@ -43,7 +38,7 @@ public class PaceDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.laps_details_fragment, container, false);
 
         mTimeTextView = rootView.findViewById(R.id.timeTextViewPace);
-        mAvgPaceTextView =  rootView.findViewById(R.id.avgTextViewPace);
+        mAvgPaceTextView = rootView.findViewById(R.id.avgTextViewPace);
         mCurrentPaceTextView = rootView.findViewById(R.id.currentTextViewPace);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPace);
@@ -52,8 +47,7 @@ public class PaceDetailsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         mLapsList = new ArrayList<>();
-        // TODO wywalić
-        //test();
+
         mPaceAdapter = new PaceAdapter(mLapsList);
         mRecyclerView.setAdapter(mPaceAdapter);
 
@@ -75,120 +69,5 @@ public class PaceDetailsFragment extends Fragment {
     public void setLapsList(ArrayList<Lap> lapsList) {
         mLapsList = lapsList;
         mPaceAdapter.loadNewData(mLapsList);
-    }
-
-    void test() {
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 324922));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 424722));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 524522));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 724422));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 124322));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 224822));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 924922));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 024422));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
-        mLapsList.add(new Lap(new Position(new LatLon(12.23, 23.12),  324922), 624222));
     }
 }

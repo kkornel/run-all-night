@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.squareup.picasso.Picasso;
@@ -71,7 +71,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
         if ((mFriendsFeedList == null) || (mFriendsFeedList.size() == 0)) {
             activityViewHolder.mNameTextView.setText("");
         } else {
-            WorkoutGpsSummary workout = mFriendsFeedList.get(position).getWorkout();
+            WorkoutSummary workout = mFriendsFeedList.get(position).getWorkout();
 
             Picasso.get()
                     .load(mFriendsFeedList.get(position).getAvatarUrl())

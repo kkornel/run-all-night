@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
 
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 
@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
-import static com.example.kornel.alphaui.gpsworkout.WorkoutSummaryActivity.MAX_CHARS_IN_EDIT_TEXT;
+import static com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummaryActivity.MAX_CHARS_IN_EDIT_TEXT;
 import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_INTENT_EXTRA;
 
 public class WorkoutNonGpsDetails extends AppCompatActivity {
@@ -82,7 +82,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
     private TextView mPrivacyTextView;
     private Button mPrivacyChangeButton;
 
-    private WorkoutGpsSummary mWorkoutGpsSummary;
+    private WorkoutSummary mWorkoutSummary;
     private boolean mWorkoutEdited;
     private boolean mPhotoDeleted;
 
@@ -103,7 +103,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mWorkoutGpsSummary = getIntent().getExtras().getParcelable(WORKOUT_INTENT_EXTRA);
+        mWorkoutSummary = getIntent().getExtras().getParcelable(WORKOUT_INTENT_EXTRA);
 
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
@@ -111,19 +111,19 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName()), getApplicationContext().getTheme()));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName()), getApplicationContext().getTheme()));
         } else {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName())));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName())));
         }
-        mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutGpsSummary.getFullDateStringPlWithTime());
+        mActivityTypeTextView.setText(mWorkoutSummary.getWorkoutName());
+        mDateTextView.setText(mWorkoutSummary.getFullDateStringPlWithTime());
 
 
         mSummaryCardView = findViewById(R.id.summaryCardView);
         mDurationImageView = findViewById(R.id.durationImageView);
         mDurationTextView = findViewById(R.id.durationTextView);
 
-        mDurationTextView.setText(mWorkoutGpsSummary.getDuration());
+        mDurationTextView.setText(mWorkoutSummary.getDuration());
 
 
         mStatusLabel = findViewById(R.id.statusLabel);
@@ -137,10 +137,10 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
             }
         });
 
-        if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
+        if (mWorkoutSummary.getStatus() == null || mWorkoutSummary.getStatus().equals("")) {
             mStatusTextView.setText(getString(R.string.edit_to_add_description));
         } else {
-            mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
+            mStatusTextView.setText(mWorkoutSummary.getStatus());
         }
 
         mPhotoLabel = findViewById(R.id.photoLabel);
@@ -154,18 +154,18 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
             }
         });
 
-        if (mWorkoutGpsSummary.getPicUrl() == null || mWorkoutGpsSummary.getPicUrl().equals("")) {
+        if (mWorkoutSummary.getPicUrl() == null || mWorkoutSummary.getPicUrl().equals("")) {
             mPhotoLabel.setVisibility(View.GONE);
             mPhotoCardView.setVisibility(View.GONE);
         } else {
             Picasso.get()
-                    .load(mWorkoutGpsSummary.getPicUrl())
+                    .load(mWorkoutSummary.getPicUrl())
                     .into(mPhotoImageView);
         }
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy() ? getString(R.string.only_me) : getString(R.string.friends));
+        mPrivacyTextView.setText(mWorkoutSummary.getPrivacy() ? getString(R.string.only_me) : getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +181,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         mRootRef = database.getReference();
 
         mUserUid = user.getUid();
-        mWorkoutKey = mWorkoutGpsSummary.getKey();
+        mWorkoutKey = mWorkoutSummary.getKey();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -278,7 +278,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         String newStatus = editText.getText().toString();
                         mStatusTextView.setText(newStatus);
-                        mWorkoutGpsSummary.setStatus(newStatus);
+                        mWorkoutSummary.setStatus(newStatus);
                         onWorkoutEdited();
                     }
                 })
@@ -291,7 +291,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
 
     private void onChangePrivacy() {
         CharSequence[] cs = {getString(R.string.friends), getString(R.string.only_me)};
-        final int checkedItemId = mWorkoutGpsSummary.getPrivacy() ? 1 : 0;
+        final int checkedItemId = mWorkoutSummary.getPrivacy() ? 1 : 0;
         new AlertDialog.Builder(WorkoutNonGpsDetails.this)
                 .setTitle(R.string.pick_settings)
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
@@ -299,7 +299,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
 
                         if (checkedItemId != which) {
                             boolean isPrivate = which == 1 ? true : false;
-                            mWorkoutGpsSummary.setPrivacy(isPrivate);
+                            mWorkoutSummary.setPrivacy(isPrivate);
                             if (isPrivate) {
                                 mPrivacyTextView.setText(getString(R.string.only_me));
                             } else {
@@ -343,10 +343,10 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         if (mPhotoDeleted) {
             deletePhotoFromDatabase();
             mPhotoImageView.setVisibility(View.GONE);
-            mWorkoutGpsSummary.setPicUrl(null);
+            mWorkoutSummary.setPicUrl(null);
         }
 
-        Map<String, Object> workoutValues = mWorkoutGpsSummary.toMap();
+        Map<String, Object> workoutValues = mWorkoutSummary.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + mWorkoutKey, workoutValues);
@@ -407,18 +407,18 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
 
                 if (user.getLastWorkout().equals(mWorkoutKey)) {
 
-                    final ArrayList<WorkoutGpsSummary> workouts = new ArrayList<>();
+                    final ArrayList<WorkoutSummary> workouts = new ArrayList<>();
                     ValueEventListener workoutListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() == null) {
                                 userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(null);
                             } else {
-                                WorkoutGpsSummary w1 = null;
-                                WorkoutGpsSummary w2 = null;
+                                WorkoutSummary w1 = null;
+                                WorkoutSummary w2 = null;
 
                                 for (DataSnapshot workout : dataSnapshot.getChildren()) {
-                                    w1 = workout.getValue(WorkoutGpsSummary.class);
+                                    w1 = workout.getValue(WorkoutSummary.class);
 
                                     if (w2 == null) {
                                         w2 = w1;
@@ -457,7 +457,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         };
         userRef.child(mUserUid).addListenerForSingleValueEvent(userListener);
 
-        if (mWorkoutGpsSummary.getPicUrl() != null && !mWorkoutGpsSummary.getPicUrl().equals("")) {
+        if (mWorkoutSummary.getPicUrl() != null && !mWorkoutSummary.getPicUrl().equals("")) {
             deletePhotoFromDatabase();
         } else {
             Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");

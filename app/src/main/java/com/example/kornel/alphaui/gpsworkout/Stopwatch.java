@@ -1,10 +1,7 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
-
 
 public class Stopwatch {
     private static final String TAG = "Stopwatch";

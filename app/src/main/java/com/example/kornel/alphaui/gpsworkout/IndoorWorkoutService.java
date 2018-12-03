@@ -86,7 +86,7 @@ public class IndoorWorkoutService extends Service {
         mCurrentIndoorWorkout = new CurrentIndoorWorkout(workoutName);
 
         // Build the notification.
-        Notification notification = NotificationUtils.createIndoorNotification(getApplicationContext(), IndoorWorkoutService.class);
+        Notification notification = NotificationUtils.createNotification(getApplicationContext(), IndoorWorkoutService.class);
 
         // Start foreground service.
         startForeground(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notification);
@@ -193,12 +193,12 @@ public class IndoorWorkoutService extends Service {
         return mIsServiceRunning;
     }
 
-    public WorkoutGpsSummary getWorkOutSummary() {
-        WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
+    public WorkoutSummary getWorkOutSummary() {
+        WorkoutSummary workoutSummary = new WorkoutSummary(
                 mCurrentIndoorWorkout.getDate(),
                 mCurrentIndoorWorkout.getWorkoutName(),
                 mCurrentIndoorWorkout.getDurationString());
-        return workoutGpsSummary;
+        return workoutSummary;
     }
 
     public String getTimeString() {

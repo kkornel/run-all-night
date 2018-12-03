@@ -61,7 +61,7 @@ public class MoreFragment extends Fragment {
                 startActivity(i);
             }
         });
-        
+
         return rootView;
     }
 

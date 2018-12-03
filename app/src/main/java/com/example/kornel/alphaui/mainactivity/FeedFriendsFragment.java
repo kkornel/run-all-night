@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.User;
@@ -154,9 +154,9 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                 Log.d(TAG, "onChildAdded: ");
 
                                 if (!mFragmentJustStarted) {
-                                    WorkoutGpsSummary workoutGpsSummary = dataSnapshot.getValue(WorkoutGpsSummary.class);
+                                    WorkoutSummary workoutSummary = dataSnapshot.getValue(WorkoutSummary.class);
 
-                                    if (!workoutGpsSummary.getPrivacy()) {
+                                    if (!workoutSummary.getPrivacy()) {
                                         mNewData = true;
                                         Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
 
@@ -168,7 +168,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                                             }
                                         }
                                         if (friendInfo != null) {
-                                            mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutGpsSummary));
+                                            mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutSummary));
                                         }
                                     }
                                 }
@@ -261,7 +261,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
+                                WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
                                 if (!workout.getPrivacy()) {
                                     Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
@@ -370,7 +370,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     //                             @Override
     //                             public void onDataChange(DataSnapshot dataSnapshot) {
     //                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                                     WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
+    //                                     WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
     //                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
     //                                     mFeedFriendsList.add(friendWorkout);
     //                                 }

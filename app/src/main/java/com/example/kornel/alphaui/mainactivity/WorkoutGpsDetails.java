@@ -1,73 +1,73 @@
 package com.example.kornel.alphaui.mainactivity;
 
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.os.Build;
-        import android.support.annotation.NonNull;
-        import android.support.v7.app.AlertDialog;
-        import android.support.v7.app.AppCompatActivity;
-        import android.os.Bundle;
-        import android.support.v7.widget.CardView;
-        import android.support.v7.widget.LinearLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.text.InputFilter;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.Menu;
-        import android.view.MenuInflater;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.view.inputmethod.InputMethodManager;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.ImageButton;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.example.kornel.alphaui.R;
-        import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
-        import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
-        import com.example.kornel.alphaui.utils.Database;
-        import com.example.kornel.alphaui.utils.IconUtils;
-        import com.example.kornel.alphaui.utils.Lap;
-        import com.example.kornel.alphaui.utils.LatLon;
-        import com.example.kornel.alphaui.utils.User;
-        import com.example.kornel.alphaui.utils.Utils;
-        import com.example.kornel.alphaui.weather.NetworkUtils;
-        import com.example.kornel.alphaui.weather.WeatherConsts;
-        import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
-        import com.google.android.gms.maps.CameraUpdateFactory;
-        import com.google.android.gms.maps.GoogleMap;
-        import com.google.android.gms.maps.OnMapReadyCallback;
-        import com.google.android.gms.maps.SupportMapFragment;
-        import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-        import com.google.android.gms.maps.model.LatLng;
-        import com.google.android.gms.maps.model.LatLngBounds;
-        import com.google.android.gms.maps.model.MarkerOptions;
-        import com.google.android.gms.maps.model.Polyline;
-        import com.google.android.gms.maps.model.PolylineOptions;
-        import com.google.android.gms.tasks.OnFailureListener;
-        import com.google.android.gms.tasks.OnSuccessListener;
-        import com.google.firebase.auth.FirebaseAuth;
-        import com.google.firebase.auth.FirebaseUser;
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseError;
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.google.firebase.database.ValueEventListener;
-        import com.google.firebase.storage.FirebaseStorage;
-        import com.google.firebase.storage.StorageReference;
-        import com.squareup.picasso.Picasso;
+import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.gpsworkout.PaceAdapter;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
+import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.IconUtils;
+import com.example.kornel.alphaui.utils.Lap;
+import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.Utils;
+import com.example.kornel.alphaui.weather.NetworkUtils;
+import com.example.kornel.alphaui.weather.WeatherConsts;
+import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
-        import java.util.ArrayList;
-        import java.util.HashMap;
-        import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-        import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
-        import static com.example.kornel.alphaui.gpsworkout.WorkoutSummaryActivity.MAX_CHARS_IN_EDIT_TEXT;
-        import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_INTENT_EXTRA;
-        import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
+import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
+import static com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummaryActivity.MAX_CHARS_IN_EDIT_TEXT;
+import static com.example.kornel.alphaui.mainactivity.FeedYouFragment.WORKOUT_INTENT_EXTRA;
+import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "WorkoutGpsDetails";
@@ -118,7 +118,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
 
-    private WorkoutGpsSummary mWorkoutGpsSummary;
+    private WorkoutSummary mWorkoutSummary;
     private boolean mWorkoutEdited;
     private boolean mPhotoDeleted;
 
@@ -139,7 +139,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mWorkoutGpsSummary = getIntent().getExtras().getParcelable(WORKOUT_INTENT_EXTRA);
+        mWorkoutSummary = getIntent().getExtras().getParcelable(WORKOUT_INTENT_EXTRA);
 
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
@@ -147,12 +147,12 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName()), getApplicationContext().getTheme()));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName()), getApplicationContext().getTheme()));
         } else {
-            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutGpsSummary.getWorkoutName())));
+            mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName())));
         }
-        mActivityTypeTextView.setText(mWorkoutGpsSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutGpsSummary.getFullDateStringPlWithTime());
+        mActivityTypeTextView.setText(mWorkoutSummary.getWorkoutName());
+        mDateTextView.setText(mWorkoutSummary.getFullDateStringPlWithTime());
 
 
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));
@@ -173,12 +173,12 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);
         mMaxSpeedTextView = findViewById(R.id.maxSpeedTextView);
 
-        mDurationTextView.setText(mWorkoutGpsSummary.getDuration());
-        mDistanceTextView.setText(mWorkoutGpsSummary.getDistance());
-        mAvgPaceTextView.setText(mWorkoutGpsSummary.getAvgPace());
-        mMaxPaceTextView.setText(mWorkoutGpsSummary.getMaxPace());
-        mAvgSpeedTextView.setText(mWorkoutGpsSummary.getAvgSpeed());
-        mMaxSpeedTextView.setText(mWorkoutGpsSummary.getMaxSpeed());
+        mDurationTextView.setText(mWorkoutSummary.getDuration());
+        mDistanceTextView.setText(mWorkoutSummary.getDistance());
+        mAvgPaceTextView.setText(mWorkoutSummary.getAvgPace());
+        mMaxPaceTextView.setText(mWorkoutSummary.getMaxPace());
+        mAvgSpeedTextView.setText(mWorkoutSummary.getAvgSpeed());
+        mMaxSpeedTextView.setText(mWorkoutSummary.getMaxSpeed());
 
 
         mStatusLabel = findViewById(R.id.statusLabel);
@@ -192,10 +192,10 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        if (mWorkoutGpsSummary.getStatus() == null || mWorkoutGpsSummary.getStatus().equals("")) {
+        if (mWorkoutSummary.getStatus() == null || mWorkoutSummary.getStatus().equals("")) {
             mStatusTextView.setText(getString(R.string.edit_to_add_description));
         } else {
-            mStatusTextView.setText(mWorkoutGpsSummary.getStatus());
+            mStatusTextView.setText(mWorkoutSummary.getStatus());
         }
 
         mPhotoLabel = findViewById(R.id.photoLabel);
@@ -209,18 +209,18 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        if (mWorkoutGpsSummary.getPicUrl() == null || mWorkoutGpsSummary.getPicUrl().equals("")) {
+        if (mWorkoutSummary.getPicUrl() == null || mWorkoutSummary.getPicUrl().equals("")) {
             mPhotoLabel.setVisibility(View.GONE);
             mPhotoCardView.setVisibility(View.GONE);
         } else {
             Picasso.get()
-                    .load(mWorkoutGpsSummary.getPicUrl())
+                    .load(mWorkoutSummary.getPicUrl())
                     .into(mPhotoImageView);
         }
 
         mPrivacyCardView = findViewById(R.id.privacyCardView);
         mPrivacyTextView = findViewById(R.id.privacyTextView);
-        mPrivacyTextView.setText(mWorkoutGpsSummary.getPrivacy() ? getString(R.string.only_me) :  getString(R.string.friends));
+        mPrivacyTextView.setText(mWorkoutSummary.getPrivacy() ? getString(R.string.only_me) : getString(R.string.friends));
         mPrivacyChangeButton = findViewById(R.id.changePrivacyButton);
         mPrivacyChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,7 +235,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mWeatherImageView = findViewById(R.id.weatherImageView);
         mWeatherTempTextView = findViewById(R.id.weatherTempTextView);
 
-        WeatherInfoCompressed weatherInfoCompressed = mWorkoutGpsSummary.getWeatherInfoCompressed();
+        WeatherInfoCompressed weatherInfoCompressed = mWorkoutSummary.getWeatherInfoCompressed();
         if (weatherInfoCompressed != null) {
             mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
             Picasso.get()
@@ -257,7 +257,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mRecyclerView.setHasFixedSize(true);
 
 
-        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        ArrayList<Lap> laps = mWorkoutSummary.getLaps();
         if (laps == null || laps.size() == 0) {
             mLapsLabel.setVisibility(View.GONE);
             mLapsCardView.setVisibility(View.GONE);
@@ -273,7 +273,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mRootRef = database.getReference();
 
         mUserUid = user.getUid();
-        mWorkoutKey = mWorkoutGpsSummary.getKey();
+        mWorkoutKey = mWorkoutSummary.getKey();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -288,7 +288,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        ArrayList<LatLon> path = mWorkoutGpsSummary.getPath();
+        ArrayList<LatLon> path = mWorkoutSummary.getPath();
 
         if (path == null || path.size() == 0) {
             return;
@@ -310,7 +310,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         final LatLngBounds bounds = builder.build();
 
         LatLng startPoint = new LatLng(path.get(0).getLatitude(), path.get(0).getLongitude());
-        LatLng endPoint = new LatLng(path.get(path.size()-1).getLatitude(), path.get(path.size()-1).getLongitude());
+        LatLng endPoint = new LatLng(path.get(path.size() - 1).getLatitude(), path.get(path.size() - 1).getLongitude());
 
 
         mMap.addMarker(new MarkerOptions()
@@ -323,7 +323,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .title(getString(R.string.end))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-        ArrayList<Lap> laps = mWorkoutGpsSummary.getLaps();
+        ArrayList<Lap> laps = mWorkoutSummary.getLaps();
         if (laps != null || laps.size() > 1) {
             int i = 1;
             for (Lap lap : laps) {
@@ -418,7 +418,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         } else {
             editText.setText(mStatusTextView.getText());
         }
-        editText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(MAX_CHARS_IN_EDIT_TEXT) });
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_CHARS_IN_EDIT_TEXT)});
         editText.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -431,7 +431,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                     public void onClick(DialogInterface dialog, int id) {
                         String newStatus = editText.getText().toString();
                         mStatusTextView.setText(newStatus);
-                        mWorkoutGpsSummary.setStatus(newStatus);
+                        mWorkoutSummary.setStatus(newStatus);
                         onWorkoutEdited();
                     }
                 })
@@ -444,7 +444,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
     private void onChangePrivacy() {
         CharSequence[] cs = {getString(R.string.friends), getString(R.string.only_me)};
-        final int checkedItemId = mWorkoutGpsSummary.getPrivacy() ? 1 :  0;
+        final int checkedItemId = mWorkoutSummary.getPrivacy() ? 1 : 0;
         new AlertDialog.Builder(WorkoutGpsDetails.this)
                 .setTitle(R.string.pick_settings)
                 .setSingleChoiceItems(cs, checkedItemId, new DialogInterface.OnClickListener() {
@@ -452,7 +452,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
                         if (checkedItemId != which) {
                             boolean isPrivate = which == 1 ? true : false;
-                            mWorkoutGpsSummary.setPrivacy(isPrivate);
+                            mWorkoutSummary.setPrivacy(isPrivate);
                             if (isPrivate) {
                                 mPrivacyTextView.setText(getString(R.string.only_me));
                             } else {
@@ -462,7 +462,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                         }
 
                         dialog.dismiss();
-                    }})
+                    }
+                })
                 .create()
                 .show();
     }
@@ -480,7 +481,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         onBackPressed();
-                    }})
+                    }
+                })
                 .setNegativeButton(R.string.no, null).show();
     }
 
@@ -494,10 +496,10 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         if (mPhotoDeleted) {
             deletePhotoFromDatabase();
             mPhotoImageView.setVisibility(View.GONE);
-            mWorkoutGpsSummary.setPicUrl(null);
+            mWorkoutSummary.setPicUrl(null);
         }
 
-        Map<String, Object> workoutValues = mWorkoutGpsSummary.toMap();
+        Map<String, Object> workoutValues = mWorkoutSummary.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + mWorkoutKey, workoutValues);
@@ -521,7 +523,8 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                         delete();
 
                         finish();
-                    }})
+                    }
+                })
                 .setNegativeButton(R.string.no, null)
                 .create()
                 .show();
@@ -557,18 +560,18 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
                 if (user.getLastWorkout().equals(mWorkoutKey)) {
 
-                    final ArrayList<WorkoutGpsSummary> workouts = new ArrayList<>();
+                    final ArrayList<WorkoutSummary> workouts = new ArrayList<>();
                     ValueEventListener workoutListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() == null) {
                                 userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(null);
                             } else {
-                                WorkoutGpsSummary w1 = null;
-                                WorkoutGpsSummary w2 = null;
+                                WorkoutSummary w1 = null;
+                                WorkoutSummary w2 = null;
 
                                 for (DataSnapshot workout : dataSnapshot.getChildren()) {
-                                    w1 = workout.getValue(WorkoutGpsSummary.class);
+                                    w1 = workout.getValue(WorkoutSummary.class);
 
                                     if (w2 == null) {
                                         w2 = w1;
@@ -607,7 +610,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         };
         userRef.child(mUserUid).addListenerForSingleValueEvent(userListener);
 
-        if (mWorkoutGpsSummary.getPicUrl() != null && !mWorkoutGpsSummary.getPicUrl().equals("")) {
+        if (mWorkoutSummary.getPicUrl() != null && !mWorkoutSummary.getPicUrl().equals("")) {
             deletePhotoFromDatabase();
         } else {
             Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");

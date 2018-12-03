@@ -10,12 +10,11 @@ import android.widget.TextView;
 
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.squareup.picasso.Picasso;
 
 import static com.example.kornel.alphaui.mainactivity.FeedFriendsFragment.FRIEND_WORKOUT_INTENT_EXTRA;
-
 
 public class WorkoutNonGpsDetailsFriend extends AppCompatActivity {
     private static final String TAG = "WorkoutNonGpsDetailsFri";
@@ -38,7 +37,7 @@ public class WorkoutNonGpsDetailsFriend extends AppCompatActivity {
     private View mPhotoStatusDivider;
     private TextView mStatusTextView;
 
-    private WorkoutGpsSummary mWorkout;
+    private WorkoutSummary mWorkout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

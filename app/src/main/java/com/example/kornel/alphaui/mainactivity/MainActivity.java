@@ -17,12 +17,11 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.weather.WeatherInfo;
 import com.example.kornel.alphaui.weather.WeatherLog;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    
+
     private Toolbar mToolbar;
     private TextView mTitle;
 
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView.setSelectedItemId(R.id.navigation_workout);
 
         // if (savedInstanceState != null) {
-            // mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
+        // mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
         // }
     }
 

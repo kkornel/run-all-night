@@ -20,11 +20,10 @@ import com.example.kornel.alphaui.utils.OnNewActivityState;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGROUND_SERVICE;
 import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 
 public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnNewActivityState {
     private static final String TAG = "StartNonGpsWorkoutActiv";
-
-    public static final String WORKOUT_DETAILS_EXTRA_INTENT = "workout_summary";
 
     private static final int START_BUTTON_INDEX_IN_VIEW_FLIPPER = 0;
     private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
@@ -181,9 +180,9 @@ public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnN
         startService(intent);
         mIsForegroundServiceRunning = false;
 
-        Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
-        WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
-        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
+        Intent summaryActivity = new Intent(this, WorkoutNonGpsSummaryActivity.class);
+        WorkoutSummary workoutSummary = mService.getWorkOutSummary();
+        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutSummary);
         startActivity(summaryActivity);
     }
 

@@ -54,7 +54,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".gpsworkout.WorkoutSummaryActivity" />
+        <activity android:name=".gpsworkout.WorkoutGpsSummaryActivity" />
         <activity android:name=".gpsworkout.StartGpsWorkoutActivity" />
 
         <!--
@@ -82,9 +82,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".profile.ProfileDetailsActivity" />
         <activity android:name=".profile.EditProfileActivity" />
-        <activity android:name=".GpsWorkoutDetails" />
         <activity android:name=".mainactivity.WeatherDetailsActivity" />
-
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -104,7 +102,8 @@
         <activity android:name=".mainactivity.WorkoutGpsDetails" />
         <activity android:name=".mainactivity.WorkoutGpsDetailsFriend" />
         <activity android:name=".mainactivity.WorkoutNonGpsDetailsFriend" />
-        <activity android:name=".mainactivity.WorkoutNonGpsDetails"></activity>
+        <activity android:name=".mainactivity.WorkoutNonGpsDetails" />
+        <activity android:name=".gpsworkout.WorkoutNonGpsSummaryActivity"></activity>
     </application>
 
 </manifest>

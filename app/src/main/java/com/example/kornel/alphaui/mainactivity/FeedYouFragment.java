@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
@@ -44,9 +44,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private String mUserUid;
     private DatabaseReference mRootRef;
     private DatabaseReference mWorkoutsRef;
-    private List<WorkoutGpsSummary> mFeedYouList;
-    
-   private DatabaseReference myWorkoutsRef;
+    private List<WorkoutSummary> mFeedYouList;
+
+    private DatabaseReference myWorkoutsRef;
 
     ValueEventListener myWorkoutsListener = new ValueEventListener() {
         @Override
@@ -56,7 +56,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
                 loadNewData(mFeedYouList);
             } else {
                 for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
-                    WorkoutGpsSummary workout = workoutSnapshot.getValue(WorkoutGpsSummary.class);
+                    WorkoutSummary workout = workoutSnapshot.getValue(WorkoutSummary.class);
                     workout.setKey(workoutSnapshot.getKey());
                     mFeedYouList.add(workout);
                     if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
@@ -98,7 +98,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
 
         return rootView;
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
@@ -134,11 +134,11 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         }
     }
 
-    public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
+    public void setFeedYouList(List<WorkoutSummary> feedYouList) {
         mFeedYouList = feedYouList;
     }
 
-    public void loadNewData(List<WorkoutGpsSummary> feedYouList) {
+    public void loadNewData(List<WorkoutSummary> feedYouList) {
         sortListByDate(feedYouList);
         setFeedYouList(feedYouList);
         checkIfListIsEmpty();
@@ -154,9 +154,9 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         }
     }
 
-    private void sortListByDate(List<WorkoutGpsSummary> list) {
-        Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
-            public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
+    private void sortListByDate(List<WorkoutSummary> list) {
+        Collections.sort(list, new Comparator<WorkoutSummary>() {
+            public int compare(WorkoutSummary o1, WorkoutSummary o2) {
                 if (o1.getWorkoutDate() == null || o2.getWorkoutDate() == null)
                     return 0;
                 return o2.getWorkoutDate().compareTo(o1.getWorkoutDate());

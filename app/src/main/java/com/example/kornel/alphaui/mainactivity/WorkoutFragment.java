@@ -29,7 +29,7 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.gpsworkout.StartNonGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
@@ -537,7 +537,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     workoutsRef.child(userUid).child(lastWorkoutKey).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).gapBetweenWorkouts();
+                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutSummary.class).gapBetweenWorkouts();
                             mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                         }
 
@@ -556,7 +556,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 throw databaseError.toException();
             }
         };
-        
+
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
     }
 

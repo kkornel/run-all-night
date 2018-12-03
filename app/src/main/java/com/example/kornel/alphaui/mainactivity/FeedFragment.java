@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.mainactivity;
 
-
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
-
 
 public class FeedFragment extends Fragment {
     private FeedPagerAdapter mFeedPagerAdapter;
