@@ -44,6 +44,7 @@ public class WorkoutGpsSummary implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
     }
 
+    // Constructor for LocationTrackingService
     public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
         this.dateMilliseconds = new Date().getTime();
         this.workoutName = workoutName;
@@ -55,6 +56,24 @@ public class WorkoutGpsSummary implements Parcelable {
         this.maxSpeed = maxSpeed;
         this.path = path;
         this.laps = laps;
+    }
+
+    // Constructor for IndoorWorkoutService
+    public WorkoutGpsSummary(Date date, String workoutName, String duration) {
+        this.dateMilliseconds = date.getTime();
+        this.workoutName = workoutName;
+        this.duration = duration;
+
+        distance = null;
+        avgPace = null;
+        maxPace = null;
+        avgSpeed = null;
+        maxSpeed = null;
+        status = null;
+        picUrl = null;
+        path = null;
+        laps = null;
+        weatherInfoCompressed = null;
     }
 
     private String[] getDateSeparated() {
@@ -69,7 +88,7 @@ public class WorkoutGpsSummary implements Parcelable {
         String year = separated[3];
         String time = separated[4];
 
-        return new String[] {dayName, day, month, year, time};
+        return new String[]{dayName, day, month, year, time};
     }
 
     @Exclude

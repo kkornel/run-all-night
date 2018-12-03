@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,6 +18,8 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.OnNewActivityState;
 
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
 
 public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnNewActivityState {
     private static final String TAG = "StartNonGpsWorkoutActiv";
@@ -45,6 +46,10 @@ public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnN
     private Button mResumeButton;
     private Button mFinishButton;
 
+    // Timer
+    private Handler mTimeHandler;
+    private Runnable mTimeRunnable;
+
     // Monitors the state of the connection to the service.
     // Defines callbacks for service binding, passed to bindService()
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -68,10 +73,6 @@ public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnN
             mBound = false;
         }
     };
-
-    // Timer
-    private Handler mTimeHandler;
-    private Runnable mTimeRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +159,7 @@ public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnN
     private void startWorkout() {
         if (!mIsForegroundServiceRunning) {
             Intent intent = new Intent(StartNonGpsWorkoutActivity.this, IndoorWorkoutService.class);
-            intent.setAction(IndoorWorkoutService.ACTION_START_FOREGROUND_SERVICE);
+            intent.setAction(ACTION_START_FOREGROUND_SERVICE);
             intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT));
             startService(intent);
             mIsForegroundServiceRunning = true;
@@ -176,14 +177,20 @@ public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnN
     private void finishWorkout() {
         // Stop service
         Intent intent = new Intent(this, IndoorWorkoutService.class);
-        intent.setAction(IndoorWorkoutService.ACTION_STOP_FOREGROUND_SERVICE);
+        intent.setAction(ACTION_STOP_FOREGROUND_SERVICE);
         startService(intent);
         mIsForegroundServiceRunning = false;
 
         Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
         WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
-        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
         summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
         startActivity(summaryActivity);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mService.isServiceRunning()) {
+            super.onBackPressed();
+        }
     }
 }

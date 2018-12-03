@@ -34,13 +34,13 @@ import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadca
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_WORKOUT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_WORKOUT;
-import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
+import static com.example.kornel.alphaui.utils.NotificationUtils.MOON_RUNNER_WORKOUT_NOTIFICATION_ID;
 
 
 public class LocationTrackingService extends Service {
     private static final String TAG = "LocationTrackingService";
 
-    private static final int MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES = 4000;
+    private static final int MIN_VALUE_OF_MILLI_SEC_BETWEEN_UPDATES = 4000;
 
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
@@ -155,7 +155,7 @@ public class LocationTrackingService extends Service {
         Notification notification = NotificationUtils.createNotification(getApplicationContext());
 
         // Start foreground service.
-        startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification);
+        startForeground(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notification);
 
         mIsServiceRunning = true;
         mIsTrainingPaused = false;
@@ -225,7 +225,7 @@ public class LocationTrackingService extends Service {
             long prevStamp = mPreviousLocation.getTime();
             long newStamp = newLocation.getTime();
             long msBetweenPrevAndNew = newStamp - prevStamp;
-            if (msBetweenPrevAndNew < MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES) {
+            if (msBetweenPrevAndNew < MIN_VALUE_OF_MILLI_SEC_BETWEEN_UPDATES) {
                 NewLocationLog.d("onNewLocation: OMITTING because timeBetweenUpdates = : " + msBetweenPrevAndNew);
                 return;
             }

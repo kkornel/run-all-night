@@ -18,10 +18,10 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 
 public class NotificationUtils {
-    public static final int LOCATION_TRACKING_NOTIFICATION_ID = 1138;
+    public static final int MOON_RUNNER_WORKOUT_NOTIFICATION_ID = 1138;
 
-    private static final int LOCATION_TRACKING_PENDING_INTENT_ID = 3417;
-    private static final String LOCATION_TRACKING_CHANNEL_ID = "tracking_notification_channel_01";
+    private static final int MOON_RUNNER_PENDING_INTENT_ID = 3417;
+    private static final String MOON_RUNNER_CHANNEL_ID = "moon_runner_notification_channel_01";
 
     private static final int ACTION_RESUME_PENDING_INTENT_ID = 3418;
     public static final String ACTION_RESUME_WORKOUT = "resume_sport_activity";
@@ -44,14 +44,14 @@ public class NotificationUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
-                    LOCATION_TRACKING_CHANNEL_ID,
+                    MOON_RUNNER_CHANNEL_ID,
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
         mNotificationBuilder =
-                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
+                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
                         .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
                         .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
                         .setLargeIcon(largeIcon(context))
@@ -77,14 +77,14 @@ public class NotificationUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
-                    LOCATION_TRACKING_CHANNEL_ID,
+                    MOON_RUNNER_CHANNEL_ID,
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
         mNotificationBuilder =
-                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
+                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
                         .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
                         .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
                         .setLargeIcon(largeIcon(context))
@@ -157,7 +157,7 @@ public class NotificationUtils {
     }
 
     public static void notifyManager() {
-        mNotificationManager.notify(LOCATION_TRACKING_NOTIFICATION_ID, mNotificationBuilder.build());
+        mNotificationManager.notify(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
     private static void addResumeAction() {
@@ -235,7 +235,7 @@ public class NotificationUtils {
 
         return PendingIntent.getActivity(
                 context,
-                LOCATION_TRACKING_PENDING_INTENT_ID,
+                MOON_RUNNER_PENDING_INTENT_ID,
                 startActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
@@ -267,7 +267,7 @@ public class NotificationUtils {
         // Create a notification channel for Android O devices
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
-                    LOCATION_TRACKING_CHANNEL_ID,
+                    MOON_RUNNER_CHANNEL_ID,
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
@@ -284,7 +284,7 @@ public class NotificationUtils {
         // - uses the content intent returned by the contentIntent helper method for the contentIntent
         // - automatically cancels the notification when the notification is clicked
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
+                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
                         .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                         .setSmallIcon(R.drawable.ic_drink_notification)
                         .setLargeIcon(largeIcon(context))
@@ -306,6 +306,6 @@ public class NotificationUtils {
 
         // Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and .build()
-        notificationManager.notify(LOCATION_TRACKING_NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notificationBuilder.build());
     }
 }

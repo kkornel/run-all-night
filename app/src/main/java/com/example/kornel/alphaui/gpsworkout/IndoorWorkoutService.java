@@ -7,7 +7,6 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.NotificationUtils;
@@ -16,24 +15,23 @@ import com.example.kornel.alphaui.utils.OnNewActivityState;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_WORKOUT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_WORKOUT;
-import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
+import static com.example.kornel.alphaui.utils.NotificationUtils.MOON_RUNNER_WORKOUT_NOTIFICATION_ID;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
 
 public class IndoorWorkoutService extends Service {
     private static final String TAG = "IndoorWorkoutService";
 
-    public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
-    public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
-
     // Binder given to clients
     private final IBinder mBinder = new IndoorWorkoutService.IndoorWorkoutBinder();
-
-    private Handler mNotificationHandler;
-    private Runnable mNotificationRunnable;
 
     // For button state update
     private OnNewActivityState mButtonCallback;
 
-    private CurrentGpsWorkout mCurrentGpsWorkout;
+    private Handler mNotificationHandler;
+    private Runnable mNotificationRunnable;
+
+    private CurrentIndoorWorkout mCurrentIndoorWorkout;
 
     private boolean mIsTrainingPaused;
     private boolean mDidComeFromNotification;
@@ -41,15 +39,6 @@ public class IndoorWorkoutService extends Service {
 
     public IndoorWorkoutService() {
 
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) comes to the foreground
-        // and binds with this service. The service should cease to be a foreground service
-        // when that happens.
-        return mBinder;
     }
 
     @Override
@@ -94,18 +83,17 @@ public class IndoorWorkoutService extends Service {
 
     private void startForegroundService(String workoutName) {
         // Create new workout
-        mCurrentGpsWorkout = new CurrentGpsWorkout(workoutName);
+        mCurrentIndoorWorkout = new CurrentIndoorWorkout(workoutName);
 
         // Build the notification.
         Notification notification = NotificationUtils.createIndoorNotification(getApplicationContext(), IndoorWorkoutService.class);
 
         // Start foreground service.
-        startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification);
+        startForeground(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notification);
 
         mIsServiceRunning = true;
         mIsTrainingPaused = false;
 
-        // Google Location Services API
         startNotificationHandler();
     }
 
@@ -121,7 +109,7 @@ public class IndoorWorkoutService extends Service {
 
     public void pauseWorkout() {
         mIsTrainingPaused = true;
-        mCurrentGpsWorkout.pauseStopwatch();
+        mCurrentIndoorWorkout.pauseStopwatch();
         stopNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
 
@@ -135,7 +123,7 @@ public class IndoorWorkoutService extends Service {
 
     public void resumeWorkout() {
         mIsTrainingPaused = false;
-        mCurrentGpsWorkout.startStopwatch();
+        mCurrentIndoorWorkout.startStopwatch();
         startNotificationHandler();
         NotificationUtils.toggleActionButtons(getApplicationContext());
 
@@ -147,16 +135,6 @@ public class IndoorWorkoutService extends Service {
         }
     }
 
-    // Class used for the client Binder. Because we know this service always runs
-    // in the same process as its clients, we don't need to deal with IPC.
-    public class IndoorWorkoutBinder extends Binder {
-        IndoorWorkoutService getService() {
-            // Return this instance of LocationTrackingBinder so clients can call public methods
-            return IndoorWorkoutService.this;
-        }
-    }
-
-
     private void setupNotifications() {
         mNotificationHandler = new Handler();
         mNotificationRunnable = new Runnable() {
@@ -164,7 +142,7 @@ public class IndoorWorkoutService extends Service {
             public void run() {
                 String ch187 = Character.toString((char) 187);
 
-                String message = mCurrentGpsWorkout.getWorkoutName() + "  "
+                String message = mCurrentIndoorWorkout.getWorkoutName() + "  "
                         + ch187 + "  " + getTimeString();
 
                 NotificationUtils.updateNotification(message);
@@ -181,6 +159,24 @@ public class IndoorWorkoutService extends Service {
         mNotificationHandler.removeCallbacks(mNotificationRunnable);
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        // Called when a client (MainActivity in case of this sample) comes to the foreground
+        // and binds with this service. The service should cease to be a foreground service
+        // when that happens.
+        return mBinder;
+    }
+
+    // Class used for the client Binder. Because we know this service always runs
+    // in the same process as its clients, we don't need to deal with IPC.
+    public class IndoorWorkoutBinder extends Binder {
+        IndoorWorkoutService getService() {
+            // Return this instance of LocationTrackingBinder so clients can call public methods
+            return IndoorWorkoutService.this;
+        }
+    }
+
     /**
      * Methods for clients.
      */
@@ -189,35 +185,27 @@ public class IndoorWorkoutService extends Service {
         mButtonCallback = callback;
     }
 
-    public WorkoutGpsSummary getWorkOutSummary() {
-        WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
-                mCurrentGpsWorkout.getWorkoutName(),
-                mCurrentGpsWorkout.getDurationString(),
-                mCurrentGpsWorkout.getTotalDistanceString(),
-                mCurrentGpsWorkout.getAvgPaceString(),
-                mCurrentGpsWorkout.getMaxPaceString(),
-                mCurrentGpsWorkout.getAvgSpeedString(),
-                mCurrentGpsWorkout.getMaxSpeedString(),
-                mCurrentGpsWorkout.getPath(),
-                mCurrentGpsWorkout.getLaps());
-        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
-        return workoutGpsSummary;
-    }
-
-
-    public String getTimeString() {
-        if (mCurrentGpsWorkout != null) {
-            return mCurrentGpsWorkout.getDurationString();
-        } else {
-            return "0:00";
-        }
-    }
-
     public boolean isTrainingPaused() {
         return mIsTrainingPaused;
     }
 
     public boolean isServiceRunning() {
         return mIsServiceRunning;
+    }
+
+    public WorkoutGpsSummary getWorkOutSummary() {
+        WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
+                mCurrentIndoorWorkout.getDate(),
+                mCurrentIndoorWorkout.getWorkoutName(),
+                mCurrentIndoorWorkout.getDurationString());
+        return workoutGpsSummary;
+    }
+
+    public String getTimeString() {
+        if (mCurrentIndoorWorkout != null) {
+            return mCurrentIndoorWorkout.getDurationString();
+        } else {
+            return "0:00";
+        }
     }
 }
