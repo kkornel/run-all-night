@@ -74,9 +74,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_add_a_photo_black_24dp" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="height" value="512" />
+                            <entry key="outputName" value="ic_placeholder" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\Software\System\Downloads\stopwatch.svg" />
+                            <entry key="sourceFile" value="D:\Software\System\Downloads\placeholder.svg" />
+                            <entry key="width" value="512" />
                           </map>
                         </option>
                       </PersistentState>

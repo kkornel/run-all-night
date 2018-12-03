@@ -7,6 +7,8 @@ import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.Position;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -312,12 +314,8 @@ public class CurrentGpsWorkout {
 
         distance /= 1000;
 
-        // TODO: round it here
-
         // String.format("%.5g%n", distance);
-        DecimalFormat df = new DecimalFormat("#.##");
-        Log.d("halu", "getTotalDistanceString: " + String.format("%.5g%n", distance));
-        Log.d("halu", "getTotalDistanceString: " + df.format(distance));
+        DecimalFormat df = new DecimalFormat("#.00");
         return df.format(distance);
     }
 

@@ -26,7 +26,6 @@ public class IconUtils {
         result.put(GpsBasedWorkout.SWIMMING.getValue(), R.drawable.ic_swimming_64);
         result.put(GpsBasedWorkout.TREKKING.getValue(), R.drawable.ic_trekking_64);
         result.put(GpsBasedWorkout.WALKING.getValue(), R.drawable.ic_walking_64);
-        result.put(GpsBasedWorkout.WHEELCHAIR.getValue(), R.drawable.ic_wheelchair_64);
 
         // NONGPS
         result.put(NonGpsBasedWorkout.AEROBICS.getValue(), R.drawable.ic_aerobic_64);
