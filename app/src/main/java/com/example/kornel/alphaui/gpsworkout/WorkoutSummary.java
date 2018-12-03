@@ -17,14 +17,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorkoutGpsSummary implements Parcelable {
-    private static final String TAG = "WorkoutGpsSummary";
+public class WorkoutSummary implements Parcelable {
+    private static final String TAG = "WorkoutSummary";
 
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
 
     private String key;
 
-    // private String dateString;
     private long dateMilliseconds;
     private String workoutName;
     private String duration;
@@ -40,13 +39,13 @@ public class WorkoutGpsSummary implements Parcelable {
     private ArrayList<Lap> laps;
     private WeatherInfoCompressed weatherInfoCompressed;
 
-    public WorkoutGpsSummary() {
-        // Default constructor required for calls to DataSnapshot.getValue(WorkoutGpsSummary.class)
+    public WorkoutSummary() {
+        // Default constructor required for calls to DataSnapshot.getValue(WorkoutSummary.class)
     }
 
     // Constructor for LocationTrackingService
-    public WorkoutGpsSummary(String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
-        this.dateMilliseconds = new Date().getTime();
+    public WorkoutSummary(Date date, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
+        this.dateMilliseconds = date.getTime();
         this.workoutName = workoutName;
         this.duration = duration;
         this.distance = distance;
@@ -59,7 +58,7 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     // Constructor for IndoorWorkoutService
-    public WorkoutGpsSummary(Date date, String workoutName, String duration) {
+    public WorkoutSummary(Date date, String workoutName, String duration) {
         this.dateMilliseconds = date.getTime();
         this.workoutName = workoutName;
         this.duration = duration;
@@ -305,8 +304,9 @@ public class WorkoutGpsSummary implements Parcelable {
 
     @Override
     public String toString() {
-        return "WorkoutGpsSummary{" +
-                "dateMilliseconds='" + dateMilliseconds + '\'' +
+        return "WorkoutSummary{" +
+                "key='" + key + '\'' +
+                ", dateMilliseconds=" + dateMilliseconds +
                 ", workoutName='" + workoutName + '\'' +
                 ", duration='" + duration + '\'' +
                 ", distance='" + distance + '\'' +
@@ -322,7 +322,6 @@ public class WorkoutGpsSummary implements Parcelable {
                 ", weatherInfoCompressed=" + weatherInfoCompressed +
                 '}';
     }
-
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -347,7 +346,7 @@ public class WorkoutGpsSummary implements Parcelable {
 
     // Parcelling Part
 
-    public WorkoutGpsSummary(Parcel in) {
+    public WorkoutSummary(Parcel in) {
         // this.date = new Date(in.readLong());
         this.key = in.readString();
         this.dateMilliseconds = in.readLong();
@@ -394,12 +393,12 @@ public class WorkoutGpsSummary implements Parcelable {
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public WorkoutGpsSummary createFromParcel(Parcel in) {
-            return new WorkoutGpsSummary(in);
+        public WorkoutSummary createFromParcel(Parcel in) {
+            return new WorkoutSummary(in);
         }
 
-        public WorkoutGpsSummary[] newArray(int size) {
-            return new WorkoutGpsSummary[size];
+        public WorkoutSummary[] newArray(int size) {
+            return new WorkoutSummary[size];
         }
     };
 }

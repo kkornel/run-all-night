@@ -85,11 +85,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity.WORKOUT_DETAILS_EXTRA_INTENT;
+import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
-public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private static final String TAG = "WorkoutSummaryActivity";
+public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String TAG = "WorkoutGpsSummaryActivi";
 
     public static final int MAX_CHARS_IN_EDIT_TEXT = 100;
 
@@ -140,6 +140,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     private ImageView mWeatherImageView;
     private TextView mWeatherTempTextView;
 
+    private TextView mLapsLabel;
     private CardView mLapsCardView;
     private RecyclerView mRecyclerView;
     private PaceAdapter mPaceAdapter;
@@ -265,17 +266,22 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         }
 
-
+        mLapsLabel = findViewById(R.id.lapsLabel);
         mLapsCardView = findViewById(R.id.lapsCardView);
         mRecyclerView = findViewById(R.id.recyclerViewPace);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
-
 
         ArrayList<Lap> laps = mWorkoutSummary.getLaps();
-        mPaceAdapter = new PaceAdapter(laps);
-        mRecyclerView.setAdapter(mPaceAdapter);
+        if (laps == null || laps.size() == 0) {
+            mLapsLabel.setVisibility(View.GONE);
+            mLapsCardView.setVisibility(View.GONE);
+        } else {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(linearLayoutManager);
+            mRecyclerView.setHasFixedSize(true);
+            mPaceAdapter = new PaceAdapter(laps);
+            mRecyclerView.setAdapter(mPaceAdapter);
+        }
+
 
         mSaveButton = findViewById(R.id.saveButton);
         mSaveButton.setOnClickListener(new View.OnClickListener() {
@@ -372,6 +378,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     }
 
     @Override
+    public void onBackPressed() {
+        deleteWorkout();
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -453,7 +464,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
     }
 
     private void saveWorkout() {
-        if (!NetworkUtils.isConnected(WorkoutSummaryActivity.this)) {
+        if (!NetworkUtils.isConnected(WorkoutGpsSummaryActivity.this)) {
             requestInternetConnection();
             return;
         }
@@ -505,7 +516,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
+                Toast.makeText(WorkoutGpsSummaryActivity.this, getString(R.string.something_went_wrong), Toast.LENGTH_LONG).show();
                 Log.e(TAG, "onFailure: " + exception.getMessage());
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -520,7 +531,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(WorkoutSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
+                    Toast.makeText(WorkoutGpsSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
                     throw task.getException();
                 }
 
@@ -535,7 +546,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                     String photoUrl = downloadUri.toString();
                     onUploadCompleted(photoUrl, key);
                 } else {
-                    Toast.makeText(WorkoutSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
+                    Toast.makeText(WorkoutGpsSummaryActivity.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -555,21 +566,21 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
 
         mRootRef.updateChildren(childUpdates);
 
-        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.workout_saved), Toast.LENGTH_SHORT).show();
+        Toast.makeText(WorkoutGpsSummaryActivity.this, getString(R.string.workout_saved), Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+        Intent intent = new Intent(WorkoutGpsSummaryActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
     private void deleteWorkout() {
-        new AlertDialog.Builder(WorkoutSummaryActivity.this)
+        new AlertDialog.Builder(WorkoutGpsSummaryActivity.this)
                 .setTitle(R.string.confirm)
                 .setMessage(R.string.confirm_delete_workout)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(WorkoutSummaryActivity.this, MainActivity.class);
+                        Toast.makeText(WorkoutGpsSummaryActivity.this, getString(R.string.workout_deleted), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(WorkoutGpsSummaryActivity.this, MainActivity.class);
                         startActivity(intent);
                     }})
                 .setNegativeButton(R.string.no, null).show();
@@ -705,11 +716,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 != PackageManager.PERMISSION_GRANTED) {
 
             boolean shouldProvideRationale =
-                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutSummaryActivity.this,
+                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutGpsSummaryActivity.this,
                             Manifest.permission.CAMERA);
 
             if (shouldProvideRationale) {
-                ActivityCompat.requestPermissions(WorkoutSummaryActivity.this,
+                ActivityCompat.requestPermissions(WorkoutGpsSummaryActivity.this,
                         new String[]{Manifest.permission.CAMERA},
                         REQUEST_CODE_PERMISSIONS_CAMERA);
             } else {
@@ -728,11 +739,11 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 != PackageManager.PERMISSION_GRANTED) {
 
             boolean shouldProvideRationale =
-                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutSummaryActivity.this,
+                    ActivityCompat.shouldShowRequestPermissionRationale(WorkoutGpsSummaryActivity.this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
             if (shouldProvideRationale) {
-                ActivityCompat.requestPermissions(WorkoutSummaryActivity.this,
+                ActivityCompat.requestPermissions(WorkoutGpsSummaryActivity.this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         REQUEST_CODE_PERMISSIONS_WRITE_STORAGE);
             } else {
@@ -747,7 +758,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                             != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.camera_permission_rationale), Toast.LENGTH_LONG).show();
+                        Toast.makeText(WorkoutGpsSummaryActivity.this, getString(R.string.camera_permission_rationale), Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -755,7 +766,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(WorkoutSummaryActivity.this, getString(R.string.storage_permission_rationale), Toast.LENGTH_LONG).show();
+                        Toast.makeText(WorkoutGpsSummaryActivity.this, getString(R.string.storage_permission_rationale), Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -805,14 +816,5 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
             }
         }
         return result;
-    }
-
-    public static class WorkoutNonGpsSummary extends AppCompatActivity {
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_workout_non_gps_summary);
-        }
     }
 }
