@@ -27,11 +27,10 @@ import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.BuildConfig;
-import com.example.kornel.alphaui.StartNonGpsWorkoutActivity;
+import com.example.kornel.alphaui.gpsworkout.StartNonGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
@@ -51,8 +50,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.Timer;
 
 import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;

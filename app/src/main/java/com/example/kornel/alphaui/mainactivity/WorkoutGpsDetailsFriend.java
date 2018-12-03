@@ -107,7 +107,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
         mActivityTypeTextView = findViewById(R.id.activityTypeTextView);
-        mTimeTextView = findViewById(R.id.timeTextView);
+        mTimeTextView = findViewById(R.id.timeTextView2);
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -131,7 +131,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         mAvgSpeedImageView = findViewById(R.id.avgSpeedImageView);
         mAvgSpeedTextView = findViewById(R.id.avgSpeedTextView);
         mDistanceImageView = findViewById(R.id.distanceImageView);
-        mDistanceTextView = findViewById(R.id.distanceTextView);
+        mDistanceTextView = findViewById(R.id.timeTextView);
         mMaxPaceImageView = findViewById(R.id.maxPaceImageView);
         mMaxPaceTextView = findViewById(R.id.maxPaceTextView);
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);

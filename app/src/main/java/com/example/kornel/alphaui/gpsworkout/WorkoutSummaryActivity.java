@@ -197,7 +197,7 @@ public class WorkoutSummaryActivity extends AppCompatActivity implements OnMapRe
         mAvgSpeedImageView = findViewById(R.id.avgSpeedImageView);
         mAvgSpeedTextView = findViewById(R.id.avgSpeedTextView);
         mDistanceImageView = findViewById(R.id.distanceImageView);
-        mDistanceTextView = findViewById(R.id.distanceTextView);
+        mDistanceTextView = findViewById(R.id.timeTextView);
         mMaxPaceImageView = findViewById(R.id.maxPaceImageView);
         mMaxPaceTextView = findViewById(R.id.maxPaceTextView);
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);

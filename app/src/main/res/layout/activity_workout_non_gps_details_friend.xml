@@ -76,7 +76,7 @@
                         app:layout_constraintStart_toEndOf="@+id/activityIconImageView" />
 
                     <TextView
-                        android:id="@+id/timeTextView"
+                        android:id="@+id/timeTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

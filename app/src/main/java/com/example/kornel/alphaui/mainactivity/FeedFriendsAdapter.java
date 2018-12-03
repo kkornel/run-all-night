@@ -3,9 +3,7 @@ package com.example.kornel.alphaui.mainactivity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,7 +127,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             mDateTextView = itemView.findViewById(R.id.dateTextView);
             mDescriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
+            mDistanceTextView = itemView.findViewById(R.id.timeTextView);
             mDurationTextView = itemView.findViewById(R.id.durationLabel);
             itemView.setOnClickListener(this);
         }

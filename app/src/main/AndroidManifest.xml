@@ -74,6 +74,7 @@
             android:required="false" />
 
         <service android:name=".gpsworkout.LocationTrackingService" />
+        <service android:name=".gpsworkout.IndoorWorkoutService" />
         <!-- <receiver android:name=".MapsFragment$LocationBroadcastReceiver"></receiver> -->
         <activity
             android:name=".friends.FriendsActivity"
@@ -83,10 +84,7 @@
         <activity android:name=".profile.EditProfileActivity" />
         <activity android:name=".GpsWorkoutDetails" />
         <activity android:name=".mainactivity.WeatherDetailsActivity" />
-        <activity
-            android:name=".TestActivity"
-            android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar" />
+
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -102,7 +100,7 @@
             android:name=".mainactivity.ChooseWorkoutActivity"
             android:label="@string/title_activity_choose_workout2"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".StartNonGpsWorkoutActivity" />
+        <activity android:name=".gpsworkout.StartNonGpsWorkoutActivity" />
         <activity android:name=".mainactivity.WorkoutGpsDetails" />
         <activity android:name=".mainactivity.WorkoutGpsDetailsFriend" />
         <activity android:name=".mainactivity.WorkoutNonGpsDetailsFriend" />

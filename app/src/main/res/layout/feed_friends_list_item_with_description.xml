@@ -89,7 +89,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/descriptionTextView" />
 
             <TextView
-                android:id="@+id/distanceTextView"
+                android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -103,7 +103,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/distanceLabel" />
 
             <TextView
-                android:id="@+id/totalTimeTextView"
+                android:id="@+id/totalTimeTextView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -118,9 +118,9 @@
                 android:text="25:43"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/distanceTextView"
-                app:layout_constraintEnd_toEndOf="@+id/totalTimeTextView"
-                app:layout_constraintStart_toStartOf="@+id/totalTimeTextView" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/timeTextView"
+                app:layout_constraintEnd_toEndOf="@+id/totalTimeTextView2"
+                app:layout_constraintStart_toStartOf="@+id/totalTimeTextView2" />
 
             <View
                 android:id="@+id/divider8"

@@ -68,6 +68,75 @@ public class NotificationUtils {
         return mNotificationBuilder.build();
     }
 
+    public static Notification createIndoorNotification(Context context, Class<?> cls) {
+        mNotificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mResumeAction = resumeIndoorWorkout(context, cls);
+        mPauseAction = pauseIndoorWorkout(context, cls);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    LOCATION_TRACKING_CHANNEL_ID,
+                    context.getString(R.string.main_notification_channel_name),
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+
+        mNotificationBuilder =
+                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
+                        .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
+                        .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
+                        .setLargeIcon(largeIcon(context))
+                        .addAction(mPauseAction)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .setOnlyAlertOnce(true)
+                        .setContentIntent(contentIntent(context));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        }
+
+        return mNotificationBuilder.build();
+    }
+
+    private static NotificationCompat.Action resumeIndoorWorkout(Context context, Class<?> cls) {
+        Intent resumeSportActivityIntent = new Intent(context, cls);
+        resumeSportActivityIntent.setAction(ACTION_RESUME_WORKOUT);
+
+        PendingIntent resumeSportActivityPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_RESUME_PENDING_INTENT_ID,
+                resumeSportActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action resumeAction = new NotificationCompat.Action(
+                R.drawable.ic_play_arrow_black_24dp,
+                context.getString(R.string.resume_action_button),
+                resumeSportActivityPendingIntent);
+
+        return resumeAction;
+    }
+
+    private static NotificationCompat.Action pauseIndoorWorkout(Context context, Class<?> cls) {
+        Intent pauseSportActivityIntent = new Intent(context, cls);
+        pauseSportActivityIntent.setAction(ACTION_PAUSE_WORKOUT);
+
+        PendingIntent pauseSportActivityPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_PAUSE_PENDING_INTENT_ID,
+                pauseSportActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action pauseAction = new NotificationCompat.Action(
+                R.drawable.ic_pause_black_24dp,
+                context.getString(R.string.pause_action_button),
+                pauseSportActivityPendingIntent);
+
+        return pauseAction;
+    }
+
     public static void toggleActionButtons(Context context) {
         if (mNotificationBuilder.mActions.contains(mPauseAction)) {
             removePauseAction();

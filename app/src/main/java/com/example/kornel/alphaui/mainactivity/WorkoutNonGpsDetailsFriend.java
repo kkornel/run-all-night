@@ -64,7 +64,7 @@ public class WorkoutNonGpsDetailsFriend extends AppCompatActivity {
         mWorkoutCardView = findViewById(R.id.workoutCardView);
         mActivityIconImageView = findViewById(R.id.activityIconImageView);
         mActivityTypeTextView = findViewById(R.id.activityTypeTextView);
-        mTimeTextView = findViewById(R.id.timeTextView);
+        mTimeTextView = findViewById(R.id.timeTextView2);
         mDateTextView = findViewById(R.id.dateTextView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

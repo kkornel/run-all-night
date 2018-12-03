@@ -77,7 +77,7 @@
                         app:layout_constraintStart_toEndOf="@+id/activityIconImageView" />
 
                     <TextView
-                        android:id="@+id/timeTextView"
+                        android:id="@+id/timeTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -227,7 +227,7 @@
                         app:layout_constraintTop_toTopOf="@+id/distanceImageView" />
 
                     <TextView
-                        android:id="@+id/distanceTextView"
+                        android:id="@+id/timeTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -335,8 +335,8 @@
                         android:fontFamily="@font/lato"
                         android:text="km"
                         android:textColor="@color/colorBlack"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/distanceTextView"
-                        app:layout_constraintStart_toEndOf="@+id/distanceTextView" />
+                        app:layout_constraintBaseline_toBaselineOf="@+id/timeTextView"
+                        app:layout_constraintStart_toEndOf="@+id/timeTextView" />
 
                     <TextView
                         android:id="@+id/textView5"

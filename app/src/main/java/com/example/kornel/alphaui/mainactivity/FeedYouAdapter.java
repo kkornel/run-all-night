@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +102,7 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
             super(itemView);
             this.mWorkoutImageView = itemView.findViewById(R.id.activityImageView);
             this.mDateTextView = itemView.findViewById(R.id.dateTextView);
-            this.mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
+            this.mDistanceTextView = itemView.findViewById(R.id.timeTextView);
             this.mDurationTextView = itemView.findViewById(R.id.durationTextView);
             this.mDistanceImageView = itemView.findViewById(R.id.distanceImageView);
             this.mDurationImageView = itemView.findViewById(R.id.durationImageView);

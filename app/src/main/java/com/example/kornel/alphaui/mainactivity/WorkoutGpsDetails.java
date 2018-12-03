@@ -61,10 +61,7 @@ package com.example.kornel.alphaui.mainactivity;
         import com.squareup.picasso.Picasso;
 
         import java.util.ArrayList;
-        import java.util.Collections;
-        import java.util.Comparator;
         import java.util.HashMap;
-        import java.util.List;
         import java.util.Map;
 
         import static android.support.v4.internal.view.SupportMenuItem.SHOW_AS_ACTION_ALWAYS;
@@ -170,7 +167,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mAvgSpeedImageView = findViewById(R.id.avgSpeedImageView);
         mAvgSpeedTextView = findViewById(R.id.avgSpeedTextView);
         mDistanceImageView = findViewById(R.id.distanceImageView);
-        mDistanceTextView = findViewById(R.id.distanceTextView);
+        mDistanceTextView = findViewById(R.id.timeTextView);
         mMaxPaceImageView = findViewById(R.id.maxPaceImageView);
         mMaxPaceTextView = findViewById(R.id.maxPaceTextView);
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);

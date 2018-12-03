@@ -30,8 +30,8 @@ public class MainDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_training_details_fragment, container, false);
 
-        mTimeTextView = rootView.findViewById(R.id.timeTextView);
-        mDistanceTextView = rootView.findViewById(R.id.distanceTextView);
+        mTimeTextView = rootView.findViewById(R.id.timeTextView2);
+        mDistanceTextView = rootView.findViewById(R.id.timeTextView);
         mCurrentPaceTextView = rootView.findViewById(R.id.currentPaceTextView);
         mAvgPaceTextView = rootView.findViewById(R.id.avgTextView);
 
