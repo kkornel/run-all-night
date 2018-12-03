@@ -93,8 +93,20 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
                 activityViewHolder.mDescriptionTextView.setText(description);
             }
 
-            activityViewHolder.mDistanceTextView.setText(String.valueOf(workout.getDistance()));
-            activityViewHolder.mDurationTextView.setText(workout.getDuration());
+            if (workout.getDistance() == null) {
+                activityViewHolder.mDistanceLabel.setText("Duration");
+                activityViewHolder.mDistanceTextView.setText(workout.getDuration());
+                activityViewHolder.mDurationLabel.setText("");
+                activityViewHolder.mDurationTextView.setText("");
+                activityViewHolder.mDivider8.setVisibility(View.GONE);
+            } else {
+                activityViewHolder.mDistanceLabel.setText("Distance");
+                activityViewHolder.mDistanceTextView.setText(String.valueOf(workout.getDistance()));
+                activityViewHolder.mDurationLabel.setText("Duration");
+                activityViewHolder.mDurationTextView.setText(workout.getDuration());
+                activityViewHolder.mDivider8.setVisibility(View.VISIBLE);
+            }
+
         }
 
         // Googles way
@@ -117,8 +129,11 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
         private TextView mNameTextView;
         private TextView mDateTextView;
         private TextView mDescriptionTextView;
+        private TextView mDistanceLabel;
         private TextView mDistanceTextView;
+        private TextView mDurationLabel;
         private TextView mDurationTextView;
+        private View mDivider8;
 
         public FeedFriendsViewHolder(View itemView) {
             super(itemView);
@@ -127,8 +142,11 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
             mNameTextView = itemView.findViewById(R.id.friendNameTextView);
             mDateTextView = itemView.findViewById(R.id.dateTextView);
             mDescriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            mDistanceTextView = itemView.findViewById(R.id.timeTextView);
-            mDurationTextView = itemView.findViewById(R.id.durationLabel);
+            mDistanceLabel = itemView.findViewById(R.id.distanceLabel);
+            mDistanceTextView = itemView.findViewById(R.id.distanceTextView);
+            mDurationLabel = itemView.findViewById(R.id.durationLabel);
+            mDurationTextView = itemView.findViewById(R.id.durationTextView);
+            mDivider8 = itemView.findViewById(R.id.divider8);
             itemView.setOnClickListener(this);
         }
 

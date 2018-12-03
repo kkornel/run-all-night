@@ -116,7 +116,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
             mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName())));
         }
         mActivityTypeTextView.setText(mWorkoutSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutSummary.getFullDateStringPlWithTime());
+        mDateTextView.setText(mWorkoutSummary.getDateStringPlWithTime());
 
 
         mSummaryCardView = findViewById(R.id.summaryCardView);

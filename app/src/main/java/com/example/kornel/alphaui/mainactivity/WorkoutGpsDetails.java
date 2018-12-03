@@ -152,7 +152,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
             mActivityIconImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkoutSummary.getWorkoutName())));
         }
         mActivityTypeTextView.setText(mWorkoutSummary.getWorkoutName());
-        mDateTextView.setText(mWorkoutSummary.getFullDateStringPlWithTime());
+        mDateTextView.setText(mWorkoutSummary.getDateStringPlWithTime());
 
 
         SupportMapFragment map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.summaryMap));

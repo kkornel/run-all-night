@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui.gpsworkout;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
@@ -311,8 +312,12 @@ public class CurrentGpsWorkout {
 
         distance /= 1000;
 
+        // TODO: round it here
+
         // String.format("%.5g%n", distance);
         DecimalFormat df = new DecimalFormat("#.##");
+        Log.d("halu", "getTotalDistanceString: " + String.format("%.5g%n", distance));
+        Log.d("halu", "getTotalDistanceString: " + df.format(distance));
         return df.format(distance);
     }
 

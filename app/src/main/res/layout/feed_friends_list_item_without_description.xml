@@ -68,16 +68,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Distance"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/divider10" />
 
             <TextView
-                android:id="@+id/timeTextView"
+                android:id="@+id/distanceTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:text="12.5km"
                 android:textColor="@color/colorPrimary"
@@ -88,7 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/distanceLabel" />
 
             <TextView
-                android:id="@+id/totalTimeTextView2"
+                android:id="@+id/durationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -97,15 +97,15 @@
                 app:layout_constraintStart_toEndOf="@+id/divider8" />
 
             <TextView
-                android:id="@+id/durationLabel"
+                android:id="@+id/durationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="25:43"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/timeTextView"
-                app:layout_constraintEnd_toEndOf="@+id/totalTimeTextView2"
-                app:layout_constraintStart_toStartOf="@+id/totalTimeTextView2" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/distanceTextView"
+                app:layout_constraintEnd_toEndOf="@+id/durationLabel"
+                app:layout_constraintStart_toStartOf="@+id/durationLabel" />
 
             <View
                 android:id="@+id/divider8"
@@ -119,6 +119,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/distanceLabel" />
+
+            <View
+                android:id="@+id/divider10"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
