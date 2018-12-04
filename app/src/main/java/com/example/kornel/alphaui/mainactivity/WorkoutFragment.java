@@ -54,6 +54,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 import static com.example.kornel.alphaui.mainactivity.WeatherDetailsActivity.WEATHER_INFO_INTENT_EXTRAS;
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
@@ -103,8 +105,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private boolean mHasMusicChosen = false;
 
-    private Handler mWorkoutHandler;
-    private Runnable mWorkoutRunnable;
+    private Date mLastWorkoutDate;
 
     public WorkoutFragment() {
         // Required empty public constructor
@@ -217,7 +218,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String defaultValue = GpsBasedWorkout.RUNNING.getValue();
         String lastWorkoutType = sharedPref.getString(LAST_WORKOUT_TYPE_PREFERENCE, defaultValue);
-        Log.d("asdsad", "onStart: " + lastWorkoutType);
         setWorkoutTypeLayout(lastWorkoutType);
 
         return rootView;
@@ -234,19 +234,17 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             mNoInternetTextView.setVisibility(View.VISIBLE);
             buildAlertMessageNoInternetConnection();
         } else {
-            mWorkoutHandler = new Handler();
-            mWorkoutRunnable = new Runnable() {
+            Handler workoutHandler = new Handler();
+            Runnable workoutRunnable = new Runnable() {
                 @Override
                 public void run() {
                     retrieveUserProfile();
-
-                    mWorkoutHandler.postDelayed(mWorkoutRunnable, 60000);
                 }
             };
 
             // I'm doing this after delay, because after deleting last workout from database
             // it was fetching old, not updated data.
-            mWorkoutHandler.postDelayed(mWorkoutRunnable, 200);
+            workoutHandler.postDelayed(workoutRunnable, 200);
         }
 
         if (!hasLocationPermissions()) {
@@ -553,11 +551,13 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 if (lastWorkoutId == null) {
                     mLastTrainingTextView.setText(noLastWorkoutDate);
                 } else {
-                    workoutsRef.child(userUid).child(lastWorkoutKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    ValueEventListener lastWorkoutListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutSummary.class).gapBetweenWorkouts();
-                            mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
+                            WorkoutSummary lastWorkout = dataSnapshot.getValue(WorkoutSummary.class);
+                            long lastWorkoutDateMilliseconds = lastWorkout.getDateMilliseconds();
+                            mLastWorkoutDate = new Date(lastWorkoutDateMilliseconds);
+                            setLastWorkoutDate(mLastWorkoutDate);
                         }
 
                         @Override
@@ -565,7 +565,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                             Log.e(TAG, "onCancelled: " + databaseError.getMessage());
                             throw databaseError.toException();
                         }
-                    });
+                    };
+                    workoutsRef.child(userUid).child(lastWorkoutKey).addListenerForSingleValueEvent(lastWorkoutListener);
                 }
             }
 
@@ -577,6 +578,21 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         };
 
         usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
+    }
+
+    private void setLastWorkoutDate(final Date lastWorkoutDate) {
+        final Handler dateHandler = new Handler();
+        final Runnable dateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "run: new MIN");
+                String lastWorkoutDateString = WorkoutUtils.gapBetweenWorkouts(lastWorkoutDate);
+                mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDateString);
+                dateHandler.postDelayed(this, 60000);
+            }
+        };
+
+        dateHandler.postDelayed(dateRunnable, 0);
     }
 
     private void showNoGpsSnackBar() {
