@@ -353,7 +353,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     //         @Override
     //         public void onDataChange(DataSnapshot dataSnapshot) {
     //             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                 final String friendUid = ds.getKey();
+    //                 final String friendUid = ds.getWorkoutKey();
     //                 mFriendsCount = dataSnapshot.getChildrenCount();
     //
     //                 DatabaseReference friendUidRef = mUsersRef.child(friendUid);

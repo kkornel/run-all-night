@@ -15,6 +15,9 @@ public class Database {
     public static final String DEFAULT_IMG_NAME = "default.jpg";
     public static final String PICTURES = "pictures";
     public static final String LAST_WORKOUT = "lastWorkout";
+    public static final String TOTAL_DISTANCE = "totalDistance";
+    public static final String TOTAL_DURATION = "totalDuration";
+    public static final String TOTAL_WORKOUTS = "totalWorkouts";
 
 
 }

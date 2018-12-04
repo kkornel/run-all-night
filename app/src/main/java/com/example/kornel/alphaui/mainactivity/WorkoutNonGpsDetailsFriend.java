@@ -79,7 +79,7 @@ public class WorkoutNonGpsDetailsFriend extends AppCompatActivity {
         mDurationImageView = findViewById(R.id.durationImageView);
         mDurationTextView = findViewById(R.id.durationTextView);
 
-        mDurationTextView.setText(mWorkout.getDuration());
+        mDurationTextView.setText(mWorkout.getDurationString());
 
         mPhotoCardView = findViewById(R.id.photoCardView);
         mPhotoImageView = findViewById(R.id.photoImageView);

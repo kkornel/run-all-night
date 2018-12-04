@@ -59,12 +59,12 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
                 } else {
                     workoutViewHolder.mDistanceImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_stopwatch));
                 }
-                workoutViewHolder.mDistanceTextView.setText(mWorkouts.get(position).getDuration());
+                workoutViewHolder.mDistanceTextView.setText(mWorkouts.get(position).getDurationString());
                 workoutViewHolder.mDurationImageView.setVisibility(View.GONE);
                 workoutViewHolder.mDurationTextView.setVisibility(View.GONE);
             } else {
-                workoutViewHolder.mDistanceTextView.setText(String.valueOf(mWorkouts.get(position).getDistance()));
-                workoutViewHolder.mDurationTextView.setText(mWorkouts.get(position).getDuration());
+                workoutViewHolder.mDistanceTextView.setText(mWorkouts.get(position).getDistanceKmString());
+                workoutViewHolder.mDurationTextView.setText(mWorkouts.get(position).getDurationString());
             }
 
             workoutViewHolder.mDateTextView.setText(mWorkouts.get(position).getDateStringPlWithTime());

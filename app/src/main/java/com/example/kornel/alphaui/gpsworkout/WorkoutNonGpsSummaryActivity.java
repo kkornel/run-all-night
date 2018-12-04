@@ -46,6 +46,8 @@ import com.example.kornel.alphaui.mainactivity.MainActivity;
 import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
+import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,8 +56,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -149,7 +154,7 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
         mDurationImageView = findViewById(R.id.durationImageView);
         mDurationTextView = findViewById(R.id.durationTextView);
 
-        mDurationTextView.setText(mWorkoutSummary.getDuration());
+        mDurationTextView.setText(mWorkoutSummary.getDurationString());
 
 
         mStatusCardView = findViewById(R.id.statusCardView);
@@ -393,8 +398,26 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
         uploadWorkout(key);
     }
 
-    private void uploadWorkout(String key) {
-        mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
+    private void uploadWorkout(final String key) {
+        ValueEventListener userEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                int totalWorkouts = user.getTotalWorkouts() + 1;
+                long totalDuration = user.getTotalDuration() + mWorkoutSummary.getDuration();
+
+                mUserRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(key);
+                mUserRef.child(mUserUid).child(Database.TOTAL_DURATION).setValue(totalDuration);
+                mUserRef.child(mUserUid).child(Database.TOTAL_WORKOUTS).setValue(totalWorkouts);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+        mUserRef.child(mUserUid).addListenerForSingleValueEvent(userEventListener);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Database.WORKOUTS + "/" + mUserUid + "/" + key, mWorkoutSummary);

@@ -353,12 +353,12 @@ public class LocationTrackingService extends Service {
         WorkoutSummary workoutSummary = new WorkoutSummary(
                 mCurrentGpsWorkout.getDate(),
                 mCurrentGpsWorkout.getWorkoutName(),
-                mCurrentGpsWorkout.getDurationString(),
-                mCurrentGpsWorkout.getTotalDistanceString(),
-                mCurrentGpsWorkout.getAvgPaceString(),
-                mCurrentGpsWorkout.getMaxPaceString(),
-                mCurrentGpsWorkout.getAvgSpeedString(),
-                mCurrentGpsWorkout.getMaxSpeedString(),
+                mCurrentGpsWorkout.getDuration(),
+                mCurrentGpsWorkout.getTotalDistance(),
+                mCurrentGpsWorkout.getAvgPace(),
+                mCurrentGpsWorkout.getMaxPace(),
+                mCurrentGpsWorkout.getAvgSpeed(),
+                mCurrentGpsWorkout.getMaxSpeed(),
                 mCurrentGpsWorkout.getPath(),
                 mCurrentGpsWorkout.getLaps());
         return workoutSummary;

@@ -1,12 +1,12 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
+    TODO: Before you run your application, you need a Google Maps API workoutKey.
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=CA:2A:70:18:01:13:59:9C:CA:F7:5E:94:9A:91:8E:E7:42:4F:B4:D5%3Bcom.example.kornel.alphaui
 
-    You can also add your credentials to an existing key, using these values:
+    You can also add your credentials to an existing workoutKey, using these values:
 
     Package name:
     CA:2A:70:18:01:13:59:9C:CA:F7:5E:94:9A:91:8E:E7:42:4F:B4:D5
@@ -15,9 +15,9 @@
     CA:2A:70:18:01:13:59:9C:CA:F7:5E:94:9A:91:8E:E7:42:4F:B4:D5
 
     Alternatively, follow the directions here:
-    https://developers.google.com/maps/documentation/android/start#get-key
+    https://developers.google.com/maps/documentation/android/start#get-workoutKey
 
-    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    Once you have your workoutKey (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyACZbdfgUWTUr1c8yEaT7y8RVUnTZSmTlU</string>

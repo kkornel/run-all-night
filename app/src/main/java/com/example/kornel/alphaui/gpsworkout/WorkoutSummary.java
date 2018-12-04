@@ -8,9 +8,11 @@ import com.example.kornel.alphaui.mainactivity.MainActivityLog;
 import com.example.kornel.alphaui.utils.DateUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.firebase.database.Exclude;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,16 +24,16 @@ public class WorkoutSummary implements Parcelable {
 
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
 
-    private String key;
+    private String workoutKey;
 
     private long dateMilliseconds;
     private String workoutName;
-    private String duration;
-    private String distance;
-    private String avgPace;
-    private String maxPace;
-    private String avgSpeed;
-    private String maxSpeed;
+    private long duration;      // ms
+    private double distance;    // m
+    private double avgPace;     // [min/km]
+    private double maxPace;     // [min/km]
+    private double avgSpeed;    // [km/h]
+    private double maxSpeed;    // [km/h]
     private String status;
     private String picUrl;
     private boolean privacy;
@@ -44,7 +46,7 @@ public class WorkoutSummary implements Parcelable {
     }
 
     // Constructor for LocationTrackingService
-    public WorkoutSummary(Date date, String workoutName, String duration, String distance, String avgPace, String maxPace, String avgSpeed, String maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
+    public WorkoutSummary(Date date, String workoutName, long duration, double distance, double avgPace, double maxPace, double avgSpeed, double maxSpeed, ArrayList<LatLon> path, ArrayList<Lap> laps) {
         this.dateMilliseconds = date.getTime();
         this.workoutName = workoutName;
         this.duration = duration;
@@ -57,17 +59,13 @@ public class WorkoutSummary implements Parcelable {
         this.laps = laps;
     }
 
+
     // Constructor for IndoorWorkoutService
-    public WorkoutSummary(Date date, String workoutName, String duration) {
+    public WorkoutSummary(Date date, String workoutName, long duration) {
         this.dateMilliseconds = date.getTime();
         this.workoutName = workoutName;
         this.duration = duration;
 
-        distance = null;
-        avgPace = null;
-        maxPace = null;
-        avgSpeed = null;
-        maxSpeed = null;
         status = null;
         picUrl = null;
         path = null;
@@ -222,27 +220,27 @@ public class WorkoutSummary implements Parcelable {
         return workoutName;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public String getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public String getAvgPace() {
+    public double getAvgPace() {
         return avgPace;
     }
 
-    public String getMaxPace() {
+    public double getMaxPace() {
         return maxPace;
     }
 
-    public String getAvgSpeed() {
+    public double getAvgSpeed() {
         return avgSpeed;
     }
 
-    public String getMaxSpeed() {
+    public double getMaxSpeed() {
         return maxSpeed;
     }
 
@@ -278,8 +276,38 @@ public class WorkoutSummary implements Parcelable {
     }
 
     @Exclude
-    public String getKey() {
-        return key;
+    public String getWorkoutKey() {
+        return workoutKey;
+    }
+
+    @Exclude
+    public String getDurationString() {
+        return Utils.getDurationString(duration);
+    }
+
+    @Exclude
+    public String getDistanceKmString() {
+        return Utils.distanceMetersToKm(distance);
+    }
+
+    @Exclude
+    public String getAvgPaceString() {
+        return Utils.paceToString(avgPace);
+    }
+
+    @Exclude
+    public String getMaxPaceString() {
+        return Utils.paceToString(maxPace);
+    }
+
+    @Exclude
+    public String getAvgSpeedString() {
+        return String.valueOf(avgSpeed);
+    }
+
+    @Exclude
+    public String getMaxSpeedString() {
+        return String.valueOf(maxSpeed);
     }
 
     public void setWeatherInfoCompressed(WeatherInfoCompressed weatherInfoCompressed) {
@@ -298,22 +326,22 @@ public class WorkoutSummary implements Parcelable {
         this.privacy = sec;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setWorkoutKey(String workoutKey) {
+        this.workoutKey = workoutKey;
     }
 
     @Override
     public String toString() {
         return "WorkoutSummary{" +
-                "key='" + key + '\'' +
+                "workoutKey='" + workoutKey + '\'' +
                 ", dateMilliseconds=" + dateMilliseconds +
                 ", workoutName='" + workoutName + '\'' +
-                ", duration='" + duration + '\'' +
-                ", distance='" + distance + '\'' +
-                ", avgPace='" + avgPace + '\'' +
-                ", maxPace='" + maxPace + '\'' +
-                ", avgSpeed='" + avgSpeed + '\'' +
-                ", maxSpeed='" + maxSpeed + '\'' +
+                ", duration=" + duration +
+                ", distance=" + distance +
+                ", avgPace=" + avgPace +
+                ", maxPace=" + maxPace +
+                ", avgSpeed=" + avgSpeed +
+                ", maxSpeed=" + maxSpeed +
                 ", status='" + status + '\'' +
                 ", picUrl='" + picUrl + '\'' +
                 ", privacy=" + privacy +
@@ -348,15 +376,15 @@ public class WorkoutSummary implements Parcelable {
 
     public WorkoutSummary(Parcel in) {
         // this.date = new Date(in.readLong());
-        this.key = in.readString();
+        this.workoutKey = in.readString();
         this.dateMilliseconds = in.readLong();
         this.workoutName = in.readString();
-        this.duration = in.readString();
-        this.distance = in.readString();
-        this.avgPace = in.readString();
-        this.maxPace = in.readString();
-        this.avgSpeed = in.readString();
-        this.maxSpeed = in.readString();
+        this.duration = in.readLong();
+        this.distance = in.readDouble();
+        this.avgPace = in.readDouble();
+        this.maxPace = in.readDouble();
+        this.avgSpeed = in.readDouble();
+        this.maxSpeed = in.readDouble();
         this.status = in.readString();
         this.picUrl = in.readString();
         this.privacy = in.readByte() != 0;
@@ -375,15 +403,15 @@ public class WorkoutSummary implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         // dest.writeLong(this.date.getTime());
-        dest.writeString(this.key);
+        dest.writeString(this.workoutKey);
         dest.writeLong(this.dateMilliseconds);
         dest.writeString(this.workoutName);
-        dest.writeString(this.duration);
-        dest.writeString(this.distance);
-        dest.writeString(this.avgPace);
-        dest.writeString(this.maxPace);
-        dest.writeString(this.avgSpeed);
-        dest.writeString(this.maxSpeed);
+        dest.writeLong(this.duration);
+        dest.writeDouble(this.distance);
+        dest.writeDouble(this.avgPace);
+        dest.writeDouble(this.maxPace);
+        dest.writeDouble(this.avgSpeed);
+        dest.writeDouble(this.maxSpeed);
         dest.writeString(this.status);
         dest.writeString(this.picUrl);
         dest.writeByte((byte) (privacy ? 1 : 0));

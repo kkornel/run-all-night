@@ -35,6 +35,7 @@ public class CurrentIndoorWorkout {
     }
 
     public long getDuration() {
+        mDuration = mStopWatch.getTotalMilliSecs();
         return mDuration;
     }
 

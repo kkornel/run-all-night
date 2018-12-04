@@ -173,12 +173,12 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);
         mMaxSpeedTextView = findViewById(R.id.maxSpeedTextView);
 
-        mDurationTextView.setText(mWorkoutSummary.getDuration());
-        mDistanceTextView.setText(mWorkoutSummary.getDistance());
-        mAvgPaceTextView.setText(mWorkoutSummary.getAvgPace());
-        mMaxPaceTextView.setText(mWorkoutSummary.getMaxPace());
-        mAvgSpeedTextView.setText(mWorkoutSummary.getAvgSpeed());
-        mMaxSpeedTextView.setText(mWorkoutSummary.getMaxSpeed());
+        mDurationTextView.setText(mWorkoutSummary.getDurationString());
+        mDistanceTextView.setText(mWorkoutSummary.getDistanceKmString());
+        mAvgPaceTextView.setText(mWorkoutSummary.getAvgPaceString());
+        mMaxPaceTextView.setText(mWorkoutSummary.getMaxPaceString());
+        mAvgSpeedTextView.setText(mWorkoutSummary.getAvgSpeedString());
+        mMaxSpeedTextView.setText(mWorkoutSummary.getMaxSpeedString());
 
 
         mStatusLabel = findViewById(R.id.statusLabel);
@@ -273,7 +273,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         mRootRef = database.getReference();
 
         mUserUid = user.getUid();
-        mWorkoutKey = mWorkoutSummary.getKey();
+        mWorkoutKey = mWorkoutSummary.getWorkoutKey();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -575,19 +575,19 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
 
                                     if (w2 == null) {
                                         w2 = w1;
-                                        w2.setKey(workout.getKey());
+                                        w2.setWorkoutKey(workout.getKey());
                                         continue;
                                     }
 
                                     if (w1.getDateMilliseconds() > w2.getDateMilliseconds()) {
                                         Log.d(TAG, w1.getDateMilliseconds() + " > " + w2.getDateMilliseconds());
                                         w2 = w1;
-                                        w2.setKey(workout.getKey());
+                                        w2.setWorkoutKey(workout.getKey());
                                     }
                                 }
 
 
-                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(w2.getKey());
+                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(w2.getWorkoutKey());
                             }
                         }
 

@@ -1,15 +1,12 @@
 package com.example.kornel.alphaui.gpsworkout;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.Position;
+import com.example.kornel.alphaui.utils.Utils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -153,7 +150,7 @@ public class CurrentGpsWorkout {
         }
 
         mAvgPace = durationMin / totalDistanceKm;
-        mAvgPaceString = paceToString(mAvgPace);
+        mAvgPaceString = Utils.paceToString(mAvgPace);
 
         // mAvgSpeed = totalDistanceKm / durationHour;
         mAvgSpeed = (double) Math.round((totalDistanceKm / durationHour) * 100) / 100;
@@ -170,14 +167,14 @@ public class CurrentGpsWorkout {
         double kmBetweenTwoPositions = distanceBetweenTwoLocations / 1000.0;
 
         mCurrentPace = minBetweenTwoPositions / kmBetweenTwoPositions;
-        mCurrentPaceString = paceToString(mCurrentPace);
+        mCurrentPaceString =  Utils.paceToString(mCurrentPace);
 
         // TODO: Problem here is that I can get the maxPace = 0.0 ..
         // Now I am only taking in consideration paces after 13s from starting workout
         // It should omit 2 first location updates
         if (mCurrentPace < mMaxPace && durationSec > 13) {
             mMaxPace = mCurrentPace;
-            mMaxPaceString = paceToString(mMaxPace);
+            mMaxPaceString =  Utils.paceToString(mMaxPace);
         }
 
         // mCurrentSpeed =  kmBetweenTwoPositions / hourBetweenTwoPositions;
@@ -270,21 +267,6 @@ public class CurrentGpsWorkout {
         return currentPositionTimeStamp - previousPositionTimeStamp;
     }
 
-    private String paceToString(double minPerKm) {
-        long minPartOfMinPerKm = (long) minPerKm;
-        double secPartOfMinPerKm = minPerKm - minPartOfMinPerKm;
-
-        double correctSecs = 60 * secPartOfMinPerKm;
-        double correctSecsRounded = Math.round(correctSecs);
-
-        NewLocationLog.d("calculateNewDetails: minPerKm: " + minPerKm);
-        NewLocationLog.d("calculateNewDetails: minPartOfMinPerKm: " + minPartOfMinPerKm);
-        NewLocationLog.d("calculateNewDetails: correctSecs: " + correctSecs);
-        NewLocationLog.d("calculateNewDetails: correctSecsRounded: " + correctSecsRounded);
-
-        return minPartOfMinPerKm + ":" + String.format("%02d", (int) correctSecsRounded);
-    }
-
     public void startStopwatch() {
         mStopWatch.startStopwatch();
     }
@@ -306,17 +288,7 @@ public class CurrentGpsWorkout {
     }
 
     public String getTotalDistanceString() {
-        double distance = getTotalDistance();
-
-        if (distance == 0) {
-            return "0.00";
-        }
-
-        distance /= 1000;
-
-        // String.format("%.5g%n", distance);
-        DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(distance);
+        return Utils.distanceMetersToKm(getTotalDistance());
     }
 
     public long getDuration() {

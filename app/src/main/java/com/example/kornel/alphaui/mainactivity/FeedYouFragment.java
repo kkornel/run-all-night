@@ -57,7 +57,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
             } else {
                 for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
                     WorkoutSummary workout = workoutSnapshot.getValue(WorkoutSummary.class);
-                    workout.setKey(workoutSnapshot.getKey());
+                    workout.setWorkoutKey(workoutSnapshot.getKey());
                     mFeedYouList.add(workout);
                     if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
                         loadNewData(mFeedYouList);

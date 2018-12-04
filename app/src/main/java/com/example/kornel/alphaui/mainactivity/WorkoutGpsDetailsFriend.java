@@ -134,12 +134,12 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
         mMaxSpeedImageView = findViewById(R.id.maxSpeedImageView);
         mMaxSpeedTextView = findViewById(R.id.maxSpeedTextView);
 
-        mDurationTextView.setText(mWorkout.getDuration());
-        mDistanceTextView.setText(mWorkout.getDistance());
-        mAvgPaceTextView.setText(mWorkout.getAvgPace());
-        mMaxPaceTextView.setText(mWorkout.getMaxPace());
-        mAvgSpeedTextView.setText(mWorkout.getAvgSpeed());
-        mMaxSpeedTextView.setText(mWorkout.getMaxSpeed());
+        mDurationTextView.setText(mWorkout.getDurationString());
+        mDistanceTextView.setText(mWorkout.getDistanceKmString());
+        mAvgPaceTextView.setText(mWorkout.getAvgPaceString());
+        mMaxPaceTextView.setText(mWorkout.getMaxPaceString());
+        mAvgSpeedTextView.setText(mWorkout.getAvgSpeedString());
+        mMaxSpeedTextView.setText(mWorkout.getMaxSpeedString());
 
 
         mPhotoCardView = findViewById(R.id.photoCardView);

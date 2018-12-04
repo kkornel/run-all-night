@@ -197,7 +197,7 @@ public class IndoorWorkoutService extends Service {
         WorkoutSummary workoutSummary = new WorkoutSummary(
                 mCurrentIndoorWorkout.getDate(),
                 mCurrentIndoorWorkout.getWorkoutName(),
-                mCurrentIndoorWorkout.getDurationString());
+                mCurrentIndoorWorkout.getDuration());
         return workoutSummary;
     }
 

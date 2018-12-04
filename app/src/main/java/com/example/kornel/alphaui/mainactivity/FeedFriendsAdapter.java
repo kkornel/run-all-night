@@ -93,20 +93,19 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
                 activityViewHolder.mDescriptionTextView.setText(description);
             }
 
-            if (workout.getDistance() == null) {
+            if (workout.getDistance() == 0) {
                 activityViewHolder.mDistanceLabel.setText("Duration");
-                activityViewHolder.mDistanceTextView.setText(workout.getDuration());
+                activityViewHolder.mDistanceTextView.setText(workout.getDurationString());
                 activityViewHolder.mDurationLabel.setText("");
                 activityViewHolder.mDurationTextView.setText("");
                 activityViewHolder.mDivider8.setVisibility(View.GONE);
             } else {
                 activityViewHolder.mDistanceLabel.setText("Distance");
-                activityViewHolder.mDistanceTextView.setText(String.valueOf(workout.getDistance()));
+                activityViewHolder.mDistanceTextView.setText(workout.getDistanceKmString());
                 activityViewHolder.mDurationLabel.setText("Duration");
-                activityViewHolder.mDurationTextView.setText(workout.getDuration());
+                activityViewHolder.mDurationTextView.setText(workout.getDurationString());
                 activityViewHolder.mDivider8.setVisibility(View.VISIBLE);
             }
-
         }
 
         // Googles way

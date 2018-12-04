@@ -123,7 +123,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         mDurationImageView = findViewById(R.id.durationImageView);
         mDurationTextView = findViewById(R.id.durationTextView);
 
-        mDurationTextView.setText(mWorkoutSummary.getDuration());
+        mDurationTextView.setText(mWorkoutSummary.getDurationString());
 
 
         mStatusLabel = findViewById(R.id.statusLabel);
@@ -181,7 +181,7 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
         mRootRef = database.getReference();
 
         mUserUid = user.getUid();
-        mWorkoutKey = mWorkoutSummary.getKey();
+        mWorkoutKey = mWorkoutSummary.getWorkoutKey();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -422,19 +422,19 @@ public class WorkoutNonGpsDetails extends AppCompatActivity {
 
                                     if (w2 == null) {
                                         w2 = w1;
-                                        w2.setKey(workout.getKey());
+                                        w2.setWorkoutKey(workout.getKey());
                                         continue;
                                     }
 
                                     if (w1.getDateMilliseconds() > w2.getDateMilliseconds()) {
                                         Log.d(TAG, w1.getDateMilliseconds() + " > " + w2.getDateMilliseconds());
                                         w2 = w1;
-                                        w2.setKey(workout.getKey());
+                                        w2.setWorkoutKey(workout.getKey());
                                     }
                                 }
 
 
-                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(w2.getKey());
+                                userRef.child(mUserUid).child(Database.LAST_WORKOUT).setValue(w2.getWorkoutKey());
                             }
                         }
 
