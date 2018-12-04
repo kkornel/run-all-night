@@ -15,6 +15,7 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -93,7 +94,7 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
                 activityViewHolder.mDescriptionTextView.setText(description);
             }
 
-            if (workout.getDistance() == 0) {
+            if (!WorkoutUtils.isGpsBased(workout.getWorkoutName())) {
                 activityViewHolder.mDistanceLabel.setText("Duration");
                 activityViewHolder.mDistanceTextView.setText(workout.getDurationString());
                 activityViewHolder.mDurationLabel.setText("");

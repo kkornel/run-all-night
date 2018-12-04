@@ -228,7 +228,6 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(LAST_WORKOUT_TYPE_PREFERENCE, mWorkoutSummary.getWorkoutName());
-        Log.d("asdsad", "onCreate: " +  mWorkoutSummary.getWorkoutName());
         editor.commit();
     }
 
