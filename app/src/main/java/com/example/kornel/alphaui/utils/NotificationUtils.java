@@ -18,10 +18,10 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 
 public class NotificationUtils {
-    public static final int LOCATION_TRACKING_NOTIFICATION_ID = 1138;
+    public static final int MOON_RUNNER_WORKOUT_NOTIFICATION_ID = 1138;
 
-    private static final int LOCATION_TRACKING_PENDING_INTENT_ID = 3417;
-    private static final String LOCATION_TRACKING_CHANNEL_ID = "tracking_notification_channel_01";
+    private static final int MOON_RUNNER_PENDING_INTENT_ID = 3417;
+    private static final String MOON_RUNNER_CHANNEL_ID = "moon_runner_notification_channel_01";
 
     private static final int ACTION_RESUME_PENDING_INTENT_ID = 3418;
     public static final String ACTION_RESUME_WORKOUT = "resume_sport_activity";
@@ -35,24 +35,57 @@ public class NotificationUtils {
     private static NotificationCompat.Action mResumeAction;
     private static NotificationCompat.Action mPauseAction;
 
-    public static Notification createNotification(Context context) {
+    // public static Notification createNotification(Context context) {
+    //     mNotificationManager = (NotificationManager)
+    //             context.getSystemService(Context.NOTIFICATION_SERVICE);
+    //
+    //     mResumeAction = resumeWorkout(context);
+    //     mPauseAction = pauseWorkout(context);
+    //
+    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    //         NotificationChannel mChannel = new NotificationChannel(
+    //                 MOON_RUNNER_CHANNEL_ID,
+    //                 context.getString(R.string.main_notification_channel_name),
+    //                 NotificationManager.IMPORTANCE_HIGH);
+    //         mNotificationManager.createNotificationChannel(mChannel);
+    //     }
+    //
+    //     mNotificationBuilder =
+    //             new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
+    //                     .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
+    //                     .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
+    //                     .setLargeIcon(largeIcon(context))
+    //                     .addAction(mPauseAction)
+    //                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+    //                     .setOnlyAlertOnce(true)
+    //                     .setContentIntent(contentIntent(context));
+    //
+    //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+    //             && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+    //         mNotificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+    //     }
+    //
+    //     return mNotificationBuilder.build();
+    // }
+
+    public static Notification createNotification(Context context, Class<?> cls) {
         mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mResumeAction = resumeWorkout(context);
-        mPauseAction = pauseWorkout(context);
+        mResumeAction = resumeWorkout(context, cls);
+        mPauseAction = pauseWorkout(context, cls);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
-                    LOCATION_TRACKING_CHANNEL_ID,
+                    MOON_RUNNER_CHANNEL_ID,
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             mNotificationManager.createNotificationChannel(mChannel);
         }
 
         mNotificationBuilder =
-                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
-                        .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
+                        .setColor(ContextCompat.getColor(context, R.color.secondaryLightColor))
                         .setSmallIcon(R.drawable.ic_brightness_3_black_24dp)
                         .setLargeIcon(largeIcon(context))
                         .addAction(mPauseAction)
@@ -66,6 +99,42 @@ public class NotificationUtils {
         }
 
         return mNotificationBuilder.build();
+    }
+
+    private static NotificationCompat.Action resumeWorkout(Context context, Class<?> cls) {
+        Intent resumeSportActivityIntent = new Intent(context, cls);
+        resumeSportActivityIntent.setAction(ACTION_RESUME_WORKOUT);
+
+        PendingIntent resumeSportActivityPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_RESUME_PENDING_INTENT_ID,
+                resumeSportActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action resumeAction = new NotificationCompat.Action(
+                R.drawable.ic_play_arrow_black_24dp,
+                context.getString(R.string.resume_action_button),
+                resumeSportActivityPendingIntent);
+
+        return resumeAction;
+    }
+
+    private static NotificationCompat.Action pauseWorkout(Context context, Class<?> cls) {
+        Intent pauseSportActivityIntent = new Intent(context, cls);
+        pauseSportActivityIntent.setAction(ACTION_PAUSE_WORKOUT);
+
+        PendingIntent pauseSportActivityPendingIntent = PendingIntent.getService(
+                context,
+                ACTION_PAUSE_PENDING_INTENT_ID,
+                pauseSportActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action pauseAction = new NotificationCompat.Action(
+                R.drawable.ic_pause_black_24dp,
+                context.getString(R.string.pause_action_button),
+                pauseSportActivityPendingIntent);
+
+        return pauseAction;
     }
 
     public static void toggleActionButtons(Context context) {
@@ -88,7 +157,7 @@ public class NotificationUtils {
     }
 
     public static void notifyManager() {
-        mNotificationManager.notify(LOCATION_TRACKING_NOTIFICATION_ID, mNotificationBuilder.build());
+        mNotificationManager.notify(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
     private static void addResumeAction() {
@@ -166,7 +235,7 @@ public class NotificationUtils {
 
         return PendingIntent.getActivity(
                 context,
-                LOCATION_TRACKING_PENDING_INTENT_ID,
+                MOON_RUNNER_PENDING_INTENT_ID,
                 startActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
@@ -198,7 +267,7 @@ public class NotificationUtils {
         // Create a notification channel for Android O devices
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
-                    LOCATION_TRACKING_CHANNEL_ID,
+                    MOON_RUNNER_CHANNEL_ID,
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
@@ -215,7 +284,7 @@ public class NotificationUtils {
         // - uses the content intent returned by the contentIntent helper method for the contentIntent
         // - automatically cancels the notification when the notification is clicked
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context, LOCATION_TRACKING_CHANNEL_ID)
+                new NotificationCompat.Builder(context, MOON_RUNNER_CHANNEL_ID)
                         .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                         .setSmallIcon(R.drawable.ic_drink_notification)
                         .setLargeIcon(largeIcon(context))
@@ -237,6 +306,6 @@ public class NotificationUtils {
 
         // Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and .build()
-        notificationManager.notify(LOCATION_TRACKING_NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notificationBuilder.build());
     }
 }

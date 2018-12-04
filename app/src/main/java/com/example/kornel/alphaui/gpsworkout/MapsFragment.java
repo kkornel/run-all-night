@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,7 +32,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsFragment";
@@ -55,6 +54,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Polyline mPolyline;
 
     private ArrayList<LatLng> mPath;
+
+    private Marker mCurrentMarker;
 
     interface OnMapUpdate {
         void onFabClicked();
@@ -80,19 +81,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
         mLocationIntentFilter = new IntentFilter();
         mLocationIntentFilter.addAction(ACTION_LOCATION_CHANGED);
         mLocationIntentFilter.addAction(ACTION_LAST_LOCATION);
         mLocationReceiver = new LocationBroadcastReceiver(new Handler());
 
         mPath = new ArrayList<>();
-        Log.d(TAG, "onStart: ");
+
+        return rootView;
     }
 
     @Override
@@ -104,10 +100,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
+        // Theoretically I should unregister here, in onPause, but when I pass single LatLon point,
+        // I miss some points. When I were passing full array I could unregister it here.
+        // getActivity().unregisterReceiver(mLocationReceiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         getActivity().unregisterReceiver(mLocationReceiver);
     }
 
-    private Marker mCurrentMarker;
 
     private void centerMapOnTheLocationZoom(Location location, int zoom, boolean addMarker) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -132,7 +135,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
 
         mCurrentMarker = mMap.addMarker(new MarkerOptions()
-                .position(path.get(path.size() - 1)));
+                .position(path.get(path.size() - 1))
+                .title("Ty")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
     }
 
     @Override
@@ -176,6 +181,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                                    .title("Start")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                             centerMapOnTheLocationZoom(lastLocation, ZOOM_VALUE, true);
                         }
                     });
@@ -187,7 +196,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     mPath.add(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
                     // final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
                     // final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
-
                     handler.post(new Runnable() {
                         @Override
                         public void run() {

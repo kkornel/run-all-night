@@ -57,7 +57,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         mAvatarImageView = findViewById(R.id.avatarImageView);
         mNameTextView = findViewById(R.id.nameTextView);
         mTotalDistanceTextView = findViewById(R.id.totalDistanceTextView);
-        mTotalTimeTextView = findViewById(R.id.totalTimeTextView);
+        mTotalTimeTextView = findViewById(R.id.totalTimeTextView2);
         mWorkoutsCountTextView = findViewById(R.id.workoutsCountTextView);
         mHmm1TextView = findViewById(R.id.hmm1TextView);
         mHmm2TextView = findViewById(R.id.hmm2TextView);

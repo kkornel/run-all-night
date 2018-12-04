@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui.mainactivity;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,16 +12,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
-    private final ListItemClickListener mOnClickListener;
 
+    private Context mContext;
+    private final ListItemClickListener mOnClickListener;
     private List<String> mWorkouts;
 
-    public WorkoutAdapter(ListItemClickListener onClickListener, List<String> activities) {
+    public WorkoutAdapter(Context context, ListItemClickListener onClickListener, List<String> activities) {
+        mContext = context;
         mOnClickListener = onClickListener;
         mWorkouts = activities;
     }
@@ -47,6 +51,12 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
             workoutViewHolder.mWorkoutTextView.setText("ERROR");
         } else {
             workoutViewHolder.mWorkoutTextView.setText(mWorkouts.get(position));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                workoutViewHolder.mWorkoutImageView.setImageDrawable(mContext.getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkouts.get(position)), mContext.getApplicationContext().getTheme()));
+            } else {
+                workoutViewHolder.mWorkoutImageView.setImageDrawable(mContext.getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkouts.get(position))));
+            }
         }
 
         // Googles way

@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui.mainactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,12 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,8 @@ import java.util.List;
 public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedYouFragment";
 
+    public static final String WORKOUT_INTENT_EXTRA = "workout-details";
+
     private TextView mNoDataInfoTextView;
     private FeedYouAdapter mFeedYouAdapter;
     private RecyclerView mRecyclerView;
@@ -41,7 +44,34 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
     private String mUserUid;
     private DatabaseReference mRootRef;
     private DatabaseReference mWorkoutsRef;
-    private List<WorkoutGpsSummary> mFeedYouList;
+    private List<WorkoutSummary> mFeedYouList;
+
+    private DatabaseReference myWorkoutsRef;
+
+    ValueEventListener myWorkoutsListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mFeedYouList = new ArrayList<>();
+            if (dataSnapshot.getValue() == null) {
+                loadNewData(mFeedYouList);
+            } else {
+                for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
+                    WorkoutSummary workout = workoutSnapshot.getValue(WorkoutSummary.class);
+                    workout.setWorkoutKey(workoutSnapshot.getKey());
+                    mFeedYouList.add(workout);
+                    if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
+                        loadNewData(mFeedYouList);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+            throw databaseError.toException();
+        }
+    };
 
     public FeedYouFragment() {
 
@@ -60,7 +90,7 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mFeedYouAdapter = new FeedYouAdapter(this, mFeedYouList);
+        mFeedYouAdapter = new FeedYouAdapter(getContext(), this, mFeedYouList);
         mRecyclerView.setAdapter(mFeedYouAdapter);
 
         mNoDataInfoTextView.setText(getString(R.string.loading));
@@ -80,25 +110,35 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         mRootRef = database.getReference();
         mWorkoutsRef = mRootRef.child(Database.WORKOUTS);
 
-        readYourWorkouts();
+        myWorkoutsRef = mWorkoutsRef.child(mUserUid);
+        myWorkoutsRef.addValueEventListener(myWorkoutsListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        myWorkoutsRef.removeEventListener(myWorkoutsListener);
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: ");
-        Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
+        boolean isGpsBased = WorkoutUtils.isGpsBased(mFeedYouList.get(clickedItemIndex).getWorkoutName());
+        if (isGpsBased) {
+            Intent i = new Intent(getActivity(), WorkoutGpsDetails.class);
+            i.putExtra(WORKOUT_INTENT_EXTRA, mFeedYouList.get(clickedItemIndex));
+            startActivity(i);
+        } else {
+            Intent i = new Intent(getActivity(), WorkoutNonGpsDetails.class);
+            i.putExtra(WORKOUT_INTENT_EXTRA, mFeedYouList.get(clickedItemIndex));
+            startActivity(i);
+        }
     }
 
-    public void fetchNewData() {
-        Log.d(TAG, "fetchNewData: ");
-        readYourWorkouts();
-    }
-
-    public void setFeedYouList(List<WorkoutGpsSummary> feedYouList) {
+    public void setFeedYouList(List<WorkoutSummary> feedYouList) {
         mFeedYouList = feedYouList;
     }
 
-    public void loadNewData(List<WorkoutGpsSummary> feedYouList) {
+    public void loadNewData(List<WorkoutSummary> feedYouList) {
         sortListByDate(feedYouList);
         setFeedYouList(feedYouList);
         checkIfListIsEmpty();
@@ -114,39 +154,12 @@ public class FeedYouFragment extends Fragment implements ListItemClickListener {
         }
     }
 
-    private void readYourWorkouts() {
-        final DatabaseReference myWorkoutsRef = mWorkoutsRef.child(mUserUid);
-        ValueEventListener myWorkoutsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mFeedYouList = new ArrayList<>();
-                if (dataSnapshot.getValue() == null) {
-                    loadNewData(mFeedYouList);
-                } else {
-                    for (DataSnapshot workoutSnapshot : dataSnapshot.getChildren()) {
-                        mFeedYouList.add(workoutSnapshot.getValue(WorkoutGpsSummary.class));
-                        if (dataSnapshot.getChildrenCount() == mFeedYouList.size()) {
-                            loadNewData(mFeedYouList);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
-            }
-        };
-        myWorkoutsRef.addListenerForSingleValueEvent(myWorkoutsListener);
-    }
-
-    private void sortListByDate(List<WorkoutGpsSummary> list) {
-        Collections.sort(list, new Comparator<WorkoutGpsSummary>() {
-            public int compare(WorkoutGpsSummary o1, WorkoutGpsSummary o2) {
-                if (o1.getDate() == null || o2.getDate() == null)
+    private void sortListByDate(List<WorkoutSummary> list) {
+        Collections.sort(list, new Comparator<WorkoutSummary>() {
+            public int compare(WorkoutSummary o1, WorkoutSummary o2) {
+                if (o1.getWorkoutDate() == null || o2.getWorkoutDate() == null)
                     return 0;
-                return o2.getDate().compareTo(o1.getDate());
+                return o2.getWorkoutDate().compareTo(o1.getWorkoutDate());
             }
         });
     }

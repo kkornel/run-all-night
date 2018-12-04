@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,7 +20,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -30,20 +28,21 @@ import android.widget.ViewFlipper;
 
 import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.utils.OnNewActivityState;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WEATHER_INFO_EXTRA_INTENT;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
-
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 
 public class StartGpsWorkoutActivity extends AppCompatActivity implements
-        LocationTrackingService.OnNewActivityState,
+        OnNewActivityState,
         MapsFragment.OnMapUpdate {
     private static final String TAG = "StartGpsWorkoutActivity";
-
-    public static final String WORKOUT_DETAILS_EXTRA_INTENT = "workout_summary";
 
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
 
@@ -85,6 +84,12 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     // If this becomes too memory intensive, it may be best to switch to a FragmentStatePagerAdapter.
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    // Timer
+    private Handler mTimeHandler;
+    private Runnable mTimeRunnable;
+
+    private WeatherInfoCompressed mWeatherInfoCompressed;
+
     // Monitors the state of the connection to the service.
     // Defines callbacks for service binding, passed to bindService()
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -109,16 +114,10 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         }
     };
 
-    // Timer
-    private Handler mTimeHandler;
-    private Runnable mTimeRunnable;
-
-    private WeatherInfoCompressed mWeatherInfoCompressed;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_gpsworkout);
+        setContentView(R.layout.activity_start_gps_workout);
 
         getSupportActionBar().hide();
 
@@ -220,8 +219,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                 mPaceDetailsFragment.setTime(time);
                 mPaceDetailsFragment.setAvgPace(avgPace);
                 mPaceDetailsFragment.setCurrentPace(currentPace);
-                // TODO: odkomenotwac
-                // mPaceDetailsFragment.setLapsList(mService.getLaps());
+                mPaceDetailsFragment.setLapsList(mService.getLaps());
 
                 mTimeHandler.postDelayed(this, 500);
             }
@@ -269,7 +267,7 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private void startWorkout() {
         if (!mIsForegroundServiceRunning) {
             Intent intent = new Intent(StartGpsWorkoutActivity.this, LocationTrackingService.class);
-            intent.setAction(LocationTrackingService.ACTION_START_FOREGROUND_SERVICE);
+            intent.setAction(ACTION_START_FOREGROUND_SERVICE);
             intent.putExtra(WORKOUT_NAME_EXTRA_INTENT, getIntent().getStringExtra(WORKOUT_NAME_EXTRA_INTENT));
             startService(intent);
             mIsForegroundServiceRunning = true;
@@ -287,15 +285,14 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
     private void finishWorkout() {
         // Stop service
         Intent intent = new Intent(this, LocationTrackingService.class);
-        intent.setAction(LocationTrackingService.ACTION_STOP_FOREGROUND_SERVICE);
+        intent.setAction(ACTION_STOP_FOREGROUND_SERVICE);
         startService(intent);
         mIsForegroundServiceRunning = false;
 
-        Intent summaryActivity = new Intent(this, WorkoutSummaryActivity.class);
-        WorkoutGpsSummary workoutGpsSummary = mService.getWorkOutSummary();
-        workoutGpsSummary.setWeatherInfoCompressed(mWeatherInfoCompressed);
-        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
-        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutGpsSummary);
+        Intent summaryActivity = new Intent(this, WorkoutGpsSummaryActivity.class);
+        WorkoutSummary workoutSummary = mService.getWorkOutSummary();
+        workoutSummary.setWeatherInfoCompressed(mWeatherInfoCompressed);
+        summaryActivity.putExtra(WORKOUT_DETAILS_EXTRA_INTENT, workoutSummary);
         startActivity(summaryActivity);
     }
 
@@ -448,6 +445,13 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
                             })
                             .show();
                 }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mService.isServiceRunning()) {
+            super.onBackPressed();
         }
     }
 }

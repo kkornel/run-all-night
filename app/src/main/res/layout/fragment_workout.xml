@@ -212,13 +212,12 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
                     android:layout_marginBottom="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/horizontalMiddle2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/bike_64dp"
+                    app:srcCompat="@drawable/ic_running_64"
                     tools:src="@drawable/ic_spotify" />
 
                 <android.support.constraint.Guideline
@@ -226,13 +225,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
+                    app:layout_constraintGuide_percent="0.33" />
 
                 <TextView
                     android:id="@+id/activityTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/activity"
@@ -246,11 +245,11 @@
                     android:id="@+id/activityNameTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="4dp"
-                    android:text="Running"
+                    android:text="Bieganie"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/activityImageView"

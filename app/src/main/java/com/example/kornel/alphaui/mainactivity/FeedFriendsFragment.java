@@ -1,10 +1,11 @@
 package com.example.kornel.alphaui.mainactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,12 +17,14 @@ import android.widget.Toast;
 
 import com.example.kornel.alphaui.FriendWorkout;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +39,8 @@ import java.util.List;
 public class FeedFriendsFragment extends Fragment implements ListItemClickListener {
     private static final String TAG = "FeedFriendsFragment";
 
+    public static final String FRIEND_WORKOUT_INTENT_EXTRA = "friends-workout";
+
     private SwipeRefreshLayout mSwipeRefresh;
     private TextView mNoDataInfoTextView;
     private FeedFriendsAdapter mFeedFriendsAdapter;
@@ -48,11 +53,17 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private DatabaseReference mUsersRef;
 
     private List<FriendWorkout> mFeedFriendsList;
+    private List<String> mFriendsIds;
+    private List<FriendInfo> mFriendsInfo;
 
     // I do it, because I want to call loadNewData() only when I get all the data from ALL friends
     // not every for every friend separately
     private long mNumberOfFriendsAlreadyIterated = 0;
     private long mFriendsCount;
+
+    private boolean mFragmentJustStarted;
+    private boolean mNewData;
+    private boolean mDataChanged;
 
     public FeedFriendsFragment() {
 
@@ -61,7 +72,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recycler_view_swipe_refresh, container, false);
-        // View rootView = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -70,23 +80,35 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.refresh), Toast.LENGTH_SHORT).show();
 
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchNewData();
+                        // fetchNewData();
+                        // readFriendsWorkouts(mFriendsIds);
+
+                        if (mDataChanged) {
+                            readFriendsWorkouts(mFriendsIds);
+                            mDataChanged = false;
+                        } else {
+                            if (mNewData) {
+                                mFragmentJustStarted = false;
+                                loadNewData(mFeedFriendsList);
+                                mNewData = false;
+                            }
+                        }
+                        mSwipeRefresh.setRefreshing(false);
                     }
                 }
         );
-        
+
         mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mFeedFriendsAdapter = new FeedFriendsAdapter(this, mFeedFriendsList);
+        mFeedFriendsAdapter = new FeedFriendsAdapter(getContext(), this, mFeedFriendsList);
         mRecyclerView.setAdapter(mFeedFriendsAdapter);
 
         mNoDataInfoTextView.setText(getString(R.string.loading));
@@ -107,17 +129,104 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mUsersRef = mRootRef.child(Database.USERS);
         mWorkoutsRef = mRootRef.child(Database.WORKOUTS);
 
-        queryForFriends();
+        mFragmentJustStarted = true;
+        mNewData = false;
+        mDataChanged = false;
+
+        mFriendsIds = new ArrayList<>();
+
+        final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
+        ValueEventListener friendsIdsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    mFriendsIds.add(ds.getKey());
+                }
+                if (mFriendsIds.size() == 0) {
+                    showNoFriendsMsg();
+                } else {
+                    for (final String friendUid : mFriendsIds) {
+
+                        DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
+                        ChildEventListener childWorkoutListener = new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildAdded: ");
+
+                                if (!mFragmentJustStarted) {
+                                    WorkoutSummary workoutSummary = dataSnapshot.getValue(WorkoutSummary.class);
+
+                                    if (!workoutSummary.getPrivacy()) {
+                                        mNewData = true;
+                                        Toast.makeText(getActivity(), getString(R.string.new_post_swipe_to_refresh), Toast.LENGTH_SHORT).show();
+
+                                        FriendInfo friendInfo = null;
+                                        for (FriendInfo info : mFriendsInfo) {
+                                            if (info.getUid().equals(friendUid)) {
+                                                friendInfo = info;
+                                                break;
+                                            }
+                                        }
+                                        if (friendInfo != null) {
+                                            mFeedFriendsList.add(new FriendWorkout(friendInfo.getFriendName(), friendInfo.getAvatarUrl(), workoutSummary));
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildChanged: ");
+                                mDataChanged = true;
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "onChildRemoved: ");
+                                mDataChanged = true;
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildMoved: ");
+                                mDataChanged = true;
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                                throw databaseError.toException();
+                            }
+                        };
+
+                        friendUidWorkoutsRef.addChildEventListener(childWorkoutListener);
+                    }
+                    readFriendsWorkouts(mFriendsIds);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+
+        friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Log.d(TAG, "onListItemClick: ");
-        Toast.makeText(getContext(), "Clicked: " + clickedItemIndex, Toast.LENGTH_SHORT).show();
-    }
-
-    public void fetchNewData() {
-        queryForFriends();
+        boolean isGpsBased = WorkoutUtils.isGpsBased(mFeedFriendsList.get(clickedItemIndex).getWorkout().getWorkoutName());
+        if (isGpsBased) {
+            Intent i = new Intent(getActivity(), WorkoutGpsDetailsFriend.class);
+            i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
+            startActivity(i);
+        } else {
+            Intent i = new Intent(getActivity(), WorkoutNonGpsDetailsFriend.class);
+            i.putExtra(FRIEND_WORKOUT_INTENT_EXTRA, mFeedFriendsList.get(clickedItemIndex));
+            startActivity(i);
+        }
     }
 
     public void setFeedFriendsList(List<FriendWorkout> feedFriendsList) {
@@ -131,32 +240,8 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mFeedFriendsAdapter.loadNewData(mFeedFriendsList);
     }
 
-    private void queryForFriends() {
-        final List<String> friendsIds = new ArrayList<>();
-        final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
-        ValueEventListener friendsIdsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    friendsIds.add(ds.getKey());
-                }
-                if (friendsIds.size() == 0) {
-                    showNoFriendsMsg();
-                } else {
-                    readFriendsWorkouts(friendsIds);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
-            }
-        };
-        friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
-    }
-
     private void readFriendsWorkouts(List<String> friendsIds) {
+        mFriendsInfo = new ArrayList<>();
         for (final String friendUid : friendsIds) {
             mFriendsCount = friendsIds.size();
 
@@ -169,19 +254,27 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                     final String avatarUrl = user.getAvatarUrl();
                     final String friendName = user.getFullName();
 
+                    mFriendsInfo.add(new FriendInfo(friendUid, avatarUrl, friendName));
+
                     DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
                     ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
-                                FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
-                                mFeedFriendsList.add(friendWorkout);
+                                WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
+                                if (!workout.getPrivacy()) {
+                                    Log.d(TAG, "not private - adding: " + ds);
+                                    FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
+                                    mFeedFriendsList.add(friendWorkout);
+                                } else {
+                                    Log.d(TAG, "private - not adding: " + ds);
+                                }
                             }
 
                             mNumberOfFriendsAlreadyIterated++;
                             if (mNumberOfFriendsAlreadyIterated == mFriendsCount) {
                                 mNumberOfFriendsAlreadyIterated = 0;
+                                mFragmentJustStarted = false;
                                 loadNewData(mFeedFriendsList);
                                 mSwipeRefresh.setRefreshing(false);
                             }
@@ -209,12 +302,13 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     private void sortListByDate(List<FriendWorkout> list) {
         Collections.sort(list, new Comparator<FriendWorkout>() {
             public int compare(FriendWorkout o1, FriendWorkout o2) {
-                if (o1.getWorkout().getDate() == null || o2.getWorkout().getDate() == null)
+                if (o1.getWorkout().getWorkoutDate() == null || o2.getWorkout().getWorkoutDate() == null)
                     return 0;
-                return o2.getWorkout().getDate().compareTo(o1.getWorkout().getDate());
+                return o2.getWorkout().getWorkoutDate().compareTo(o1.getWorkout().getWorkoutDate());
             }
         });
     }
+
     private void checkIfListIsEmpty() {
         if (mFeedFriendsList.size() == 0) {
             mNoDataInfoTextView.setVisibility(View.VISIBLE);
@@ -229,13 +323,37 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
         mNoDataInfoTextView.setText(getString(R.string.no_friends));
     }
 
+    static class FriendInfo {
+        private String uid;
+        private String avatarUrl;
+        private String friendName;
+
+        public FriendInfo(String uid, String avatarUrl, String friendName) {
+            this.uid = uid;
+            this.avatarUrl = avatarUrl;
+            this.friendName = friendName;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public String getFriendName() {
+            return friendName;
+        }
+    }
+
     // private void readFriendsWorkouts() {
     //     final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
     //     ValueEventListener friendsIdsListener = new ValueEventListener() {
     //         @Override
     //         public void onDataChange(DataSnapshot dataSnapshot) {
     //             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                 final String friendUid = ds.getKey();
+    //                 final String friendUid = ds.getWorkoutKey();
     //                 mFriendsCount = dataSnapshot.getChildrenCount();
     //
     //                 DatabaseReference friendUidRef = mUsersRef.child(friendUid);
@@ -252,7 +370,7 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
     //                             @Override
     //                             public void onDataChange(DataSnapshot dataSnapshot) {
     //                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                                     WorkoutGpsSummary workout = ds.getValue(WorkoutGpsSummary.class);
+    //                                     WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
     //                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
     //                                     mFeedFriendsList.add(friendWorkout);
     //                                 }

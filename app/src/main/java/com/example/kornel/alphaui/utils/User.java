@@ -15,6 +15,9 @@ public class User {
     private String email;
     private String lastWorkout;
     private HashMap<String, Boolean> friends;
+    private int totalWorkouts;
+    private long totalDuration;
+    private double totalDistance;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -86,6 +89,18 @@ public class User {
 
     public void setLastWorkout(String lastWorkout) {
         this.lastWorkout = lastWorkout;
+    }
+
+    public int getTotalWorkouts() {
+        return totalWorkouts;
+    }
+
+    public long getTotalDuration() {
+        return totalDuration;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
     }
 
     @Exclude

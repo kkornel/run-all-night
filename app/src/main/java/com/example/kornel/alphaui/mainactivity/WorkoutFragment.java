@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -26,12 +27,13 @@ import android.widget.TextView;
 
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.BuildConfig;
-import com.example.kornel.alphaui.StartNonGpsWorkoutActivity;
+import com.example.kornel.alphaui.gpsworkout.StartNonGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
-import com.example.kornel.alphaui.gpsworkout.WorkoutGpsSummary;
+import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.GpsBasedWorkout;
+import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.Weather;
@@ -146,7 +148,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         mWorkoutCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChooseWorkoutActivity2.class);
+                Intent intent = new Intent(getActivity(), ChooseWorkoutActivity.class);
                 startActivityForResult(intent, PICK_WORKOUT_REQUEST);
             }
         });
@@ -174,7 +176,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             @Override
             public void onClick(View v) {
                 String workout = mWorkoutNameTextView.getText().toString();
-                boolean isGpsBased = isGpsBased(workout);
+                boolean isGpsBased = WorkoutUtils.isGpsBased(workout);
 
                 if (isGpsBased) {
                     Intent intent = new Intent(getContext(), StartGpsWorkoutActivity.class);
@@ -217,7 +219,19 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             mNoInternetTextView.setVisibility(View.VISIBLE);
             buildAlertMessageNoInternetConnection();
         } else {
-            retrieveUserProfile();
+            Handler timerHandler = new Handler();
+            Runnable timerRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    retrieveUserProfile();
+
+
+                }
+            };
+
+            // I'm doing this after delay, because after deleting last workout from database
+            // it was fetching old, not updated data.
+            timerHandler.postDelayed(timerRunnable, 200);
         }
 
         if (!hasLocationPermissions()) {
@@ -324,6 +338,11 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra(WORKOUT_RESULT);
                 mWorkoutNameTextView.setText(result);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result), getActivity().getApplicationContext().getTheme()));
+                } else {
+                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result)));
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result
@@ -508,18 +527,17 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 String welcomeMessage = getString(R.string.hello) + ", " + firstName + "!";
                 String noLastWorkoutDate = getString(R.string.no_workouts_yet);
 
+                final String lastWorkoutKey = user.getLastWorkout();
+
                 mWelcomeTextView.setText(welcomeMessage);
 
                 if (lastWorkoutId == null) {
                     mLastTrainingTextView.setText(noLastWorkoutDate);
                 } else {
-                    workoutsRef.child(userUid).child(user.getLastWorkout()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    workoutsRef.child(userUid).child(lastWorkoutKey).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-                            // String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).getDateStringPl();
-                            // mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
-                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutGpsSummary.class).gapBetweenWorkouts();
+                            String lastWorkoutDate = dataSnapshot.getValue(WorkoutSummary.class).gapBetweenWorkouts();
                             mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDate);
                         }
 
@@ -538,16 +556,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 throw databaseError.toException();
             }
         };
-        usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
-    }
 
-    private boolean isGpsBased(String workout) {
-        for (GpsBasedWorkout gpsWorkout : GpsBasedWorkout.values()) {
-            if (gpsWorkout.toString().equals(workout)) {
-                return true;
-            }
-        }
-        return false;
+        usersRef.child(userUid).addListenerForSingleValueEvent(userInfoListener);
     }
 
     private void showNoGpsSnackBar() {

@@ -1,20 +1,20 @@
 package com.example.kornel.alphaui.utils;
 
 public enum NonGpsBasedWorkout {
-    AEROBICS("Aerobics"),
+    AEROBICS("Areobik"),
     BADMINTON("Badminton"),
-    BASKETBALL("Basketball"),
-    BOXING("Boxing"),
+    BASKETBALL("Koszykówka"),
+    BOXING("Boks"),
     CROSSFIT("Crossfit"),
-    DANCING("Dancing"),
-    ELLIPTICAL("Elliptical"),
-    GYMNASTICS("Gymnastics"),
-    INDOOR_CYCLING("Indoor cycling"),
-    INDOOR_ROWING("Indoor rowing"),
-    ROPE_JUMPING("Rope jumping"),
+    DANCING("Taniec"),
+    ELLIPTICAL("Orbitrek"),
+    GYMNASTICS("Gimnastyka"),
+    INDOOR_ROWING("Wiosłowanie indoor"),
+    ROPE_JUMPING("Skoki na skakance"),
+    SPINNING("Spinning"),
     SQUASH("Squash"),
     YOGA("Yoga"),
-    WEIGHT_TRAINING("Weight training"),
+    WEIGHT_TRAINING("Trening siłowy"),
     ZUMBA("Zumba");
 
     private String value;

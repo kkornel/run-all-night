@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.hideKeyboard(LoginActivity.this);
                 if (!NetworkUtils.isConnected(LoginActivity.this)) {
                     Snackbar.make(
                             mLoginButton,

@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.gpsworkout;
 
-
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.NotificationUtils;
+import com.example.kornel.alphaui.utils.OnNewActivityState;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,16 +34,14 @@ import static com.example.kornel.alphaui.gpsworkout.MapsFragment.LocationBroadca
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_NAME_EXTRA_INTENT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_PAUSE_WORKOUT;
 import static com.example.kornel.alphaui.utils.NotificationUtils.ACTION_RESUME_WORKOUT;
-import static com.example.kornel.alphaui.utils.NotificationUtils.LOCATION_TRACKING_NOTIFICATION_ID;
-
+import static com.example.kornel.alphaui.utils.NotificationUtils.MOON_RUNNER_WORKOUT_NOTIFICATION_ID;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGROUND_SERVICE;
+import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
 
 public class LocationTrackingService extends Service {
     private static final String TAG = "LocationTrackingService";
 
-    private static final int MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES = 4000;
-
-    public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
-    public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
+    private static final int MIN_VALUE_OF_MILLI_SEC_BETWEEN_UPDATES = 4000;
 
     // The desired interval for location updates. Inexact. Updates may be more or less frequent.
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -85,21 +83,8 @@ public class LocationTrackingService extends Service {
     private boolean mDidComeFromNotification;
     private boolean mIsServiceRunning;
 
-    public interface OnNewActivityState {
-        void updateButtons(boolean isPaused);
-    }
-
     public LocationTrackingService() {
 
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        // Called when a client (MainActivity in case of this sample) comes to the foreground
-        // and binds with this service. The service should cease to be a foreground service
-        // when that happens.
-        return mBinder;
     }
 
     @Override
@@ -152,10 +137,10 @@ public class LocationTrackingService extends Service {
         mCurrentGpsWorkout = new CurrentGpsWorkout(workoutName);
 
         // Build the notification.
-        Notification notification = NotificationUtils.createNotification(getApplicationContext());
+        Notification notification = NotificationUtils.createNotification(getApplicationContext(), LocationTrackingService.class);
 
         // Start foreground service.
-        startForeground(LOCATION_TRACKING_NOTIFICATION_ID, notification);
+        startForeground(MOON_RUNNER_WORKOUT_NOTIFICATION_ID, notification);
 
         mIsServiceRunning = true;
         mIsTrainingPaused = false;
@@ -225,7 +210,7 @@ public class LocationTrackingService extends Service {
             long prevStamp = mPreviousLocation.getTime();
             long newStamp = newLocation.getTime();
             long msBetweenPrevAndNew = newStamp - prevStamp;
-            if (msBetweenPrevAndNew < MIN_VALUE_OF_MILI_SEC_BETWEEN_UPDATES) {
+            if (msBetweenPrevAndNew < MIN_VALUE_OF_MILLI_SEC_BETWEEN_UPDATES) {
                 NewLocationLog.d("onNewLocation: OMITTING because timeBetweenUpdates = : " + msBetweenPrevAndNew);
                 return;
             }
@@ -246,14 +231,6 @@ public class LocationTrackingService extends Service {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Class used for the client Binder. Because we know this service always runs
-    // in the same process as its clients, we don't need to deal with IPC.
-    public class LocationTrackingBinder extends Binder {
-        LocationTrackingService getService() {
-            // Return this instance of LocationTrackingBinder so clients can call public methods
-            return LocationTrackingService.this;
-        }
-    }
 
     private void setupGoogleLocationServicesApi() {
         // Google Location Services API
@@ -327,9 +304,28 @@ public class LocationTrackingService extends Service {
         mNotificationHandler.removeCallbacks(mNotificationRunnable);
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        // Called when a client (MainActivity in case of this sample) comes to the foreground
+        // and binds with this service. The service should cease to be a foreground service
+        // when that happens.
+        return mBinder;
+    }
+
+    // Class used for the client Binder. Because we know this service always runs
+    // in the same process as its clients, we don't need to deal with IPC.
+    public class LocationTrackingBinder extends Binder {
+        LocationTrackingService getService() {
+            // Return this instance of LocationTrackingBinder so clients can call public methods
+            return LocationTrackingService.this;
+        }
+    }
+
     /**
      * Methods for clients.
      */
+
     // Google Location Services API
     public void getLastLocation() {
         try {
@@ -353,19 +349,19 @@ public class LocationTrackingService extends Service {
         mButtonCallback = callback;
     }
 
-    public WorkoutGpsSummary getWorkOutSummary() {
-        WorkoutGpsSummary workoutGpsSummary = new WorkoutGpsSummary(
+    public WorkoutSummary getWorkOutSummary() {
+        WorkoutSummary workoutSummary = new WorkoutSummary(
+                mCurrentGpsWorkout.getDate(),
                 mCurrentGpsWorkout.getWorkoutName(),
-                mCurrentGpsWorkout.getDurationString(),
-                mCurrentGpsWorkout.getTotalDistanceString(),
-                mCurrentGpsWorkout.getAvgPaceString(),
-                mCurrentGpsWorkout.getMaxPaceString(),
-                mCurrentGpsWorkout.getAvgSpeedString(),
-                mCurrentGpsWorkout.getMaxSpeedString(),
+                mCurrentGpsWorkout.getDuration(),
+                mCurrentGpsWorkout.getTotalDistance(),
+                mCurrentGpsWorkout.getAvgPace(),
+                mCurrentGpsWorkout.getMaxPace(),
+                mCurrentGpsWorkout.getAvgSpeed(),
+                mCurrentGpsWorkout.getMaxSpeed(),
                 mCurrentGpsWorkout.getPath(),
                 mCurrentGpsWorkout.getLaps());
-        Log.d("finishWorkout", "finishWorkout: " + workoutGpsSummary);
-        return workoutGpsSummary;
+        return workoutSummary;
     }
 
     public List<LatLon> getPath() {

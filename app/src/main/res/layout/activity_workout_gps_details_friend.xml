@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".mainactivity.WorkoutGpsDetailsFriend"
+    tools:layout_editor_absoluteX="64dp"
+    tools:layout_editor_absoluteY="121dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:paddingBottom="8dp"
+        app:cardBackgroundColor="@color/colorWhite">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/profileFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/nameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="TextView"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
+                        app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+                        app:layout_constraintTop_toTopOf="@+id/avatarImageView"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <ImageView
+                        android:id="@+id/avatarImageView"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0"
+                        app:srcCompat="@color/colorAccent" />
+
+                    <ImageView
+                        android:id="@+id/activityIconImageView"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
+                        app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+                        app:srcCompat="@drawable/bike_64dp" />
+
+                    <TextView
+                        android:id="@+id/dateTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="@+id/activityIconImageView"
+                        app:layout_constraintStart_toEndOf="@+id/activityIconImageView" />
+
+                    <TextView
+                        android:id="@+id/timeTextView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="TextView"
+                        app:layout_constraintStart_toEndOf="@+id/activityIconImageView"
+                        app:layout_constraintTop_toTopOf="@+id/activityIconImageView" />
+                </android.support.constraint.ConstraintLayout>
+            </FrameLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/summaryCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/durationImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_stopwatch_59" />
+
+                    <TextView
+                        android:id="@+id/durationLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/duration"
+                        app:layout_constraintStart_toEndOf="@+id/durationImageView"
+                        app:layout_constraintTop_toTopOf="@+id/durationImageView" />
+
+                    <TextView
+                        android:id="@+id/durationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/durationImageView"
+                        app:layout_constraintStart_toEndOf="@+id/durationImageView" />
+
+                    <ImageView
+                        android:id="@+id/avgPaceImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/durationImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/durationImageView"
+                        app:srcCompat="@drawable/ic_avg_pace_64" />
+
+                    <TextView
+                        android:id="@+id/avgPaceLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/avg_pace"
+                        app:layout_constraintStart_toEndOf="@+id/avgPaceImageView"
+                        app:layout_constraintTop_toTopOf="@+id/avgPaceImageView" />
+
+                    <TextView
+                        android:id="@+id/avgPaceTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/avgPaceImageView"
+                        app:layout_constraintStart_toEndOf="@+id/avgPaceImageView" />
+
+                    <ImageView
+                        android:id="@+id/avgSpeedImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/avgPaceImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/avgPaceImageView"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:srcCompat="@drawable/ic_avg_speed_64" />
+
+                    <TextView
+                        android:id="@+id/avgSpeedLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/avg_speed"
+                        app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView"
+                        app:layout_constraintTop_toTopOf="@+id/avgSpeedImageView" />
+
+                    <TextView
+                        android:id="@+id/avgSpeedTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/avgSpeedImageView"
+                        app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView" />
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/horizontalGuideline_05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+                    <ImageView
+                        android:id="@+id/distanceImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_05"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_path_64" />
+
+                    <TextView
+                        android:id="@+id/distanceLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/distance"
+                        app:layout_constraintStart_toEndOf="@+id/distanceImageView"
+                        app:layout_constraintTop_toTopOf="@+id/distanceImageView" />
+
+                    <TextView
+                        android:id="@+id/timeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/distanceImageView"
+                        app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
+
+                    <ImageView
+                        android:id="@+id/maxPaceImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/distanceImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/distanceImageView"
+                        app:srcCompat="@drawable/ic_max_pace_64" />
+
+                    <TextView
+                        android:id="@+id/maxPaceLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/max_pace"
+                        app:layout_constraintStart_toEndOf="@+id/maxPaceImageView"
+                        app:layout_constraintTop_toTopOf="@+id/maxPaceImageView" />
+
+                    <TextView
+                        android:id="@+id/maxPaceTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/maxPaceImageView"
+                        app:layout_constraintStart_toEndOf="@+id/maxPaceImageView" />
+
+                    <ImageView
+                        android:id="@+id/maxSpeedImageView"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/maxPaceImageView"
+                        app:layout_constraintTop_toBottomOf="@+id/maxPaceImageView"
+                        app:srcCompat="@drawable/ic_max_speed_64" />
+
+                    <TextView
+                        android:id="@+id/maxSpeedLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/max_speed"
+                        app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView"
+                        app:layout_constraintTop_toTopOf="@+id/maxSpeedImageView" />
+
+                    <TextView
+                        android:id="@+id/maxSpeedTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="TextView"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/maxSpeedImageView"
+                        app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato"
+                        android:text="min/km"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/maxPaceTextView"
+                        app:layout_constraintStart_toEndOf="@+id/maxPaceTextView" />
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato"
+                        android:text="km/h"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/maxSpeedTextView"
+                        app:layout_constraintStart_toEndOf="@+id/maxSpeedTextView" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato"
+                        android:text="km"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/timeTextView"
+                        app:layout_constraintStart_toEndOf="@+id/timeTextView" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:fontFamily="@font/lato"
+                        android:text="km/h"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/avgSpeedTextView"
+                        app:layout_constraintStart_toEndOf="@+id/avgSpeedTextView" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/lato"
+                        android:text="min/km"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/avgPaceTextView"
+                        app:layout_constraintStart_toEndOf="@+id/avgPaceTextView" />
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/photoCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/statusTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="TextView"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <View
+                        android:id="@+id/photoStatusDivider"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/statusTextView" />
+
+                    <ImageView
+                        android:id="@+id/photoImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/photoStatusDivider"
+                        app:srcCompat="@color/colorAccent" />
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/mapCardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <fragment
+                        android:id="@+id/summaryMap"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/lapsCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/constraintLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/lapNumberTextVie"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="KM"
+                            android:textAlignment="center"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/lapTimeTextVie"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="TIME"
+                            android:textAlignment="center"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/lapNumberTextVie"
+                            app:layout_constraintStart_toEndOf="@+id/lapNumberTextVie" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerViewPace"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/divider7" />
+
+                    <View
+                        android:id="@+id/divider7"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="?android:attr/listDivider"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/weatherCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/weatherSummaryTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="TextView"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/weatherImageView" />
+
+                    <ImageView
+                        android:id="@+id/weatherImageView"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline2_05"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:srcCompat="@color/design_default_color_primary_dark" />
+
+                    <TextView
+                        android:id="@+id/weatherTempTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="52sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/weatherImageView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/horizontalGuideline2_05"
+                        app:layout_constraintTop_toTopOf="@+id/weatherImageView"
+                        tools:text="19\u00b0C" />
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/horizontalGuideline2_05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</ScrollView>

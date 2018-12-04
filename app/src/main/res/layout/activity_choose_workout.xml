@@ -33,13 +33,13 @@
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItem"
+                android:id="@+id/gpsTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gps_tab_activities" />
 
             <android.support.design.widget.TabItem
-                android:id="@+id/tabItem2"
+                android:id="@+id/nongpsTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/non_gps_tab_activities" />

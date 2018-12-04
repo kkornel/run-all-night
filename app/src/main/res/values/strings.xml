@@ -177,6 +177,31 @@
     <string name="activity">Aktywność</string>
     <string name="music">Muzyka</string>
     <string name="no_internet">Nie masz połączenia z Internetem</string>
+    <string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>
+    <string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>
+    <string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>
+    <string name="confirm">Potwierdź</string>
+    <string name="confirm_delete_workout">Czy na pewno chcesz usunąć trening?</string>
+    <string name="yes">Tak</string>
+    <string name="workout_deleted">Usunięto trening.</string>
+    <string name="no">Nie</string>
+    <string name="beginning">Początek</string>
+    <string name="end">Koniec</string>
+    <string name="something_went_wrong">Coś poszło nie tak</string>
+    <string name="workout_saved">Zapisano trening</string>
+    <string name="now">Teraz</string>
+    <string name="today">Dzisiaj</string>
+    <string name="only_me">Tylko ja</string>
+    <string name="new_post_swipe_to_refresh">Nowy post! Odśwież stronę, aby zobaczyć</string>
+    <string name="refresh">Odświeżanie</string>
+    <string name="change">Zmień</string>
+    <string name="edit_to_add_description">Edytuj, aby dodać opis</string>
+    <string name="photo_delete_confirmation">Czy na pewno chcesz usunąć zdjęcie?</string>
+    <string name="pick_settings">Wybierz ustawienia</string>
+    <string name="have_unsaved_changes">Masz niezapisane zmiany!</string>
+    <string name="still_want_to_exit">Czy chcesz nadal wyjść?</string>
+    <string name="changes_saved">Zapisano zmiany</string>
+    <string name="photo_will_be_deleted_after_saving">Zdjęcie zostanie usutnięte po zapisaniu zmian</string>
 
 
 </resources>

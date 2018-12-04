@@ -7,13 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.mainactivity.WorkoutAdapter;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
 import java.util.List;
@@ -47,7 +45,7 @@ public class ChooseWorkoutFragment extends Fragment implements ListItemClickList
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        mWorkoutAdapter = new WorkoutAdapter(this, mWorkoutsList);
+        mWorkoutAdapter = new WorkoutAdapter(getContext(), this, mWorkoutsList);
         mRecyclerView.setAdapter(mWorkoutAdapter);
 
         return rootView;

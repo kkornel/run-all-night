@@ -32,55 +32,51 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="22 October 2018"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/horizontal_quarter"
-        app:layout_constraintTop_toTopOf="@+id/activityImageView" />
+        app:layout_constraintTop_toTopOf="@+id/activityImageView"
+        tools:text="22 October 2018" />
 
     <ImageView
         android:id="@+id/distanceImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/activityImageView"
         app:layout_constraintStart_toStartOf="@+id/horizontal_quarter"
         app:layout_constraintTop_toBottomOf="@+id/dateTextView"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+        app:srcCompat="@drawable/ic_placeholder" />
 
     <TextView
-        android:id="@+id/distanceTextView"
+        android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="12.5km"
         app:layout_constraintBottom_toBottomOf="@+id/distanceImageView"
-        app:layout_constraintEnd_toStartOf="@+id/durationImageView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
+        app:layout_constraintStart_toEndOf="@+id/distanceImageView"
+        tools:text="12.5km" />
 
     <ImageView
         android:id="@+id/durationImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/distanceTextView"
-        app:layout_constraintEnd_toStartOf="@+id/durationLabel"
-        app:layout_constraintStart_toEndOf="@+id/distanceTextView"
-        app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+        app:layout_constraintBottom_toBottomOf="@+id/timeTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/timeTextView"
+        app:srcCompat="@drawable/ic_stopwatch" />
 
     <TextView
-        android:id="@+id/durationLabel"
+        android:id="@+id/durationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="35:43"
         app:layout_constraintBottom_toBottomOf="@+id/durationImageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/durationImageView" />
+        app:layout_constraintStart_toEndOf="@+id/durationImageView"
+        tools:text="35:43" />
 </android.support.constraint.ConstraintLayout>
