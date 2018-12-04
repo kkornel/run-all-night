@@ -4,13 +4,16 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 public class SharedLocationInfo {
+    private User userProfile;
     private String userUid;
     private LatLon latLon;
     private String message;
+    private double distanceToUser;
 
     public SharedLocationInfo() {
 
@@ -35,6 +38,11 @@ public class SharedLocationInfo {
     }
 
     @Exclude
+    public User getUserProfile() {
+        return userProfile;
+    }
+
+    @Exclude
     public String getUserUid() {
         return userUid;
     }
@@ -52,7 +60,20 @@ public class SharedLocationInfo {
         return location;
     }
 
+    @Exclude
+    public double getDistanceToUser() {
+        return distanceToUser;
+    }
+
+    public void setDistanceToUser(double distanceToUser) {
+        this.distanceToUser = distanceToUser;
+    }
+
     public void setUserUid(String userUid) {
         this.userUid = userUid;
+    }
+
+    public void setUserProfile(User userProfile) {
+        this.userProfile = userProfile;
     }
 }
