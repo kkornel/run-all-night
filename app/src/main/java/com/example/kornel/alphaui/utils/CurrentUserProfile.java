@@ -3,14 +3,17 @@ package com.example.kornel.alphaui.utils;
 import java.util.HashMap;
 
 public class CurrentUserProfile {
-    public static String userUid;
-    public static String avatarUrl;
-    public static String firstName;
-    public static String surname;
-    public static String fullName;
-    public static String email;
-    public static String lastWorkout;
-    public static HashMap<String, Boolean> friends;
+    private static String userUid;
+    private static String avatarUrl;
+    private static String firstName;
+    private static String surname;
+    private static String fullName;
+    private static String email;
+    private static String lastWorkout;
+    private static HashMap<String, Boolean> friends;
+    private static int totalWorkouts;
+    private static long totalDuration;
+    private static double totalDistance;
 
     private CurrentUserProfile() {
 
@@ -25,6 +28,53 @@ public class CurrentUserProfile {
         email = user.getEmail();
         lastWorkout = user.getLastWorkout();
         friends = user.getFriends();
+        totalWorkouts = user.getTotalWorkouts();
+        totalDuration = user.getTotalDuration();
+        totalDistance = user.getTotalDistance();
+    }
+
+    public static String getUserUid() {
+        return userUid;
+    }
+
+    public static String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public static String getFirstName() {
+        return firstName;
+    }
+
+    public static String getSurname() {
+        return surname;
+    }
+
+    public static String getFullName() {
+        return fullName;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static String getLastWorkout() {
+        return lastWorkout;
+    }
+
+    public static HashMap<String, Boolean> getFriends() {
+        return friends;
+    }
+
+    public static int getTotalWorkouts() {
+        return totalWorkouts;
+    }
+
+    public static long getTotalDuration() {
+        return totalDuration;
+    }
+
+    public static double getTotalDistance() {
+        return totalDistance;
     }
 
     public static String logProfile() {
@@ -37,6 +87,9 @@ public class CurrentUserProfile {
                 ", email='" + email + '\'' +
                 ", lastWorkout='" + lastWorkout + '\'' +
                 ", friends=" + friends +
+                ", totalWorkouts=" + totalWorkouts +
+                ", totalDistance=" + totalDistance +
+                ", totalDuration=" + totalDuration +
                 '}';
     }
 }

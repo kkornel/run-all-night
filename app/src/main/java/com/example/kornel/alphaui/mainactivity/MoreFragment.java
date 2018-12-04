@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.kornel.alphaui.FindOthersActivity;
+import com.example.kornel.alphaui.ShareYourLocationActivity;
 import com.example.kornel.alphaui.friends.FriendsActivity;
 import com.example.kornel.alphaui.LoginActivity;
 import com.example.kornel.alphaui.R;
@@ -20,6 +22,8 @@ public class MoreFragment extends Fragment {
     private static final String TAG = "MoreFragment";
 
     Button mFreeButton;
+    Button mShareYourLocationButton;
+    Button mFindOtherRunnersButton;
     Button mFriendsButton;
     Button mLogoutButton;
 
@@ -35,6 +39,8 @@ public class MoreFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
         mFreeButton = rootView.findViewById(R.id.freeButton);
+        mShareYourLocationButton = rootView.findViewById(R.id.shareYourLocationButton);
+        mFindOtherRunnersButton = rootView.findViewById(R.id.findOtherRunnersButton);
         mFriendsButton = rootView.findViewById(R.id.friendsButton);
         mLogoutButton = rootView.findViewById(R.id.logoutButton);
 
@@ -42,6 +48,22 @@ public class MoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        mShareYourLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShareYourLocationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mFindOtherRunnersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FindOthersActivity.class);
+                startActivity(intent);
             }
         });
 

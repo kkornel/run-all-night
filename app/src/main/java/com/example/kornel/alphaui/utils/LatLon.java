@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,11 @@ public class LatLon implements Parcelable {
     @Override
     public String toString() {
         return "LatLon{lat=" + latitude + ", lon=" + longitude + '}';
+    }
+
+    @Exclude
+    public LatLng toLatLng() {
+        return new LatLng(latitude, longitude);
     }
 
     // Parcelling part

@@ -32,6 +32,7 @@ import com.example.kornel.alphaui.BuildConfig;
 import com.example.kornel.alphaui.gpsworkout.StartNonGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
+import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.IconUtils;
@@ -530,7 +531,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         FirebaseUser user = auth.getCurrentUser();
         final String userUid = user.getUid();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rootRef = database.getReference();
         DatabaseReference usersRef = rootRef.child(Database.USERS);
         final DatabaseReference workoutsRef = rootRef.child(Database.WORKOUTS);
@@ -539,6 +540,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                user.setUserUid(dataSnapshot.getKey());
+                CurrentUserProfile.setNewData(user);
                 String firstName = user.getFirstName();
                 String lastWorkoutId = user.getLastWorkout();
                 String welcomeMessage = getString(R.string.hello) + ", " + firstName + "!";
