@@ -2,8 +2,10 @@ package com.example.kornel.alphaui.mainactivity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +33,7 @@ import com.example.kornel.alphaui.gpsworkout.StartNonGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.StartGpsWorkoutActivity;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.GpsBasedWorkout;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
@@ -56,6 +59,9 @@ import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private static final String TAG = "WorkoutFragment";
+
+    public static final String PREFERENCES_FILE_NAME = "moon_runner_pref";
+    public static final String LAST_WORKOUT_TYPE_PREFERENCE = "last_workout_type_preference";
 
     public static final String WORKOUT_NAME_EXTRA_INTENT = "workout_name";
     public static final String WEATHER_INFO_EXTRA_INTENT = "weather_info";
@@ -96,6 +102,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private WeatherInfoCompressed mWeatherInfoCompressed;
 
     private boolean mHasMusicChosen = false;
+
+    private Handler mWorkoutHandler;
+    private Runnable mWorkoutRunnable;
 
     public WorkoutFragment() {
         // Required empty public constructor
@@ -205,6 +214,12 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             }
         }
 
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String defaultValue = GpsBasedWorkout.RUNNING.getValue();
+        String lastWorkoutType = sharedPref.getString(LAST_WORKOUT_TYPE_PREFERENCE, defaultValue);
+        Log.d("asdsad", "onStart: " + lastWorkoutType);
+        setWorkoutTypeLayout(lastWorkoutType);
+
         return rootView;
     }
 
@@ -219,19 +234,19 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             mNoInternetTextView.setVisibility(View.VISIBLE);
             buildAlertMessageNoInternetConnection();
         } else {
-            Handler timerHandler = new Handler();
-            Runnable timerRunnable = new Runnable() {
+            mWorkoutHandler = new Handler();
+            mWorkoutRunnable = new Runnable() {
                 @Override
                 public void run() {
                     retrieveUserProfile();
 
-
+                    mWorkoutHandler.postDelayed(mWorkoutRunnable, 60000);
                 }
             };
 
             // I'm doing this after delay, because after deleting last workout from database
             // it was fetching old, not updated data.
-            timerHandler.postDelayed(timerRunnable, 200);
+            mWorkoutHandler.postDelayed(mWorkoutRunnable, 200);
         }
 
         if (!hasLocationPermissions()) {
@@ -337,12 +352,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         if (requestCode == PICK_WORKOUT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 String result = data.getStringExtra(WORKOUT_RESULT);
-                mWorkoutNameTextView.setText(result);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result), getActivity().getApplicationContext().getTheme()));
-                } else {
-                    mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(result)));
-                }
+                setWorkoutTypeLayout(result);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Write your code if there's no result
@@ -400,6 +410,15 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                             })
                             .show();
                 }
+        }
+    }
+
+    private void setWorkoutTypeLayout(String workoutName) {
+        mWorkoutNameTextView.setText(workoutName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(workoutName), getActivity().getApplicationContext().getTheme()));
+        } else {
+            mWorkoutImageView.setImageDrawable(getResources().getDrawable(IconUtils.getWorkoutIcon(workoutName)));
         }
     }
 

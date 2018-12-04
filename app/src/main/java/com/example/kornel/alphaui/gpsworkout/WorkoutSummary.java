@@ -197,13 +197,17 @@ public class WorkoutSummary implements Parcelable {
             }
         } else {
             if (elapsedHours < 1) {
-                if (elapsedMinutes < 5) {
+                if (elapsedMinutes < 2) {
                     return "Chwilę temu";
+                } else if (elapsedMinutes >= 2 && elapsedMinutes < 5) {
+                    return String.valueOf(elapsedMinutes) + " minuty temu";
                 } else {
                     return String.valueOf(elapsedMinutes) + " minut temu";
                 }
             } else if (elapsedHours == 1) {
                 return "1 godzinę temu";
+            } else if (elapsedHours >= 2 && elapsedHours < 5) {
+                return String.valueOf(elapsedMinutes) + " godziny temu";
             } else {
                 return String.valueOf(elapsedHours) + " godzin temu";
             }

@@ -1,8 +1,10 @@
 package com.example.kornel.alphaui.gpsworkout;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -72,6 +74,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.LAST_WORKOUT_TYPE_PREFERENCE;
+import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.PREFERENCES_FILE_NAME;
 import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 
 public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
@@ -220,6 +224,12 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
         } else {
             mSelectedImageImageVIew.setImageBitmap(mSelectedPhotoBitmap);
         }
+
+        SharedPreferences sharedPref = getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(LAST_WORKOUT_TYPE_PREFERENCE, mWorkoutSummary.getWorkoutName());
+        Log.d("asdsad", "onCreate: " +  mWorkoutSummary.getWorkoutName());
+        editor.commit();
     }
 
     @Override
