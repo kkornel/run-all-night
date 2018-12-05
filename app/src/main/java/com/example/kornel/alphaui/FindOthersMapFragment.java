@@ -4,23 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.User;
-import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,16 +24,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +33,8 @@ import java.util.Map;
 public class FindOthersMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final String TAG = "FindOthersMapFragment";
 
-    private Spinner mWorkoutTypeSpinner;
-    private EditText mDistanceEditText;
-    private Button mFindButton;
-    private TextView mResultsLabel;
-    private TextView mResultsTextView;
+    private static final int MARKER_MAP_PADDING = 200;
+    private static final int MAP_ZOOM = 17;
 
     private MapWrapperLayout mMapWrapperLayout;
     private GoogleMap mMap;
@@ -68,16 +50,19 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     private OnInfoWindowElemTouchListener mInfoButtonListener;
 
-    private Location mYouLocation;
+    private OnFindOthersCallback mOnFindOthersCallback;
+
     private LatLng mYouLatLng;
     private Marker mYouMarker;
 
     private List<SharedLocationInfo> mSharedLocationInfoList;
+    private Map<Marker, SharedLocationInfo> mMarkersMap;
 
-    private OnFindOthersResult mOnFindOthersResult;
-
-    public interface OnFindOthersResult {
-        void onFindOthersSuccess(List<SharedLocationInfo> sharedLocationInfoList);
+    public interface OnFindOthersCallback {
+        void onGotAllSharedLocations(List<SharedLocationInfo> sharedLocationInfoList);
+        void onFindOthersSuccess();
+        void onMapUpdate(SharedLocationInfo sharedLoc);
+        void onNewRequest(Location location);
     }
 
     public FindOthersMapFragment() {
@@ -89,30 +74,9 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_find_others_map, container, false);
 
-        mWorkoutTypeSpinner = rootView.findViewById(R.id.workoutTypeSpinner);
-        mDistanceEditText = rootView.findViewById(R.id.distanceEditText);
-        mFindButton = rootView.findViewById(R.id.findButton);
-        mFindButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onFindButtonClicked();
-            }
-        });
-
         mMapWrapperLayout = rootView.findViewById(R.id.map_relative_layout);
         SupportMapFragment map = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.summaryMap));
         map.getMapAsync(this);
-
-        mResultsTextView = rootView.findViewById(R.id.resultsTextView);
-        mResultsLabel = rootView.findViewById(R.id.resultsLabel);
-        mResultsLabel.setVisibility(View.INVISIBLE);
-
-        mWorkoutTypeSpinner.post(new Runnable() {
-            @Override
-            public void run() {
-                mWorkoutTypeSpinner.setSelection(8);
-            }
-        });
 
         return rootView;
     }
@@ -153,7 +117,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
                 // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
 
-                SharedLocationInfo iasd = mMyMarkersmap.get(marker);
+                SharedLocationInfo iasd = mMarkersMap.get(marker);
                 Log.d(TAG, "onClickConfirmed: " + iasd.getUserProfile());
 
                 startActivity(new Intent(getContext(), ViewProfileActivity.class));
@@ -199,7 +163,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 mShowProfileButton.setVisibility(View.VISIBLE);
                 mAddToFriendsButton.setVisibility(View.VISIBLE);
 
-                SharedLocationInfo sli = mMyMarkersmap.get(marker);
+                SharedLocationInfo sli = mMarkersMap.get(marker);
 
                 mNameTextView.setText(sli.getUserProfile().getFullName());
 
@@ -217,197 +181,47 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 return mInfoWindow;
             }
         });
-
-        // Let's add a couple of markers
-
-        mMap.addMarker(new MarkerOptions()
-                .title("India")
-                .snippet("New Delhi")
-                .position(new LatLng(20.59, 78.96)));
-
-        mMap.addMarker(new MarkerOptions()
-                .title("Prague")
-                .snippet("Czech Republic")
-                .position(new LatLng(50.08, 14.43)));
-
-        mMap.addMarker(new MarkerOptions()
-                .title("Paris")
-                .snippet("France")
-                .position(new LatLng(48.86,2.33)));
-
-        mMap.addMarker(new MarkerOptions()
-                .title("London")
-                .snippet("United Kingdom")
-                .position(new LatLng(51.51,-0.1)));
     }
 
-    private void onFindButtonClicked() {
-        try {
-            Utils.hideKeyboard(FindOthersMapFragment.this);
-            String workoutType = mWorkoutTypeSpinner.getSelectedItem().toString();
-            String distanceStringInput = mDistanceEditText.getText().toString();
-            if (distanceStringInput.equals("")) {
-                showSnackbar("Wprowadź zasięg.");
-                return;
-            }
-            double distanceInput = Double.parseDouble(distanceStringInput);
-            find(workoutType, distanceInput);
-        } catch (NumberFormatException ex) {
-            showSnackbar("Wprowadzono niepoprawną liczbę.");
-        }
-    }
+    @Override
+    public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
+        mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-
-    private void find(final String workoutType, final double distance) {
-        mMap.clear();
-        mMarkersList = new ArrayList<>();
-        mMyMarkersList = new ArrayList<>();
-        mSharedLocationInfoList = new ArrayList<>();
-        mMyMarkersmap = new HashMap<>();
         addYouMarker(mYouLatLng);
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference rootRef = database.getReference();
-        DatabaseReference sharedLocRef = rootRef.child(Database.SHARED_LOCATIONS);
-        final DatabaseReference userRef = rootRef.child(Database.USERS);
-
-        final String userUid = user.getUid();
-
-
-        ValueEventListener sharedLocListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snapshotSharedLocation : dataSnapshot.getChildren()) {
-
-                    SharedLocationInfo sharedLocationInfo = snapshotSharedLocation.getValue(SharedLocationInfo.class);
-                    sharedLocationInfo.setUserUid(snapshotSharedLocation.getKey());
-
-                    if (sharedLocationInfo.getUserUid().equals(userUid)) {
-                        continue;
-                    }
-
-                    double distanceToYou = mYouLocation.distanceTo(sharedLocationInfo.getLocation());
-                    distanceToYou /= 1000;
-
-                    if (distanceToYou > distance) {
-                        continue;
-                    }
-
-                    sharedLocationInfo.setDistanceToYou(distanceToYou);
-                    mSharedLocationInfoList.add(sharedLocationInfo);
-                }
-
-                mResultsLabel.setVisibility(View.VISIBLE);
-                mResultsTextView.setText(String.valueOf(mSharedLocationInfoList.size()));
-
-                if (mSharedLocationInfoList.size() == 0) {
-                    Toast.makeText(getContext(), "Nie znaleziono nikogo w danym zasięgu", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                for (final SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
-
-                    ValueEventListener userProfileListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User userProfile = dataSnapshot.getValue(User.class);
-                            userProfile.setUserUid(sharedLoc.getUserUid());
-                            sharedLoc.setUserProfile(userProfile);
-
-                            updateMap(sharedLoc);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                            throw databaseError.toException();
-                        }
-                    };
-                    userRef.child(sharedLoc.getUserUid()).addListenerForSingleValueEvent(userProfileListener);
-                }
-
-                // LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                //
-                // for (SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
-                //     Marker userLocation = mMap.addMarker(new MarkerOptions()
-                //             .position(sharedLoc.getLatLon().toLatLng())
-                //             .title(sharedLoc.getUserUid())
-                //             .snippet(sharedLoc.getMessage()));
-                //     builder.include(userLocation.getPosition());
-                // }
-                // builder.include(mYouLatLng);
-                // LatLngBounds bounds = builder.build();
-                // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
-            }
-        };
-
-        sharedLocRef.child(workoutType).addListenerForSingleValueEvent(sharedLocListener);
     }
 
-    private List<Marker> mMarkersList;
-    private List<MyMarker> mMyMarkersList;
-    private Map<Marker, SharedLocationInfo> mMyMarkersmap;
-
-    static class MyMarker {
-        public Marker marker;
-        public SharedLocationInfo info;
-
-        public MyMarker(Marker marker, SharedLocationInfo info) {
-            this.marker = marker;
-            this.info = info;
-        }
+    public void onGotSharedLocationInfoList(List<SharedLocationInfo> sharedLocationInfoList) {
+        mSharedLocationInfoList = sharedLocationInfoList;
     }
 
-    private void updateMap(final SharedLocationInfo sharedLoc) {
+    public void onNewRequest(final Location location) {
+        mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.clear();
+        mMarkersMap = new HashMap<>();
+        addYouMarker(mYouLatLng);
+    }
+
+    public void onMapUpdate(final SharedLocationInfo sharedLoc) {
         Marker otherMarker = mMap.addMarker(new MarkerOptions()
                         .position(sharedLoc.getLatLon().toLatLng())
                         .title(sharedLoc.getUserProfile().getFullName()));
 
-        mMarkersList.add(otherMarker);
+        mMarkersMap.put(otherMarker, sharedLoc);
 
-        mMyMarkersList.add(new MyMarker(otherMarker, sharedLoc));
-
-        mMyMarkersmap.put(otherMarker, sharedLoc);
-
-        Log.d(TAG, "************************************************************: ");
-        Log.d(TAG, "sharedLoc: " + sharedLoc);
-        Log.d(TAG, "mMarkersList.size(): " + mMarkersList.size());
-        Log.d(TAG, "mSharedLocationInfoList.size(): " + mSharedLocationInfoList.size());
-
-        if (mMarkersList.size() != mSharedLocationInfoList.size()) {
+        if (mMarkersMap.size() != mSharedLocationInfoList.size()) {
             return;
         }
 
-        mOnFindOthersResult.onFindOthersSuccess(mSharedLocationInfoList);
+        mOnFindOthersCallback.onFindOthersSuccess();
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (Marker marker : mMarkersList) {
+        for (Marker marker : mMarkersMap.keySet()) {
             builder.include(marker.getPosition());
         }
         builder.include(mYouLatLng);
         LatLngBounds bounds = builder.build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-    }
-
-
-
-    @Override
-    public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
-        mYouLocation = location;
-        mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        addYouMarker(mYouLatLng);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, MARKER_MAP_PADDING));
     }
 
     private void addYouMarker(LatLng youLatLng) {
@@ -416,23 +230,17 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 .title("You")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(youLatLng, 17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(youLatLng, MAP_ZOOM));
     }
 
-    public static int getPixelsFromDp(Context context, float dp) {
+    private int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
     }
 
-    private void showSnackbar(String message) {
-        Snackbar.make(
-                    mFindButton,
-                    message,
-                    Snackbar.LENGTH_LONG)
-                .show();
+    public void setCallback(OnFindOthersCallback onFindOthersCallback) {
+        mOnFindOthersCallback = onFindOthersCallback;
     }
 
-    public void setCallback(OnFindOthersResult onFindOthersResult) {
-        mOnFindOthersResult = onFindOthersResult;
-    }
+
 }

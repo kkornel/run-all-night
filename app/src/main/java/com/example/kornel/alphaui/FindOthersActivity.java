@@ -1,8 +1,7 @@
 package com.example.kornel.alphaui;
 
+import android.location.Location;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,20 +10,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
-
-import com.example.kornel.alphaui.mainactivity.FeedFriendsFragment;
-import com.example.kornel.alphaui.mainactivity.FeedYouFragment;
 
 import java.util.List;
 
-public class FindOthersActivity extends AppCompatActivity implements FindOthersMapFragment.OnFindOthersResult {
+public class FindOthersActivity extends AppCompatActivity implements FindOthersMapFragment.OnFindOthersCallback {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
@@ -53,14 +42,27 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
     }
 
     @Override
-    public void onFindOthersSuccess(List<SharedLocationInfo> sharedLocationInfoList) {
-        mFindOthersListFragment.loadNewData(sharedLocationInfoList);
+    public void onFindOthersSuccess() {
+        mFindOthersListFragment.loadNewData();
     }
 
+    @Override
+    public void onMapUpdate(SharedLocationInfo sharedLoc) {
+        mFindOthersMapFragment.onMapUpdate(sharedLoc);
+    }
+
+    @Override
+    public void onNewRequest(Location location) {
+        mFindOthersMapFragment.onNewRequest(location);
+    }
+
+    @Override
+    public void onGotAllSharedLocations(List<SharedLocationInfo> sharedLocationInfoList) {
+        mFindOthersMapFragment.onGotSharedLocationInfoList(sharedLocationInfoList);
+    }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -70,12 +72,13 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
+                mFindOthersListFragment = new FindOthersListFragment();
+                mFindOthersListFragment.setCallback(FindOthersActivity.this);
+                return mFindOthersListFragment;
+            } else {
                 mFindOthersMapFragment = new FindOthersMapFragment();
                 mFindOthersMapFragment.setCallback(FindOthersActivity.this);
                 return mFindOthersMapFragment;
-            } else {
-                mFindOthersListFragment = new FindOthersListFragment();
-                return mFindOthersListFragment;
             }
         }
 
