@@ -8,6 +8,8 @@ import com.example.kornel.alphaui.utils.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
+import java.text.DecimalFormat;
+
 public class SharedLocationInfo {
     private User userProfile;
     private String userUid;
@@ -63,6 +65,12 @@ public class SharedLocationInfo {
     @Exclude
     public double getDistanceToYou() {
         return distanceToYou;
+    }
+
+    @Exclude
+    public String getDistanceToYouString() {
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(distanceToYou);
     }
 
     public void setDistanceToYou(double distanceToYou) {

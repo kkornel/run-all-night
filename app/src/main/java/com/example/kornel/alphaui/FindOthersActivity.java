@@ -22,6 +22,8 @@ import android.widget.TextView;
 import com.example.kornel.alphaui.mainactivity.FeedFriendsFragment;
 import com.example.kornel.alphaui.mainactivity.FeedYouFragment;
 
+import java.util.List;
+
 public class FindOthersActivity extends AppCompatActivity implements FindOthersMapFragment.OnFindOthersResult {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -55,8 +57,8 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
     }
 
     @Override
-    public void onFindOthersSuccess() {
-
+    public void onFindOthersSuccess(List<SharedLocationInfo> sharedLocationInfoList) {
+        mFindOthersListFragment.loadNewData(sharedLocationInfoList);
     }
 
 

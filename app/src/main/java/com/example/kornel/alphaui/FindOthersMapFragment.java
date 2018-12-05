@@ -18,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
@@ -41,7 +40,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +77,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private OnFindOthersResult mOnFindOthersResult;
 
     public interface OnFindOthersResult {
-        void onFindOthersSuccess();
+        void onFindOthersSuccess(List<SharedLocationInfo> sharedLocationInfoList);
     }
 
     public FindOthersMapFragment() {
@@ -201,20 +199,16 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 mShowProfileButton.setVisibility(View.VISIBLE);
                 mAddToFriendsButton.setVisibility(View.VISIBLE);
 
-                SharedLocationInfo shi = mMyMarkersmap.get(marker);
+                SharedLocationInfo sli = mMyMarkersmap.get(marker);
 
-                mNameTextView.setText(shi.getUserProfile().getFullName());
+                mNameTextView.setText(sli.getUserProfile().getFullName());
 
-                double distance = shi.getDistanceToYou();
-                DecimalFormat df = new DecimalFormat("0.00");
-                String distanceString = df.format(distance);
-
-                mDistanceTextView.setText(distanceString+ "km");
-                mMessageTextView.setText(shi.getMessage());
+                mDistanceTextView.setText(sli.getDistanceToYouString() + "km");
+                mMessageTextView.setText(sli.getMessage());
                 mInfoButtonListener.setMarker(marker);
 
                 Picasso.get()
-                        .load(shi.getUserProfile().getAvatarUrl())
+                        .load(sli.getUserProfile().getAvatarUrl())
                         .into(mAvatarImageView);
 
                 // We must call this to set the current marker and mInfoWindow references
@@ -393,6 +387,8 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         if (mMarkersList.size() != mSharedLocationInfoList.size()) {
             return;
         }
+
+        mOnFindOthersResult.onFindOthersSuccess(mSharedLocationInfoList);
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
