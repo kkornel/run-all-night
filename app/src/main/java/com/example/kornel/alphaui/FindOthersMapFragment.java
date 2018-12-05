@@ -1,9 +1,8 @@
 package com.example.kornel.alphaui;
 
-import android.content.Intent;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,16 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.LocationUtils;
-import com.google.android.gms.common.internal.Objects;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,8 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FindOthersMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult, GoogleMap.OnInfoWindowClickListener {
-
+public class FindOthersMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final String TAG = "FindOthersMapFragment";
 
     private Spinner mWorkoutTypeSpinner;
@@ -53,12 +50,28 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private TextView mResultsLabel;
     private TextView mResultsTextView;
 
+    private MapWrapperLayout mMapWrapperLayout;
     private GoogleMap mMap;
+
+    private ViewGroup mInfoWindow;
+    private ImageView mAvatarImageView;
+    private TextView mNameTextView;
+    private TextView mDistanceTextView;
+    private TextView mMessageTextView;
+    private Button mShowProfileButton;
+    private Button mAddToFriendsButton;
+
+    private OnInfoWindowElemTouchListener mInfoButtonListener;
+
+    private Location mYouLocation;
+    private LatLng mYouLatLng;
+    private Marker mYouMarker;
+
+    private List<SharedLocationInfo> mSharedLocationInfoList;
 
     public FindOthersMapFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,27 +81,14 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mWorkoutTypeSpinner = rootView.findViewById(R.id.workoutTypeSpinner);
         mDistanceEditText = rootView.findViewById(R.id.distanceEditText);
         mFindButton = rootView.findViewById(R.id.findButton);
-
         mFindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Utils.hideKeyboard(FindOthersMapFragment.this);
-                    String workoutType = mWorkoutTypeSpinner.getSelectedItem().toString();
-                    String distanceStringInput = mDistanceEditText.getText().toString();
-                    if (distanceStringInput.equals("")) {
-                        showSnackbar("Wprowadź zasięg.");
-                        return;
-                    }
-                    double distanceInput = Double.parseDouble(distanceStringInput);
-                    find(workoutType, distanceInput);
-                } catch (NumberFormatException ex) {
-                    showSnackbar("Wprowadzono niepoprawną liczbę.");
-                }
-
+                onFindButtonClicked();
             }
         });
 
+        mMapWrapperLayout = rootView.findViewById(R.id.map_relative_layout);
         SupportMapFragment map = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.summaryMap));
         map.getMapAsync(this);
 
@@ -99,15 +99,106 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         return rootView;
     }
 
-    private void showSnackbar(String message) {
-        Snackbar.make(
-                mFindButton,
-                message,
-                Snackbar.LENGTH_LONG)
-                .show();
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersMapFragment.this);
+            }
+        });
+
+        // MapWrapperLayout initialization
+        // 39 - default marker height
+        // 20 - offset between the default InfoWindow bottom edge and it's content bottom edge
+        mMapWrapperLayout.init(mMap, getPixelsFromDp(getContext(), 39 + 20));
+
+        // We want to reuse the info window for all the markers,
+        // so let's create only one class member instance
+        mInfoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.marker_info_window, null);
+        mNameTextView = mInfoWindow.findViewById(R.id.nameTextView);
+        mDistanceTextView = mInfoWindow.findViewById(R.id.distanceTextView);
+        mMessageTextView = mInfoWindow.findViewById(R.id.messageTextView);
+        mShowProfileButton = mInfoWindow.findViewById(R.id.viewProfileButton);
+        mAddToFriendsButton = mInfoWindow.findViewById(R.id.addToFriendButton);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        mInfoButtonListener = new OnInfoWindowElemTouchListener(mShowProfileButton) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+                // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
+            }
+        };
+        mShowProfileButton.setOnTouchListener(mInfoButtonListener);
+
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the mInfoWindow with current's marker info
+                mNameTextView.setText(marker.getTitle());
+                mDistanceTextView.setText(marker.getSnippet());
+                mInfoButtonListener.setMarker(marker);
+
+                // We must call this to set the current marker and mInfoWindow references
+                // to the MapWrapperLayout
+                mMapWrapperLayout.setMarkerWithInfoWindow(marker, mInfoWindow);
+                return mInfoWindow;
+            }
+        });
+
+        // Let's add a couple of markers
+
+        mMap.addMarker(new MarkerOptions()
+                .title("India")
+                .snippet("New Delhi")
+                .position(new LatLng(20.59, 78.96)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Prague")
+                .snippet("Czech Republic")
+                .position(new LatLng(50.08, 14.43)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Paris")
+                .snippet("France")
+                .position(new LatLng(48.86,2.33)));
+
+        mMap.addMarker(new MarkerOptions()
+                .title("London")
+                .snippet("United Kingdom")
+                .position(new LatLng(51.51,-0.1)));
     }
 
-    private List<SharedLocationInfo> mSharedLocationInfoList;
+    private void onFindButtonClicked() {
+        try {
+            Utils.hideKeyboard(FindOthersMapFragment.this);
+            String workoutType = mWorkoutTypeSpinner.getSelectedItem().toString();
+            String distanceStringInput = mDistanceEditText.getText().toString();
+            if (distanceStringInput.equals("")) {
+                showSnackbar("Wprowadź zasięg.");
+                return;
+            }
+            double distanceInput = Double.parseDouble(distanceStringInput);
+            find(workoutType, distanceInput);
+        } catch (NumberFormatException ex) {
+            showSnackbar("Wprowadzono niepoprawną liczbę.");
+        }
+    }
+
+
+
+
 
     private void find(final String workoutType, final double distance) {
         i = 1;
@@ -226,38 +317,24 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                new LocationUtils().findUserLocation(getActivity(), getContext(),FindOthersMapFragment.this);
-            }
-        });
 
 
         // Set a listener for info window events.
-        mMap.setOnInfoWindowClickListener(this);
-    }
+        //mMap.setOnInfoWindowClickListener(this);
+    // }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Log.d(TAG, "mYouMarker: " + mYouMarker.toString());
-        Log.d(TAG, "marker: " + marker.toString());
-        if (marker.equals(mYouMarker)) {
-            Toast.makeText(getContext(), "You", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "not you", Toast.LENGTH_SHORT).show();
-        }
+    // @Override
+    // public void onInfoWindowClick(Marker marker) {
+    //     Log.d(TAG, "mYouMarker: " + mYouMarker.toString());
+    //     Log.d(TAG, "marker: " + marker.toString());
+    //     if (marker.equals(mYouMarker)) {
+    //         Toast.makeText(getContext(), "You", Toast.LENGTH_SHORT).show();
+    //     } else {
+    //         Toast.makeText(getContext(), "not you", Toast.LENGTH_SHORT).show();
+    //     }
 
-    }
+    // }
 
-
-    private Location mYouLocation;
-    private LatLng mYouLatLng;
-    Marker mYouMarker;
 
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
@@ -274,5 +351,18 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(youLatLng, 17));
+    }
+
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
+    }
+
+    private void showSnackbar(String message) {
+        Snackbar.make(
+                mFindButton,
+                message,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 }
