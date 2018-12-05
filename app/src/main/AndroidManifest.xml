@@ -108,7 +108,8 @@
         <activity
             android:name=".FindOthersActivity"
             android:label="@string/title_activity_find_others"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ViewProfileActivity"></activity>
     </application>
 
 </manifest>

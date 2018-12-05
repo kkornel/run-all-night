@@ -13,7 +13,7 @@ public class SharedLocationInfo {
     private String userUid;
     private LatLon latLon;
     private String message;
-    private double distanceToUser;
+    private double distanceToYou;
 
     public SharedLocationInfo() {
 
@@ -61,12 +61,12 @@ public class SharedLocationInfo {
     }
 
     @Exclude
-    public double getDistanceToUser() {
-        return distanceToUser;
+    public double getDistanceToYou() {
+        return distanceToYou;
     }
 
-    public void setDistanceToUser(double distanceToUser) {
-        this.distanceToUser = distanceToUser;
+    public void setDistanceToYou(double distanceToYou) {
+        this.distanceToYou = distanceToYou;
     }
 
     public void setUserUid(String userUid) {
@@ -75,5 +75,16 @@ public class SharedLocationInfo {
 
     public void setUserProfile(User userProfile) {
         this.userProfile = userProfile;
+    }
+
+    @Override
+    public String toString() {
+        return "SharedLocationInfo{" +
+                "userProfile=" + userProfile +
+                ", userUid='" + userUid + '\'' +
+                ", latLon=" + latLon +
+                ", message='" + message + '\'' +
+                ", distanceToYou=" + distanceToYou +
+                '}';
     }
 }

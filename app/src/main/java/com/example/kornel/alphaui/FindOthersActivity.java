@@ -22,10 +22,8 @@ import android.widget.TextView;
 import com.example.kornel.alphaui.mainactivity.FeedFriendsFragment;
 import com.example.kornel.alphaui.mainactivity.FeedYouFragment;
 
-public class FindOthersActivity extends AppCompatActivity {
-
+public class FindOthersActivity extends AppCompatActivity implements FindOthersMapFragment.OnFindOthersResult {
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
 
     private ViewPager mViewPager;
 
@@ -39,6 +37,8 @@ public class FindOthersActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle("Znajdź innych");
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -52,12 +52,15 @@ public class FindOthersActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+    }
 
+    @Override
+    public void onFindOthersSuccess() {
 
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -66,6 +69,7 @@ public class FindOthersActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 mFindOthersMapFragment = new FindOthersMapFragment();
+                mFindOthersMapFragment.setCallback(FindOthersActivity.this);
                 return mFindOthersMapFragment;
             } else {
                 mFindOthersListFragment = new FindOthersListFragment();

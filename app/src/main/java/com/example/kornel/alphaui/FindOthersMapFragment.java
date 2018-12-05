@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
@@ -37,9 +39,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FindOthersMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final String TAG = "FindOthersMapFragment";
@@ -56,6 +62,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private ViewGroup mInfoWindow;
     private ImageView mAvatarImageView;
     private TextView mNameTextView;
+    private TextView mDistanceLabel;
     private TextView mDistanceTextView;
     private TextView mMessageTextView;
     private Button mShowProfileButton;
@@ -68,6 +75,12 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private Marker mYouMarker;
 
     private List<SharedLocationInfo> mSharedLocationInfoList;
+
+    private OnFindOthersResult mOnFindOthersResult;
+
+    public interface OnFindOthersResult {
+        void onFindOthersSuccess();
+    }
 
     public FindOthersMapFragment() {
         // Required empty public constructor
@@ -96,6 +109,13 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mResultsLabel = rootView.findViewById(R.id.resultsLabel);
         mResultsLabel.setVisibility(View.INVISIBLE);
 
+        mWorkoutTypeSpinner.post(new Runnable() {
+            @Override
+            public void run() {
+                mWorkoutTypeSpinner.setSelection(8);
+            }
+        });
+
         return rootView;
     }
 
@@ -117,8 +137,10 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
         // We want to reuse the info window for all the markers,
         // so let's create only one class member instance
-        mInfoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.marker_info_window, null);
+        mInfoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.marker_info_window, null);
+        mAvatarImageView = mInfoWindow.findViewById(R.id.avatarImageView);
         mNameTextView = mInfoWindow.findViewById(R.id.nameTextView);
+        mDistanceLabel = mInfoWindow.findViewById(R.id.distanceLabel);
         mDistanceTextView = mInfoWindow.findViewById(R.id.distanceTextView);
         mMessageTextView = mInfoWindow.findViewById(R.id.messageTextView);
         mShowProfileButton = mInfoWindow.findViewById(R.id.viewProfileButton);
@@ -132,6 +154,11 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 // Here we can perform some action triggered after clicking the button
                 Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
                 // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
+
+                SharedLocationInfo iasd = mMyMarkersmap.get(marker);
+                Log.d(TAG, "onClickConfirmed: " + iasd.getUserProfile());
+
+                startActivity(new Intent(getContext(), ViewProfileActivity.class));
             }
         };
         mShowProfileButton.setOnTouchListener(mInfoButtonListener);
@@ -146,9 +173,49 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
             @Override
             public View getInfoContents(Marker marker) {
                 // Setting up the mInfoWindow with current's marker info
-                mNameTextView.setText(marker.getTitle());
-                mDistanceTextView.setText(marker.getSnippet());
+                if (marker.equals(mYouMarker)) {
+                    Log.d(TAG, "getInfoContents: ");
+
+                    mNameTextView.setText("Ty");
+
+                    mAvatarImageView.setVisibility(View.GONE);
+                    mDistanceLabel.setVisibility(View.GONE);
+                    mDistanceTextView.setVisibility(View.GONE);
+                    mMessageTextView.setVisibility(View.GONE);
+                    mShowProfileButton.setVisibility(View.GONE);
+                    mAddToFriendsButton.setVisibility(View.GONE);
+                    //mInfoButtonListener.setMarker(marker);
+
+
+                    // We must call this to set the current marker and mInfoWindow references
+                    // to the MapWrapperLayout
+                    mMapWrapperLayout.setMarkerWithInfoWindow(marker, mInfoWindow);
+                    return mInfoWindow;
+
+                }
+
+                mAvatarImageView.setVisibility(View.VISIBLE);
+                mDistanceLabel.setVisibility(View.VISIBLE);
+                mDistanceTextView.setVisibility(View.VISIBLE);
+                mMessageTextView.setVisibility(View.VISIBLE);
+                mShowProfileButton.setVisibility(View.VISIBLE);
+                mAddToFriendsButton.setVisibility(View.VISIBLE);
+
+                SharedLocationInfo shi = mMyMarkersmap.get(marker);
+
+                mNameTextView.setText(shi.getUserProfile().getFullName());
+
+                double distance = shi.getDistanceToYou();
+                DecimalFormat df = new DecimalFormat("0.00");
+                String distanceString = df.format(distance);
+
+                mDistanceTextView.setText(distanceString+ "km");
+                mMessageTextView.setText(shi.getMessage());
                 mInfoButtonListener.setMarker(marker);
+
+                Picasso.get()
+                        .load(shi.getUserProfile().getAvatarUrl())
+                        .into(mAvatarImageView);
 
                 // We must call this to set the current marker and mInfoWindow references
                 // to the MapWrapperLayout
@@ -197,13 +264,12 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     }
 
 
-
-
-
     private void find(final String workoutType, final double distance) {
-        i = 1;
         mMap.clear();
+        mMarkersList = new ArrayList<>();
+        mMyMarkersList = new ArrayList<>();
         mSharedLocationInfoList = new ArrayList<>();
+        mMyMarkersmap = new HashMap<>();
         addYouMarker(mYouLatLng);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -221,22 +287,23 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot dsSharedLocation : dataSnapshot.getChildren()) {
-                    SharedLocationInfo sharedLocationInfo = dsSharedLocation.getValue(SharedLocationInfo.class);
-                    sharedLocationInfo.setUserUid(dsSharedLocation.getKey());
+                for (DataSnapshot snapshotSharedLocation : dataSnapshot.getChildren()) {
+
+                    SharedLocationInfo sharedLocationInfo = snapshotSharedLocation.getValue(SharedLocationInfo.class);
+                    sharedLocationInfo.setUserUid(snapshotSharedLocation.getKey());
 
                     if (sharedLocationInfo.getUserUid().equals(userUid)) {
                         continue;
                     }
 
-                    double distanceToUser = mYouLocation.distanceTo(sharedLocationInfo.getLocation());
-                    distanceToUser /= 1000;
+                    double distanceToYou = mYouLocation.distanceTo(sharedLocationInfo.getLocation());
+                    distanceToYou /= 1000;
 
-                    if (distanceToUser > distance) {
+                    if (distanceToYou > distance) {
                         continue;
                     }
 
-                    sharedLocationInfo.setDistanceToUser(distanceToUser);
+                    sharedLocationInfo.setDistanceToYou(distanceToYou);
                     mSharedLocationInfoList.add(sharedLocationInfo);
                 }
 
@@ -249,16 +316,15 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 }
 
                 for (final SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
+
                     ValueEventListener userProfileListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User userProfile = dataSnapshot.getValue(User.class);
-                            //Log.d(TAG, "userProfile: " + userProfile);
                             userProfile.setUserUid(sharedLoc.getUserUid());
                             sharedLoc.setUserProfile(userProfile);
-                            //Log.d(TAG, "sharedLoc: " + sharedLoc);
-                            //Log.d(TAG, "mSharedLocationInfoList: " + mSharedLocationInfoList);
-                            //updateMap();
+
+                            updateMap(sharedLoc);
                         }
 
                         @Override
@@ -270,18 +336,18 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                     userRef.child(sharedLoc.getUserUid()).addListenerForSingleValueEvent(userProfileListener);
                 }
 
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-                for (SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
-                    Marker userLocation = mMap.addMarker(new MarkerOptions()
-                            .position(sharedLoc.getLatLon().toLatLng())
-                            .title(sharedLoc.getUserUid())
-                            .snippet(sharedLoc.getMessage()));
-                    builder.include(userLocation.getPosition());
-                }
-                builder.include(mYouLatLng);
-                LatLngBounds bounds = builder.build();
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                // LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                //
+                // for (SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
+                //     Marker userLocation = mMap.addMarker(new MarkerOptions()
+                //             .position(sharedLoc.getLatLon().toLatLng())
+                //             .title(sharedLoc.getUserUid())
+                //             .snippet(sharedLoc.getMessage()));
+                //     builder.include(userLocation.getPosition());
+                // }
+                // builder.include(mYouLatLng);
+                // LatLngBounds bounds = builder.build();
+                // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
             }
 
             @Override
@@ -294,46 +360,50 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         sharedLocRef.child(workoutType).addListenerForSingleValueEvent(sharedLocListener);
     }
 
-    private int i = 1;
+    private List<Marker> mMarkersList;
+    private List<MyMarker> mMyMarkersList;
+    private Map<Marker, SharedLocationInfo> mMyMarkersmap;
 
-    private void updateMap() {
-        Log.d(TAG, "updateMap: " + i);
-        i++;
-        if (i != mSharedLocationInfoList.size()) {
+    static class MyMarker {
+        public Marker marker;
+        public SharedLocationInfo info;
+
+        public MyMarker(Marker marker, SharedLocationInfo info) {
+            this.marker = marker;
+            this.info = info;
+        }
+    }
+
+    private void updateMap(final SharedLocationInfo sharedLoc) {
+        Marker otherMarker = mMap.addMarker(new MarkerOptions()
+                        .position(sharedLoc.getLatLon().toLatLng())
+                        .title(sharedLoc.getUserProfile().getFullName()));
+
+        mMarkersList.add(otherMarker);
+
+        mMyMarkersList.add(new MyMarker(otherMarker, sharedLoc));
+
+        mMyMarkersmap.put(otherMarker, sharedLoc);
+
+        Log.d(TAG, "************************************************************: ");
+        Log.d(TAG, "sharedLoc: " + sharedLoc);
+        Log.d(TAG, "mMarkersList.size(): " + mMarkersList.size());
+        Log.d(TAG, "mSharedLocationInfoList.size(): " + mSharedLocationInfoList.size());
+
+        if (mMarkersList.size() != mSharedLocationInfoList.size()) {
             return;
         }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (SharedLocationInfo sharedLoc : mSharedLocationInfoList) {
-            Marker userLocation = mMap.addMarker(new MarkerOptions()
-                    .position(sharedLoc.getLatLon().toLatLng())
-                    .title(sharedLoc.getUserProfile().getFullName())
-                    .snippet(sharedLoc.getMessage()));
-            builder.include(userLocation.getPosition());
+        for (Marker marker : mMarkersList) {
+            builder.include(marker.getPosition());
         }
         builder.include(mYouLatLng);
         LatLngBounds bounds = builder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
-
-
-        // Set a listener for info window events.
-        //mMap.setOnInfoWindowClickListener(this);
-    // }
-
-    // @Override
-    // public void onInfoWindowClick(Marker marker) {
-    //     Log.d(TAG, "mYouMarker: " + mYouMarker.toString());
-    //     Log.d(TAG, "marker: " + marker.toString());
-    //     if (marker.equals(mYouMarker)) {
-    //         Toast.makeText(getContext(), "You", Toast.LENGTH_SHORT).show();
-    //     } else {
-    //         Toast.makeText(getContext(), "not you", Toast.LENGTH_SHORT).show();
-    //     }
-
-    // }
 
 
     @Override
@@ -360,9 +430,13 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     private void showSnackbar(String message) {
         Snackbar.make(
-                mFindButton,
-                message,
-                Snackbar.LENGTH_LONG)
+                    mFindButton,
+                    message,
+                    Snackbar.LENGTH_LONG)
                 .show();
+    }
+
+    public void setCallback(OnFindOthersResult onFindOthersResult) {
+        mOnFindOthersResult = onFindOthersResult;
     }
 }

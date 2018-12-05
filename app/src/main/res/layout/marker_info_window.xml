@@ -12,26 +12,32 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@color/colorPrimaryDark" />
+        app:srcCompat="@drawable/wall001" />
 
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Jadwiga Ofca"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-        app:layout_constraintTop_toTopOf="@+id/avatarImageView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/distanceLabel"
@@ -41,6 +47,30 @@
         android:text="Dystans do Ciebie:"
         app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView" />
+
+    <TextView
+        android:id="@+id/distanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="1.8 km"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/distanceLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/distanceLabel" />
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/avatarImageView"
+        app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
 
     <Button
         android:id="@+id/viewProfileButton"
@@ -58,32 +88,11 @@
         android:id="@+id/addToFriendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:text="Zaproś\ndo znajomych"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/viewProfileButton"
         app:layout_constraintStart_toEndOf="@+id/viewProfileButton"
         app:layout_constraintTop_toTopOf="@+id/viewProfileButton" />
 
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss"
-        android:textAlignment="viewStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/avatarImageView"
-        app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
-
-    <TextView
-        android:id="@+id/distanceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginStart="8dp"
-        android:text="1.8 km"
-        android:textStyle="bold"
-        app:layout_constraintBaseline_toBaselineOf="@+id/distanceLabel"
-        app:layout_constraintStart_toEndOf="@+id/distanceLabel" />
 </android.support.constraint.ConstraintLayout>
