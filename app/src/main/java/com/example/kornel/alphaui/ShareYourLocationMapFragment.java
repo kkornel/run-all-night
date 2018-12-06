@@ -4,7 +4,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class ShareYourLocationMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final int MESSAGE_MAX_LENGTH = 140;
