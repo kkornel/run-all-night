@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
@@ -49,20 +48,17 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-
         mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mShareYourLocationListAdapter = new ShareYourLocationListAdapter(getContext(), this, mYourSharedLocations);
         mRecyclerView.setAdapter(mShareYourLocationListAdapter);
 
-        mNoDataInfoTextView.setText("Wyszukaj aby...");
-        mNoDataInfoTextView.setVisibility(View.VISIBLE);
 
+        checkIfEmpty();
         queryForYourShares();
 
         return rootView;
@@ -70,9 +66,7 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
         createDeleteDialog(clickedItemIndex).show();
-
     }
 
     private Dialog createDeleteDialog(final int clickedItemIndex) {
@@ -111,6 +105,14 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
         });
     }
 
+    private void checkIfEmpty() {
+        if (mYourSharedLocations == null || mYourSharedLocations.size() == 0) {
+            mNoDataInfoTextView.setText("Nie masz żadnych udostępnień! :(");
+            mNoDataInfoTextView.setVisibility(View.VISIBLE);
+        } else {
+            mNoDataInfoTextView.setVisibility(View.GONE);
+        }
+    }
 
     public void queryForYourShares() {
         mYourSharedLocations = new ArrayList<>();
@@ -121,10 +123,8 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
 
         DatabaseReference rootRef = database.getReference();
         final DatabaseReference sharedLocRef = rootRef.child(Database.SHARED_LOCATIONS);
-        DatabaseReference userRef = rootRef.child(Database.USERS);
 
         final String userUid = user.getUid();
-
 
         ValueEventListener sharedLocationsListener = new ValueEventListener() {
             @Override
@@ -136,10 +136,15 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             SharedLocationInfo sharedLocationInfo = dataSnapshot.getValue(SharedLocationInfo.class);
-                            sharedLocationInfo.setWorkoutType(workoutType);
-                            mYourSharedLocations.add(sharedLocationInfo);
 
-                            mShareYourLocationListAdapter.loadNewData(mYourSharedLocations);
+                            Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                            if (sharedLocationInfo != null) {
+                                sharedLocationInfo.setWorkoutType(workoutType);
+                                mYourSharedLocations.add(sharedLocationInfo);
+
+                                mShareYourLocationListAdapter.loadNewData(mYourSharedLocations);
+                            }
+                            checkIfEmpty();
                         }
 
                         @Override
@@ -161,5 +166,4 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
         };
         sharedLocRef.addListenerForSingleValueEvent(sharedLocationsListener);
     }
-
 }

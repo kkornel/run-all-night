@@ -3,14 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp">
 
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="#dedede">
+        app:cardBackgroundColor="#dedede"
+        app:cardCornerRadius="20dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,14 +34,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/wall001" />
+                app:srcCompat="@drawable/ic_rowing_64" />
 
             <TextView
                 android:id="@+id/workoutNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Jadwiga Ofca"
+                android:text="Wiosłowanie"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/workoutIconImageView"
@@ -48,22 +53,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss dsad sadasdasa"
                 android:textAlignment="viewStart"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/workoutIconImageView"
                 app:layout_constraintTop_toBottomOf="@+id/workoutIconImageView" />
-
-            <Button
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Button"
-                app:layout_constraintBottom_toBottomOf="@+id/messageTextView"
-                app:layout_constraintEnd_toEndOf="parent" />
 
 
         </android.support.constraint.ConstraintLayout>
