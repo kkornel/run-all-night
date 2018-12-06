@@ -103,6 +103,7 @@ public class SharedLocationInfo {
                 ", latLon=" + latLon +
                 ", message='" + message + '\'' +
                 ", distanceToYou=" + distanceToYou +
+                ", workoutType=" + workoutType +
                 '}';
     }
 }

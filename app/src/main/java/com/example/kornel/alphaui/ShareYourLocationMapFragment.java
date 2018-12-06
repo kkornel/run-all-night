@@ -4,6 +4,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
+import static android.support.constraint.Constraints.TAG;
+
 public class ShareYourLocationMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final int MESSAGE_MAX_LENGTH = 140;
     private static final int MAP_ZOOM = 15;
@@ -59,10 +64,6 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
     public interface OnDataChanged {
         void onUploadCompleted();
-    }
-
-    public void setCallBack(OnDataChanged callBack) {
-        mOnDataChangedCallback = callBack;
     }
 
     public ShareYourLocationMapFragment() {
@@ -168,11 +169,14 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
-        // mMap.clear();
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mYouLatLng, MAP_ZOOM));
         // mMap.getUiSettings().setAllGesturesEnabled(false);
         // addYouMarker(mYouLatLng);
+    }
+
+    public void setCallBack(OnDataChanged callBack) {
+        mOnDataChangedCallback = callBack;
     }
 
     private void upload() {
@@ -187,11 +191,21 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         String userUid = user.getUid();
         String message = mMessageEditText.getText().toString();
         LatLon latLon = new LatLon(mYouLatLng.latitude, mYouLatLng.longitude);
-        // final String key = mWorkoutRef.child(mUserUid).push().getKey();
 
         SharedLocationInfo sharedLocationInfo = new SharedLocationInfo(latLon, message);
 
         String workoutType = mWorkoutTypeSpinner.getSelectedItem().toString();
+
+        HashMap<String, Boolean> sharedLocations = CurrentUserProfile.getSharedLocations();
+
+        if (sharedLocations == null) {
+            sharedLocations = new HashMap<>();
+            CurrentUserProfile.setSharedLocations(sharedLocations);
+        }
+
+        sharedLocations.put(workoutType, true);
+
+        userRef.child(userUid).child(Database.SHARED_LOCATIONS).setValue(sharedLocations);
         sharedLocRef.child(workoutType).child(userUid).setValue(sharedLocationInfo);
 
         mMessageEditText.setText("");

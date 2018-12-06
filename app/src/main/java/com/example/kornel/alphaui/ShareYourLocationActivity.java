@@ -54,7 +54,6 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
         // I'm doing this after delay, because after deleting last workout from database
         // it was fetching old, not updated data.
         workoutHandler.postDelayed(workoutRunnable, 200);
-
     }
 
     class SectionsPagerAdapter extends FragmentPagerAdapter {

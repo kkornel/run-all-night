@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui.utils;
 
+import java.io.BufferedOutputStream;
 import java.util.HashMap;
 
 public class CurrentUserProfile {
@@ -11,6 +12,7 @@ public class CurrentUserProfile {
     private static String email;
     private static String lastWorkout;
     private static HashMap<String, Boolean> friends;
+    private static HashMap<String, Boolean> sharedLocations;
     private static int totalWorkouts;
     private static long totalDuration;
     private static double totalDistance;
@@ -28,9 +30,18 @@ public class CurrentUserProfile {
         email = user.getEmail();
         lastWorkout = user.getLastWorkout();
         friends = user.getFriends();
+        sharedLocations = user.getSharedLocations();
         totalWorkouts = user.getTotalWorkouts();
         totalDuration = user.getTotalDuration();
         totalDistance = user.getTotalDistance();
+    }
+
+    public static HashMap<String, Boolean> getSharedLocations() {
+        return sharedLocations;
+    }
+
+    public static void setSharedLocations(HashMap<String, Boolean> map) {
+        sharedLocations = map;
     }
 
     public static String getUserUid() {
@@ -80,16 +91,17 @@ public class CurrentUserProfile {
     public static String logProfile() {
         return "CurrentUserProfile{" +
                 "userUid='" + userUid + '\'' +
-                "avatarUrl='" + avatarUrl + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", lastWorkout='" + lastWorkout + '\'' +
                 ", friends=" + friends +
+                ", sharedLocations=" + sharedLocations +
                 ", totalWorkouts=" + totalWorkouts +
                 ", totalDistance=" + totalDistance +
                 ", totalDuration=" + totalDuration +
+                "avatarUrl='" + avatarUrl + '\'' +
                 '}';
     }
 }

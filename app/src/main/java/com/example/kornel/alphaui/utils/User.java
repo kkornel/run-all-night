@@ -15,6 +15,7 @@ public class User {
     private String email;
     private String lastWorkout;
     private HashMap<String, Boolean> friends;
+    private HashMap<String, Boolean> sharedLocations;
     private int totalWorkouts;
     private long totalDuration;
     private double totalDistance;
@@ -53,6 +54,14 @@ public class User {
 
     public HashMap<String, Boolean> getFriends() {
         return friends;
+    }
+
+    public HashMap<String, Boolean> getSharedLocations() {
+        return sharedLocations;
+    }
+
+    public void setSharedLocations(HashMap<String, Boolean> sharedLocations) {
+        this.sharedLocations = sharedLocations;
     }
 
     public void setFriends(HashMap<String, Boolean> friends) {
@@ -111,12 +120,17 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "avatarUrl='" + avatarUrl + '\'' +
+                "userUid='" + userUid + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", lastWorkout='" + lastWorkout + '\'' +
                 ", friends=" + friends +
+                ", sharedLocations=" + sharedLocations +
+                ", totalWorkouts=" + totalWorkouts +
+                ", totalDuration=" + totalDuration +
+                ", totalDistance=" + totalDistance +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 '}';
     }
 }

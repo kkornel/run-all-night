@@ -541,6 +541,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 user.setUserUid(dataSnapshot.getKey());
+                Log.d(TAG, "onDataChange: " + user);
                 CurrentUserProfile.setNewData(user);
                 String firstName = user.getFirstName();
                 String lastWorkoutId = user.getLastWorkout();
