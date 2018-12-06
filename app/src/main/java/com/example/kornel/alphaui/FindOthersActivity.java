@@ -64,7 +64,7 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
         mFindOthersMapFragment.onGotSharedLocationInfoList(sharedLocationInfoList);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }

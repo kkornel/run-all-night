@@ -104,7 +104,10 @@
         <activity android:name=".mainactivity.WorkoutNonGpsDetailsFriend" />
         <activity android:name=".mainactivity.WorkoutNonGpsDetails" />
         <activity android:name=".gpsworkout.WorkoutNonGpsSummaryActivity" />
-        <activity android:name=".ShareYourLocationActivity" />
+        <activity
+            android:name=".ShareYourLocationActivity"
+            android:label="ShareYourLocationActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FindOthersActivity"
             android:label="@string/title_activity_find_others"

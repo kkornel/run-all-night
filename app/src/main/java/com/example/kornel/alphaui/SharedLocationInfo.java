@@ -16,6 +16,7 @@ public class SharedLocationInfo {
     private LatLon latLon;
     private String message;
     private double distanceToYou;
+    private String workoutType;
 
     public SharedLocationInfo() {
 
@@ -71,6 +72,15 @@ public class SharedLocationInfo {
     public String getDistanceToYouString() {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(distanceToYou);
+    }
+
+    @Exclude
+    public String getWorkoutType() {
+        return workoutType;
+    }
+
+    public void setWorkoutType(String workoutType) {
+        this.workoutType = workoutType;
     }
 
     public void setDistanceToYou(double distanceToYou) {
