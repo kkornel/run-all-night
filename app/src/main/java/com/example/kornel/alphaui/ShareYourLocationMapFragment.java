@@ -80,7 +80,8 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         mPreviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                (new LocationUtils()).findUserLocation(getActivity(), getContext(), ShareYourLocationMapFragment.this);
+                mMap.clear();
+                addYouMarker(mYouLatLng);
                 mShareButton.setEnabled(true);
                 Utils.hideKeyboard(ShareYourLocationMapFragment.this);
             }
@@ -167,11 +168,11 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
-        mMap.clear();
+        // mMap.clear();
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mYouLatLng, MAP_ZOOM));
         // mMap.getUiSettings().setAllGesturesEnabled(false);
-        addYouMarker(mYouLatLng);
+        // addYouMarker(mYouLatLng);
     }
 
     private void upload() {
@@ -196,6 +197,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         mMessageEditText.setText("");
         Toast.makeText(getContext(), "Uploaded!", Toast.LENGTH_SHORT).show();
         mOnDataChangedCallback.onUploadCompleted();
+        mMap.clear();
     }
 
     private void addYouMarker(LatLng youLatLng) {

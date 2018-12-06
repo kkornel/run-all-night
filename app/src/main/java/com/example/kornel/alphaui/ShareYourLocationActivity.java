@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui;
 
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,7 +25,7 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Znajdź innych");
+        toolbar.setTitle("Share!");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -42,7 +43,18 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
 
     @Override
     public void onUploadCompleted() {
-        mShareYourLocationListFragment.queryForYourShares();
+        Handler workoutHandler = new Handler();
+        Runnable workoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mShareYourLocationListFragment.queryForYourShares();
+            }
+        };
+
+        // I'm doing this after delay, because after deleting last workout from database
+        // it was fetching old, not updated data.
+        workoutHandler.postDelayed(workoutRunnable, 200);
+
     }
 
     class SectionsPagerAdapter extends FragmentPagerAdapter {
