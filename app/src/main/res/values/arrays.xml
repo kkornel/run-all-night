@@ -5,4 +5,34 @@
         <item>Znajomi</item>
         <item>Tylko ja</item>
     </array>
+
+    <array
+        name="workouts_array">
+        <item>Areobik</item>
+        <item>Badminton</item>
+        <item>Bieganie</item>
+        <item>Boks</item>
+        <item>Chód</item>
+        <item>Crossfit</item>
+        <item>Gimnastyka</item>
+        <item>Jazda na deskorolce</item>
+        <item>Jazda konno</item>
+        <item>Jazda na łyżwach</item>
+        <item>Jazda na nartach</item>
+        <item>Jazda na rolkach</item>
+        <item>Jazda na snowboardzie</item>
+        <item>Jazda rowerem</item>
+        <item>Koszykówka</item>
+        <item>Orbitrek</item>
+        <item>Pływanie</item>
+        <item>Skoki na skakance</item>
+        <item>Spinning</item>
+        <item>Squash</item>
+        <item>Taniec</item>
+        <item>Trekking</item>
+        <item>Trening siłowy</item>
+        <item>Wiosłowanie</item>
+        <item>Wiosłowanie indoor</item>
+        <item>Zumba</item>
+    </array>
 </resources>

@@ -103,7 +103,13 @@
         <activity android:name=".mainactivity.WorkoutGpsDetailsFriend" />
         <activity android:name=".mainactivity.WorkoutNonGpsDetailsFriend" />
         <activity android:name=".mainactivity.WorkoutNonGpsDetails" />
-        <activity android:name=".gpsworkout.WorkoutNonGpsSummaryActivity"></activity>
+        <activity android:name=".gpsworkout.WorkoutNonGpsSummaryActivity" />
+        <activity android:name=".ShareYourLocationActivity" />
+        <activity
+            android:name=".FindOthersActivity"
+            android:label="@string/title_activity_find_others"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ViewProfileActivity"></activity>
     </application>
 
 </manifest>

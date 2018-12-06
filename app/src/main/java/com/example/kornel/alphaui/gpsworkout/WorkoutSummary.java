@@ -162,54 +162,6 @@ public class WorkoutSummary implements Parcelable {
         return timeHourMin;
     }
 
-    public String gapBetweenWorkouts() {
-        Date todayDate = new Date();
-        Date workoutDate = getWorkoutDate();
-        long different = todayDate.getTime() - workoutDate.getTime();
-
-        MainActivityLog.d("todayDate : " + todayDate);
-        MainActivityLog.d("workoutDate : " + workoutDate);
-        MainActivityLog.d("different : " + different);
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = different / daysInMilli;
-        different = different % daysInMilli;
-
-        long elapsedHours = different / hoursInMilli;
-        different = different % hoursInMilli;
-
-        long elapsedMinutes = different / minutesInMilli;
-        different = different % minutesInMilli;
-
-        long elapsedSeconds = different / secondsInMilli;
-
-        MainActivityLog.d(elapsedDays + " days, " + elapsedHours + " hours, " + elapsedMinutes + " minutes, " + elapsedSeconds + " seconds");
-
-        if (elapsedDays > 0) {
-            if (elapsedDays == 1) {
-                return "1 dzień temu";
-            } else {
-                return String.valueOf(elapsedDays) + " dni temu";
-            }
-        } else {
-            if (elapsedHours < 1) {
-                if (elapsedMinutes < 5) {
-                    return "Chwilę temu";
-                } else {
-                    return String.valueOf(elapsedMinutes) + " minut temu";
-                }
-            } else if (elapsedHours == 1) {
-                return "1 godzinę temu";
-            } else {
-                return String.valueOf(elapsedHours) + " godzin temu";
-            }
-        }
-    }
-
     //region Firebase getters
 
     public long getDateMilliseconds() {
