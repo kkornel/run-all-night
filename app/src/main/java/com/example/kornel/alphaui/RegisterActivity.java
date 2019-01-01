@@ -96,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             StorageReference storageRef = storage.getReference();
-                            StorageReference defaultRef = storageRef.child(Database.STORAGE_AVATARS).child(Database.STORAGE_AVATARS + "/" + Database.DEFAULT_IMG_NAME);
+                            StorageReference defaultRef = storageRef.child(Database.STORAGE_AVATARS).child(Database.DEFAULT_IMG_NAME);
                             defaultRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {

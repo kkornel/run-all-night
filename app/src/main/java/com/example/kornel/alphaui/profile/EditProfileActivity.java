@@ -224,7 +224,7 @@ public class EditProfileActivity extends AppCompatActivity {
             String newAvatarName = mUserUid + "." + separated[separated.length - 1];
 
             final StorageReference newAvatarRef
-                    = avatarsRef.child(Database.STORAGE_AVATARS + "/" + newAvatarName);
+                    = avatarsRef.child(newAvatarName);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             mAvatarBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -322,6 +322,8 @@ public class EditProfileActivity extends AppCompatActivity {
                             hideProgressDialog();
                             Toast.makeText(EditProfileActivity.this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
+                            Intent i = new Intent(EditProfileActivity.this, ProfileDetailsActivity.class);
+                            startActivity(i);
                         } else {
                             infoTextView.setText("Złe hasło!");
                         }
