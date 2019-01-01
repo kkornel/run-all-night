@@ -208,6 +208,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logout">Wyloguj</string>
     <string name="delete_account">Usuń konto</string>
+    <string name="deletion_account_confirmation">Czy na pewno chcesz usunąć konto?</string>
+    <string name="wrong_password">Złe hasło!</string>
+    <string name="account_deleted">Konto zostało usunięte</string>
 
 
 </resources>

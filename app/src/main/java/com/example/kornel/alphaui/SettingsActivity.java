@@ -1,13 +1,9 @@
 package com.example.kornel.alphaui;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +18,6 @@ import android.widget.Toast;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.profile.EditProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,11 +34,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -55,8 +47,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
 
-    DatabaseReference mRootRef;
-    DatabaseReference mUsersRef;
+    private DatabaseReference mRootRef;
+    private DatabaseReference mUsersRef;
     private String mUserUid;
 
     @Override
@@ -105,8 +97,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-        builder.setMessage("Czy na pewno chcesz usunąć konto?")
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.deletion_account_confirmation)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog1, int id) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
                         // Get the layout inflater
@@ -152,9 +144,6 @@ public class SettingsActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-
-                                            String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             mRootRef = database.getReference();
                                             mUsersRef = mRootRef.child(Database.USERS);
@@ -164,27 +153,21 @@ public class SettingsActivity extends AppCompatActivity {
                                             Runnable r1 = new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Log.d(TAG, "r1:  start");
                                                     deleteUserStorage();
-                                                    Log.d(TAG, "r1:  end");
                                                 }
                                             };
 
                                             Runnable r2 = new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Log.d(TAG, "r2:  start");
                                                     deleteUserDatabase();
-                                                    Log.d(TAG, "r2:  end");
                                                 }
                                             };
 
                                             Runnable r3 = new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Log.d(TAG, "r3:  start");
                                                     deleteUser();
-                                                    Log.d(TAG, "r3:  end");
                                                 }
                                             };
 
@@ -195,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity {
                                             hideProgressDialog();
                                             dialog.dismiss();
                                         } else {
-                                            infoTextView.setText("Złe hasło!");
+                                            infoTextView.setText(getString(R.string.wrong_password));
                                             hideProgressDialog();
                                         }
                                     }
@@ -204,7 +187,7 @@ public class SettingsActivity extends AppCompatActivity {
                         });
                     }
                 })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
@@ -238,29 +221,24 @@ public class SettingsActivity extends AppCompatActivity {
         workoutsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> urls = new ArrayList<>();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     WorkoutSummary workoutSummary = ds.getValue(WorkoutSummary.class);
-                    urls.add(workoutSummary.getPicUrl());
+                    String picUrl = workoutSummary.getPicUrl();
 
-                    if (urls.size() == dataSnapshot.getChildrenCount()) {
-
-                        for (String url : urls) {
-                            StorageReference userPicturesRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-                            userPicturesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "onSuccess: Storage pictures deleted." );
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    Log.d(TAG, "onFailure: Storage pictures deletion error. -> " + exception.getMessage());
-                                }
-                            });
-                        }
-
+                    if (picUrl != null && !picUrl.equals("")) {
+                        StorageReference userPicturesRef = FirebaseStorage.getInstance().getReferenceFromUrl(picUrl);
+                        userPicturesRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "onSuccess: Storage pictures deleted." );
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Log.d(TAG, "onFailure: Storage pictures deletion error. -> " + exception.getMessage());
+                            }
+                        });
                     }
                 }
             }
@@ -274,47 +252,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void deleteUserDatabase() {
-        Runnable r1 = new Runnable() {
-            @Override
-            public void run() {
                 deleteFriendRequests();
-            }
-        };
-
-        Runnable r2 = new Runnable() {
-            @Override
-            public void run() {
-                deleteFriendsList();
-            }
-        };
-
-        Runnable r3 = new Runnable() {
-            @Override
-            public void run() {
-                deleteWorkouts();
-            }
-        };
-
-        Runnable r4 = new Runnable() {
-            @Override
-            public void run() {
-                deleteSharedLocations();
-            }
-        };
-
-        Runnable r5 = new Runnable() {
-            @Override
-            public void run() {
-                deleteUserRootDb();
-            }
-        };
-
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(r1);
-        executor.execute(r2);
-        executor.execute(r3);
-        executor.execute(r4);
-        executor.execute(r5);
+                // deleteFriendsList();
+                // deleteWorkouts();
+                // deleteSharedLocations();
+                // deleteUserRootDb();
     }
 
     private void deleteUserRootDb() {
@@ -329,16 +271,15 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: " + ds.toString());
                     String friendId = ds.getKey();
-                    reqRef.child(friendId).child(mUserUid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            deleteFriendsList();
-                        }
-                    });
+                    reqRef.child(friendId).child(mUserUid).removeValue();
                 }
-                userReqRef.removeValue();
+                userReqRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        deleteFriendsList();
+                    }
+                });
             }
 
             @Override
@@ -361,6 +302,8 @@ public class SettingsActivity extends AppCompatActivity {
                     mUsersRef.child(mUserUid).child(Database.FRIENDS).child(friendUid).removeValue();
                     mUsersRef.child(friendUid).child(Database.FRIENDS).child(mUserUid).removeValue();
                 }
+
+                deleteWorkouts();
             }
 
             @Override
@@ -374,7 +317,12 @@ public class SettingsActivity extends AppCompatActivity {
     public void deleteWorkouts() {
         DatabaseReference workoutsRef = mRootRef.child(Database.WORKOUTS).child(mUserUid);
 
-        workoutsRef.removeValue();
+        workoutsRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                deleteSharedLocations();
+            }
+        });
     }
 
     private void deleteSharedLocations() {
@@ -388,6 +336,8 @@ public class SettingsActivity extends AppCompatActivity {
                 for (final String sharedLoc : sharedLocations.keySet()) {
                     sharedLocRef.child(sharedLoc).child(mUserUid).removeValue();
                 }
+
+                deleteUserRootDb();
             }
 
             @Override
@@ -407,7 +357,7 @@ public class SettingsActivity extends AppCompatActivity {
                             hideProgressDialog();
                             Toast.makeText(
                                     SettingsActivity.this,
-                                    "Konto zostało usunięte",
+                                    getString(R.string.account_deleted),
                                     Toast.LENGTH_LONG)
                                     .show();
                             FirebaseAuth.getInstance().signOut();
