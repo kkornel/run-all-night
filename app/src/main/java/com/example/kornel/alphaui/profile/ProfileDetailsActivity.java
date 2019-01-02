@@ -62,7 +62,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         mWorkoutsCountTextView = findViewById(R.id.workoutsCountTextView);
         mHmm1TextView = findViewById(R.id.hmm1TextView);
         mHmm2TextView = findViewById(R.id.hmm2TextView);
-        mFriendsCountTextView = findViewById(R.id.friendsCountTextView);
+        mFriendsCountTextView = findViewById(R.id.friendsCountTextView2);
 
         mEditProfileButton = findViewById(R.id.editProfileButton);
         mEditProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +104,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 if (user.getFriends() == null) {
                     mFriendsCountTextView.setText(0 + "");
                 } else {
-                    mFriendsCountTextView.setText(user.getFriends().size());
+                    mFriendsCountTextView.setText(user.getFriends().size() + "");
                 }
             }
 
