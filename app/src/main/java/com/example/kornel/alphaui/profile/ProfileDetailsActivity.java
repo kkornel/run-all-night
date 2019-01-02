@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.User;
+import com.example.kornel.alphaui.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +35,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     private TextView mWorkoutsCountTextView;
     private TextView mHmm1TextView;
     private TextView mHmm2TextView;
-    private TextView mFirendsCountTextView;
+    private TextView mFriendsCountTextView;
 
 
     private Button mEditProfileButton;
@@ -61,7 +62,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         mWorkoutsCountTextView = findViewById(R.id.workoutsCountTextView);
         mHmm1TextView = findViewById(R.id.hmm1TextView);
         mHmm2TextView = findViewById(R.id.hmm2TextView);
-        mFirendsCountTextView = findViewById(R.id.friendsCountTextView);
+        mFriendsCountTextView = findViewById(R.id.friendsCountTextView);
 
         mEditProfileButton = findViewById(R.id.editProfileButton);
         mEditProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +98,14 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                         .error(R.drawable.ic_error_red_64dp)
                         .into(mAvatarImageView);
                 mNameTextView.setText(user.getFirstName() + " " + user.getSurname());
+                mTotalDistanceTextView.setText(Utils.distanceMetersToKm(user.getTotalDistance()) + "km");
+                mTotalTimeTextView.setText(Utils.getDurationHoursString(user.getTotalDuration()) + "h");
+                mWorkoutsCountTextView.setText(user.getTotalWorkouts() + "");
+                if (user.getFriends() == null) {
+                    mFriendsCountTextView.setText(0 + "");
+                } else {
+                    mFriendsCountTextView.setText(user.getFriends().size());
+                }
             }
 
             @Override

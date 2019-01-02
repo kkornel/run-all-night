@@ -2,6 +2,7 @@ package com.example.kornel.alphaui.utils;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -12,6 +13,8 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class Utils {
 
@@ -88,6 +91,27 @@ public class Utils {
         } else {
             // time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
             time = hours + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+        }
+        return time;
+    }
+
+    public static String getDurationHoursString(long ms) {
+
+        int seconds = (int) (ms / 1000);
+
+        int hours = seconds / 3600;
+
+        int minutes = seconds / 60;
+
+        seconds = seconds % 60;
+
+        minutes = minutes % 60;
+
+        String time;
+        if (hours < 1) {
+            time = String.format("%.2f", minutes/60.0);
+        } else {
+            time = hours + String.format("%.2f", minutes/60.0);
         }
         return time;
     }

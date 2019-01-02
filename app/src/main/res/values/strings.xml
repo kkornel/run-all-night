@@ -211,6 +211,10 @@
     <string name="deletion_account_confirmation">Czy na pewno chcesz usunąć konto?</string>
     <string name="wrong_password">Złe hasło!</string>
     <string name="account_deleted">Konto zostało usunięte</string>
+    <string name="forgot_password">Zapomniałeś hasła?</string>
+    <string name="provide_email">Podaj email:</string>
+    <string name="reset_password">Resetuj</string>
+    <string name="provide_your_email">Wprowadź email!</string>
 
 
 </resources>
