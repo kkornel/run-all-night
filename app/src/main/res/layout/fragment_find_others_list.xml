@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".FindOthersListFragment">
+    tools:context=".sharelocation.FindOthersListFragment">
 
     <TextView
         android:id="@+id/workoutTypeLabel"
@@ -17,7 +17,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Wybierz aktywność:" />
+        android:text="@string/choose_activity" />
 
     <Spinner
         android:id="@+id/workoutTypeSpinner"
@@ -41,7 +41,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="W promieniu ilu kilometrów szukać?" />
+        android:text="@string/what_radius" />
 
     <EditText
         android:id="@+id/distanceEditText"
@@ -53,9 +53,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
-        android:hint="przykład: 3.5"
-        android:inputType="textPersonName"
-        android:text="4" />
+        android:hint="@string/example_radius"
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/findButton"
@@ -66,7 +65,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Szukaj" />
+        android:text="@string/search" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -83,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Wyników:"
+            android:text="@string/results"
             android:textSize="24sp" />
 
         <TextView

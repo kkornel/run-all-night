@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".FindOthersMapFragment">
+    tools:context=".sharelocation.FindOthersMapFragment">
 
     <com.example.kornel.alphaui.MapWrapperLayout
         android:id="@+id/map_relative_layout"
@@ -28,6 +28,6 @@
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
-            tools:context=".FindOthersMapFragment" />
+            tools:context=".sharelocation.FindOthersMapFragment" />
     </com.example.kornel.alphaui.MapWrapperLayout>
 </LinearLayout>

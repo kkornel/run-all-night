@@ -47,6 +47,25 @@
 
     <string name="ok">Ok</string>
 
+    <!--<string name="you">Ty</string>-->
+    <string name="you">You</string>
+
+    <!--<string name="yes">Tak</string>-->
+    <string name="yes">Yes</string>
+
+    <!--<string name="no">Nie</string>-->
+    <string name="no">No</string>
+
+    <!--<string name="confirm">Potwierdź</string>-->
+    <string name="confirm">Confirm</string>
+
+    <!--<string name="refresh">Odświeżanie</string>-->
+    <string name="refresh">Refreshing</string>
+
+    <!--<string name="change">Zmień</string>-->
+    <string name="change">Change</string>
+
+    <string name="uploaded">Uploaded!</string>
 
     <!-- Register -->
 
@@ -301,11 +320,10 @@
     <string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>
     <string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>
     <string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>
-    <string name="confirm">Potwierdź</string>
     <string name="confirm_delete_workout">Czy na pewno chcesz usunąć trening?</string>
-    <string name="yes">Tak</string>
+
     <string name="workout_deleted">Usunięto trening.</string>
-    <string name="no">Nie</string>
+
     <string name="beginning">Początek</string>
     <string name="end">Koniec</string>
     <string name="something_went_wrong">Coś poszło nie tak</string>
@@ -314,8 +332,7 @@
     <string name="today">Dzisiaj</string>
     <string name="only_me">Tylko ja</string>
     <string name="new_post_swipe_to_refresh">Nowy post! Odśwież stronę, aby zobaczyć</string>
-    <string name="refresh">Odświeżanie</string>
-    <string name="change">Zmień</string>
+
     <string name="edit_to_add_description">Edytuj, aby dodać opis</string>
     <string name="photo_delete_confirmation">Czy na pewno chcesz usunąć zdjęcie?</string>
     <string name="pick_settings">Wybierz ustawienia</string>
@@ -336,6 +353,45 @@
     <string name="provide_email">Podaj email:</string>
 
 
+    <!--Find others-->
+
+
+    <!--<string name="find_others_title">Znajdź innych</string>-->
+    <string name="find_others_title">Find others</string>
+
+    <!--<string name="no_results_in_given_range">Nie znaleziono nikogo w danym zasięgu</string>-->
+    <string name="no_results_in_given_range">No results in given range</string>
+
+    <!--<string name="input_range">Wprowadź zasięg.</string>-->
+    <string name="input_range">Enter range</string>
+
+    <!--<string name="invalid_number">Wprowadzono niepoprawną liczbę.</string>-->
+    <string name="invalid_number">Not a number</string>
+
+    <!--<string name="no_results">Nie znaleziono nikogo</string>-->
+    <string name="no_results">No results</string>
+
+    <!--<string name="no_shares">Nie masz żadnych udostępnień! :(</string>-->
+    <string name="no_shares">You have not shared any locations!</string>
+
+    <!--<string name="delete_confirmation">Czy na pewno chcesz usunąć?</string>-->
+    <string name="delete_confirmation">Are you sure to delete this?</string>
+
+    <!--<string name="message_can_not_be_empty">Wiadomość nie może być pusta!</string>-->
+    <string name="message_can_not_be_empty">Message can not be empty</string>
+
+    <!--<string name="share_location_title">Udostępnij!</string>-->
+    <string name="share_location_title">Share!</string>
+    <string name="choose_activity">Choose activity:</string>
+    <string name="enter_msg">Enter message</string>
+    <string name="preview">Preview</string>
+    <string name="what_radius">What radius in kilometers to use?</string>
+    <string name="example_radius">Example: 3.5</string>
+    <string name="search">Search</string>
+    <string name="results">Results:</string>
+    <string name="your_shares">Your shares</string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.content.Context;
 import android.os.Build;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 
@@ -30,7 +31,6 @@ public class ShareYourLocationListAdapter extends RecyclerView.Adapter<ShareYour
 
     @Override
     public ShareYourLocationListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.list_item_share_your_location;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -44,8 +44,6 @@ public class ShareYourLocationListAdapter extends RecyclerView.Adapter<ShareYour
 
     @Override
     public void onBindViewHolder(@NonNull ShareYourLocationListViewHolder shareYourLocationListViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mSharedLocationInfoList == null) || (mSharedLocationInfoList.size() == 0)) {
             shareYourLocationListViewHolder.mMessageTextView.setText("ERROR");
         } else {

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +28,6 @@ public class FindOthersListAdapter extends RecyclerView.Adapter<FindOthersListAd
 
     @Override
     public FindOthersListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.item_list_find_others;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -41,8 +41,6 @@ public class FindOthersListAdapter extends RecyclerView.Adapter<FindOthersListAd
 
     @Override
     public void onBindViewHolder(@NonNull FindOthersListViewHolder findOthersListViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mSharedLocationInfoList == null) || (mSharedLocationInfoList.size() == 0)) {
             findOthersListViewHolder.mNameTextView.setText("ERROR");
         } else {
@@ -79,8 +77,6 @@ public class FindOthersListAdapter extends RecyclerView.Adapter<FindOthersListAd
     }
 
     class FindOthersListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final String TAG = "WorkoutViewHolder";
-
         private ImageView mAvatarImageView;
         private TextView mNameTextView;
         private TextView mDistanceTextView;

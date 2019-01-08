@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -10,8 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kornel.alphaui.sharelocation.ShareYourLocationListFragment;
-import com.example.kornel.alphaui.sharelocation.ShareYourLocationMapFragment;
+import com.example.kornel.alphaui.R;
 
 public class ShareYourLocationActivity extends AppCompatActivity implements ShareYourLocationMapFragment.OnDataChanged {
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -26,15 +25,12 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_your_location);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Share!");
+        toolbar.setTitle(R.string.share_location_title);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 

@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.MapWrapperLayout;
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.LatLon;
@@ -64,7 +66,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
     }
 
     public ShareYourLocationMapFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -96,7 +98,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
             public void onClick(View v) {
                 String message = mMessageEditText.getText().toString();
                 if (mYouLatLng == null || message.equals("")) {
-                    Toast.makeText(getContext(), "Wiadomość nie może być pusta!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.message_can_not_be_empty), Toast.LENGTH_LONG).show();
                     return;
                 }
                 upload();
@@ -206,7 +208,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         sharedLocRef.child(workoutType).child(userUid).setValue(sharedLocationInfo);
 
         mMessageEditText.setText("");
-        Toast.makeText(getContext(), "Uploaded!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.uploaded), Toast.LENGTH_SHORT).show();
         mOnDataChangedCallback.onUploadCompleted();
         mMap.clear();
     }

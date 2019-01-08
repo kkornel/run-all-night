@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.location.Location;
 import android.location.LocationManager;

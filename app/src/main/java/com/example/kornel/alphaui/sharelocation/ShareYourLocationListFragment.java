@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
@@ -42,7 +43,7 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
     private List<SharedLocationInfo> mYourSharedLocations;
 
     public ShareYourLocationListFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -164,7 +165,7 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
 
     private void checkIfEmpty() {
         if (mYourSharedLocations == null || mYourSharedLocations.size() == 0) {
-            mNoDataInfoTextView.setText("Nie masz żadnych udostępnień! :(");
+            mNoDataInfoTextView.setText(getString(R.string.no_shares));
             mNoDataInfoTextView.setVisibility(View.VISIBLE);
         } else {
             mNoDataInfoTextView.setVisibility(View.GONE);
@@ -173,7 +174,7 @@ public class ShareYourLocationListFragment extends Fragment implements ListItemC
 
     private Dialog createDeleteDialog(final int clickedItemIndex) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Czy na pewno chcesz usunąć?")
+        builder.setMessage(R.string.delete_confirmation)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         delete(clickedItemIndex);

@@ -8,7 +8,7 @@
     android:layout_margin="8dp"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".ShareYourLocationMapFragment">
+    tools:context=".sharelocation.ShareYourLocationMapFragment">
 
     <TextView
         android:id="@+id/workoutTypeLabel"
@@ -19,7 +19,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Wybierz aktywność:" />
+        android:text="@string/choose_activity" />
 
     <Spinner
         android:id="@+id/workoutTypeSpinner"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
-        android:hint="Wprowadź wiadomość..."
+        android:hint="@string/enter_msg"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="129dp" />
@@ -58,7 +58,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Podgląd" />
+        android:text="@string/preview" />
 
     <com.example.kornel.alphaui.MapWrapperLayout
         android:id="@+id/map_relative_layout"
@@ -81,7 +81,7 @@
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
-            tools:context=".ShareYourLocationActivity" />
+            tools:context=".sharelocation.ShareYourLocationActivity" />
     </com.example.kornel.alphaui.MapWrapperLayout>
 
     <Button
@@ -93,6 +93,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Share!" />
+        android:text="@string/share_location_title" />
 
 </LinearLayout><!--</ScrollView>-->

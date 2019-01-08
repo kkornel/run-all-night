@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.User;
@@ -53,7 +54,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     private List<SharedLocationInfo> mSharedLocationInfoList;
 
     public FindOthersListFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -93,7 +94,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
         mFindOthersListAdapter = new FindOthersListAdapter(this, mSharedLocationInfoList);
         mRecyclerView.setAdapter(mFindOthersListAdapter);
 
-        mNoDataInfoTextView.setText("Wyszukaj aby...");
+        mNoDataInfoTextView.setText("");
         mNoDataInfoTextView.setVisibility(View.VISIBLE);
 
         return rootView;
@@ -156,7 +157,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
                 mOnFindOthersCallback.onGotAllSharedLocations(mSharedLocationInfoList);
 
                 if (mSharedLocationInfoList.size() == 0) {
-                    Toast.makeText(getContext(), "Nie znaleziono nikogo w danym zasięgu", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.no_results_in_given_range), Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -207,13 +208,13 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
             String workoutType = mWorkoutTypeSpinner.getSelectedItem().toString();
             String distanceStringInput = mDistanceEditText.getText().toString();
             if (distanceStringInput.equals("")) {
-                showSnackbar("Wprowadź zasięg.");
+                showSnackbar(getString(R.string.input_range));
                 return;
             }
             double distanceInput = Double.parseDouble(distanceStringInput);
             find(workoutType, distanceInput);
         } catch (NumberFormatException ex) {
-            showSnackbar("Wprowadzono niepoprawną liczbę.");
+            showSnackbar(getString(R.string.invalid_number));
         }
     }
 
@@ -228,7 +229,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     private void checkIfListIsEmpty() {
         if (mSharedLocationInfoList.size() == 0) {
             mNoDataInfoTextView.setVisibility(View.VISIBLE);
-            mNoDataInfoTextView.setText("Nie znaleziono nikogo");
+            mNoDataInfoTextView.setText(getString(R.string.no_results));
         } else {
             mNoDataInfoTextView.setVisibility(View.GONE);
         }

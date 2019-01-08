@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.sharelocation;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.MapWrapperLayout;
+import com.example.kornel.alphaui.OnInfoWindowElemTouchListener;
+import com.example.kornel.alphaui.R;
+import com.example.kornel.alphaui.ViewProfileActivity;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,12 +70,11 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     }
 
     public FindOthersMapFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_find_others_map, container, false);
 
         mMapWrapperLayout = rootView.findViewById(R.id.map_relative_layout);
@@ -136,8 +139,6 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
             public View getInfoContents(Marker marker) {
                 // Setting up the mInfoWindow with current's marker info
                 if (marker.equals(mYouMarker)) {
-                    Log.d(TAG, "getInfoContents: ");
-
                     mNameTextView.setText("Ty");
 
                     mAvatarImageView.setVisibility(View.GONE);
@@ -147,7 +148,6 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                     mShowProfileButton.setVisibility(View.GONE);
                     mAddToFriendsButton.setVisibility(View.GONE);
                     //mInfoButtonListener.setMarker(marker);
-
 
                     // We must call this to set the current marker and mInfoWindow references
                     // to the MapWrapperLayout
@@ -227,7 +227,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private void addYouMarker(LatLng youLatLng) {
         mYouMarker = mMap.addMarker(new MarkerOptions()
                 .position(youLatLng)
-                .title("You")
+                .title(getString(R.string.you))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(youLatLng, MAP_ZOOM));
@@ -241,6 +241,4 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     public void setCallback(OnFindOthersCallback onFindOthersCallback) {
         mOnFindOthersCallback = onFindOthersCallback;
     }
-
-
 }
