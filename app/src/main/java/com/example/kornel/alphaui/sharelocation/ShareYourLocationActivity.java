@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.example.kornel.alphaui.sharelocation.ShareYourLocationListFragment;
+import com.example.kornel.alphaui.sharelocation.ShareYourLocationMapFragment;
+
 public class ShareYourLocationActivity extends AppCompatActivity implements ShareYourLocationMapFragment.OnDataChanged {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
