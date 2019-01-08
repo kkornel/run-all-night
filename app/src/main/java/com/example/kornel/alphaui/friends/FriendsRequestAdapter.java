@@ -1,7 +1,6 @@
 package com.example.kornel.alphaui.friends;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,8 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAdapter.FriendsRequestViewHolder> {
-    private static final String TAG = "FriendsRequestAdapter";
-
     private final ListItemClickListener mOnClickListener;
     private List<FriendRequest> mFriendsRequestsList;
 
@@ -31,7 +28,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
     @Override
     public FriendsRequestViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.friends_request_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -45,8 +41,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
     @Override
     public void onBindViewHolder(@NonNull FriendsRequestViewHolder friendListViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mFriendsRequestsList == null) || (mFriendsRequestsList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
@@ -58,9 +52,9 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
             friendListViewHolder.mNameTextView.setText(mFriendsRequestsList.get(position).getFriendName());
             String requestType;
             if (mFriendsRequestsList.get(position).getRequestType().equals(Database.FRIENDS_REQUESTS_SENT)) {
-                requestType = "Wysłano zaproszenie";
+                requestType = "Invitation sent";
             } else {
-                requestType = "Nowe zaproszenie";
+                requestType = "New invitation";
             }
             friendListViewHolder.mRequestTypeTextView.setText(requestType);
         }
@@ -77,8 +71,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
     }
 
     class FriendsRequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final String TAG = "WorkoutViewHolder";
-
         private ImageView mAvatarImageView;
         private TextView mNameTextView;
         private TextView mRequestTypeTextView;

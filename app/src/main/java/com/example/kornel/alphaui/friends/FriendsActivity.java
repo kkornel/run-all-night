@@ -21,11 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.FriendRequest;
-import com.example.kornel.alphaui.utils.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +30,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = "FriendsActivity";
@@ -70,11 +63,8 @@ public class FriendsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -103,7 +93,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     private void showAddFriendDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
+
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.add_friend_dialog, null);
@@ -114,10 +104,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         final AlertDialog dialog;
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView)
-                // Add action buttons
                 .setPositiveButton(R.string.friends_dialog_add_button, null)
                 .setNegativeButton(R.string.friends_dialog_cancel_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -209,8 +196,6 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 
-    // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-    // one of the sections/tabs/pages.
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -218,18 +203,11 @@ public class FriendsActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-
             if (position == 0) {
-                // mFriendsListFragment = new FriendsListFragment();
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
-                // mFriendsListFragment.setFriendsList(new ArrayList<User>());
                 return friendsListFragment;
             } else {
-                // mFriendsRequestFragment = new FriendsRequestFragment();
                 FriendsRequestFragment friendsRequestFragment = new FriendsRequestFragment();
-                // mFriendsRequestFragment.setFriendsList(new ArrayList<FriendRequest>());
                 return friendsRequestFragment;
             }
         }
@@ -238,7 +216,6 @@ public class FriendsActivity extends AppCompatActivity {
         public int getCount() {
             return 2;
         }
-
     }
 
     @Override

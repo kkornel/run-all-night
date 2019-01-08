@@ -18,16 +18,33 @@
     <!-- General strings -->
 
 
-    <string name="remove">Usuń</string>
-    <string name="close">Zamknij</string>
+    <!--<string name="remove">Usuń</string>-->
+    <string name="remove">Delete</string>
+
+    <!--<string name="close">Zamknij</string>-->
+    <string name="close">Close</string>
+
     <!--<string name="cancel">Anuluj</string>-->
     <string name="cancel">Cancel</string>
-    <string name="accept">Akceptuj</string>
-    <string name="discard">Odrzuć</string>
-    <string name="friends">Znajomi</string>
-    <string name="invitations">Zaproszenia</string>
-    <string name="loading">Ładowanie</string>
-    <string name="settings">Ustawienia</string>
+
+    <!--<string name="accept">Akceptuj</string>-->
+    <string name="accept">Accept</string>
+
+    <!--<string name="discard">Odrzuć</string>-->
+    <string name="discard">Discard</string>
+
+    <!--<string name="friends">Znajomi</string>-->
+    <string name="friends">Friends</string>
+
+    <!--<string name="invitations">Zaproszenia</string>-->
+    <string name="invitations">Invitations</string>
+
+    <!--<string name="loading">Ładowanie</string>-->
+    <string name="loading">Loading</string>
+
+    <!--<string name="settings">Ustawienia</string>-->
+    <string name="settings">Settings</string>
+
     <string name="ok">Ok</string>
 
 
@@ -162,31 +179,67 @@
 
     <!--Friends Activity-->
 
+
     <string name="title_activity_friends">FriendsActivity</string>
-    <string name="remove_friend">Usuąć znajomego?</string>
-    <string name="add_friend_button">Dodaj znajomego</string>
-    <string name="request_type_sent">Wysłano</string>
-    <string name="request_type_received">Akceptuj</string>
-    <string name="user_is_already_a_friends">Ten użytkownik znajduje sie już na twojej liście znajomych</string>
-    <string name="can_not_send_invitation_to_yrself">Nie możesz wysłac sobie zaproszenia.</string>
-    <string name="no_new_invitations">Brak nowych zaproszeń</string>
-    <string name="no_friends">Nie masz żadnych znajomych</string>
-    <string name="new_invitation">Nowe zaproszenie</string>
-    <string name="remove_friend_confirmation">Czy na pewno chcesz anulować zaproszenie?</string>
+
+    <!--<string name="remove_friend">Usuąć znajomego?</string>-->
+    <string name="remove_friend">Delete friend?</string>
+
+    <!--<string name="add_friend_button">Dodaj znajomego</string>-->
+    <string name="add_friend_button">Add friend</string>
+
+    <!--<string name="request_type_sent">Wysłano</string>-->
+    <string name="request_type_sent">Sent</string>
+
+    <!--<string name="request_type_received">Akceptuj</string>-->
+    <string name="request_type_received">Accept</string>
+
+    <!--<string name="user_is_already_a_friends">Ten użytkownik znajduje sie już na twojej liście znajomych</string>-->
+    <string name="user_is_already_a_friends">This user is already your friend</string>
+
+    <!--<string name="can_not_send_invitation_to_yrself">Nie możesz wysłac sobie zaproszenia.</string>-->
+    <string name="can_not_send_invitation_to_yrself">You can now invite yourself</string>
+
+    <!--<string name="no_new_invitations">Brak nowych zaproszeń</string>-->
+    <string name="no_new_invitations">No new invitations</string>
+
+    <!--<string name="no_friends">Nie masz żadnych znajomych</string>-->
+    <string name="no_friends">You do not have friends</string>
+
+    <!--<string name="new_invitation">Nowe zaproszenie</string>-->
+    <string name="new_invitation">New invitation</string>
+
+    <!--<string name="remove_friend_confirmation">Czy na pewno chcesz anulować zaproszenie?</string>-->
+    <string name="remove_friend_confirmation">Cancel invitation?</string>
 
 
     <!-- Friends Dialog -->
 
-    <string name="friends_dialog_add_button">Dodaj</string>
-    <string name="friends_dialog_cancel_button">Anuluj</string>
-    <string name="friends_dialog_already_sent">Zaproszenie zostało wysłane wcześniej</string>
-    <string name="friends_dialog_invitation_sent">Zaproszenie zostało wysłane</string>
-    <string name="friends_dialog_wrong_email">Nie ma użytkownika o takim adresie email</string>
-    <string name="friends_dialog_title">Dodaj znajomego</string>
+
+    <!--<string name="friends_dialog_add_button">Dodaj</string>-->
+    <string name="friends_dialog_add_button">Add</string>
+
+    <!--<string name="friends_dialog_cancel_button">Anuluj</string>-->
+    <string name="friends_dialog_cancel_button">Cancel</string>
+
+    <!--<string name="friends_dialog_already_sent">Zaproszenie zostało wysłane wcześniej</string>-->
+    <string name="friends_dialog_already_sent">Invite has been sent earlier</string>
+
+    <!--<string name="friends_dialog_invitation_sent">Zaproszenie zostało wysłane</string>-->
+    <string name="friends_dialog_invitation_sent">Invite sent</string>
+
+    <!--<string name="friends_dialog_wrong_email">Nie ma użytkownika o takim adresie email</string>-->
+    <string name="friends_dialog_wrong_email">There is no user with that email address</string>
+
+    <!--<string name="friends_dialog_title">Dodaj znajomego</string>-->
+    <string name="friends_dialog_title">Add friend</string>
+
+    <!--<string name="friends_dialog_email_field">Email</string>-->
     <string name="friends_dialog_email_field">Email</string>
 
 
     <!-- Confirm Password Dialog -->
+
 
     <string name="confirm_password_dialog_title">Wprowadź obecne hasło</string>
     <string name="confirm_password_cancel_button">Anuluj</string>

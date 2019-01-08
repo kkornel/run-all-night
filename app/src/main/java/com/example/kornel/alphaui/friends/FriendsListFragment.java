@@ -32,8 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FriendsListFragment extends Fragment
-        implements ListItemClickListener, OnDeleteFriendDialog {
+public class FriendsListFragment extends Fragment implements ListItemClickListener, OnDeleteFriendDialog {
     private static final String TAG = "FriendsListFragment";
 
     private TextView mNoDataInfoTextView;
@@ -116,8 +115,6 @@ public class FriendsListFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-
-        Log.d(TAG, "onStart: ");
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();

@@ -29,7 +29,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     @Override
     public FriendListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.friends_list_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -43,8 +42,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull FriendListViewHolder friendListViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mFriendsProfileList == null) || (mFriendsProfileList.size() == 0)) {
             friendListViewHolder.mNameTextView.setText("ERROR");
         } else {
@@ -70,8 +67,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
     class FriendListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final String TAG = "WorkoutViewHolder";
-
         private ImageView mAvatarImageView;
         private TextView mNameTextView;
 
