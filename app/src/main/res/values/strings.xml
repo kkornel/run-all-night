@@ -137,7 +137,7 @@
 
     <!-- Notifications -->
 
-    
+
     <string name="location_tracking_notification_title">MoonRunner</string>
     <string name="location_tracking_notification_body">00:00:00</string>
 

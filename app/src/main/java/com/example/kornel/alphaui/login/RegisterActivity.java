@@ -113,17 +113,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-                            // TODO: Here was a change
-                            // User newUser = new User(firstName, surname, email);
-                            // usersRef.child(userUid).setValue(newUser);
-
-                            // usersRef.child(userUid).child(Database.FIRSTNAME).setValue(firstName);
-                            // usersRef.child(userUid).child(Database.SURNAME).setValue(surname);
-                            // usersRef.child(userUid).child(Database.EMAIL).setValue(email);
-
-                            // hideProgressDialog();
-                            // backToLogin(email);
                         } else {
                             Snackbar.make(
                                     mRegisterButton,
@@ -222,12 +211,10 @@ public class RegisterActivity extends AppCompatActivity {
         boolean valid = true;
 
         String firstName = mFirstNameEditText.getText().toString();
-        // Pattern namePattern = Pattern.compile(NAME_REGEX);
         if (TextUtils.isEmpty(firstName)) {
             mFirstNameEditText.setError(getString(R.string.register_required));
             valid = false;
         } else if (!ProfileInfoValidator.isNameValid(firstName)) {
-            // } else if (!namePattern.matcher(firstName).find()) {
             mFirstNameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
         } else {
@@ -238,7 +225,6 @@ public class RegisterActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(surname)) {
             mSurnameEditText.setError(getString(R.string.register_required));
             valid = false;
-            // } else if (!namePattern.matcher(surname).find()) {
         } else if (!ProfileInfoValidator.isNameValid(firstName)) {
             mSurnameEditText.setError(getString(R.string.register_not_valid_name));
             valid = false;
@@ -279,30 +265,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         return valid;
     }
-
-    // private boolean isPasswordValid(String password) {
-    //     Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX, Pattern.CASE_INSENSITIVE);
-    //     Pattern upperCasePattern = Pattern.compile(UPPER_CASE_REGEX);
-    //     Pattern lowerCasePattern = Pattern.compile(LOWER_CASE_REGEX);
-    //     Pattern digitsPattern = Pattern.compile(DIGITS_REGEX);
-    //
-    //     if (password.length() < PASSWORD_MIN_LENGTH) {
-    //         return false;
-    //     }
-    //     if (!specialCharsPattern.matcher(password).find()) {
-    //         return false;
-    //     }
-    //     if (!upperCasePattern.matcher(password).find()) {
-    //         return false;
-    //     }
-    //     if (!lowerCasePattern.matcher(password).find()) {
-    //         return false;
-    //     }
-    //     if (!digitsPattern.matcher(password).find()) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {

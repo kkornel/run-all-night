@@ -26,8 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "LoginActivity";
-
     public static final String INTENT_EXTRA_FIREBASE_USER = "firebase_user";
     public static final String INTENT_EXTRA_USER_EMAIL = "user_email";
 
@@ -148,12 +146,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // TODO: Enable this
-        // Check if user is signed in (non-null) and update UI accordingly.
-        // FirebaseUser user = mAuth.getCurrentUser();
-        // if (user != null) {
-        //     login(user);
-        // }
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            login(user);
+        }
     }
 
     private void signIn(String email, String password) {
@@ -171,16 +168,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            // hideProgressDialog();
 
-                            // TODO: Enable this
                             if (!user.isEmailVerified()) {
                                 Snackbar.make(
                                         mLoginButton,
                                         R.string.login_email_not_verified,
                                         Snackbar.LENGTH_LONG)
                                         .show();
-                                // return;
+                                return;
                             }
 
                             login(user);
@@ -238,5 +233,10 @@ public class LoginActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
