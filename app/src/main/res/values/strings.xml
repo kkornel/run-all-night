@@ -17,58 +17,127 @@
 
     <!-- General strings -->
 
+
     <string name="remove">Usuń</string>
     <string name="close">Zamknij</string>
-    <string name="cancel">Anuluj</string>
+    <!--<string name="cancel">Anuluj</string>-->
+    <string name="cancel">Cancel</string>
     <string name="accept">Akceptuj</string>
     <string name="discard">Odrzuć</string>
     <string name="friends">Znajomi</string>
     <string name="invitations">Zaproszenia</string>
     <string name="loading">Ładowanie</string>
+    <string name="settings">Ustawienia</string>
+    <string name="ok">Ok</string>
 
 
     <!-- Register -->
 
-    <string name="register_toolbar_title">Utwórz konto</string>
-    <string name="register_email_in_use">Podany adres email jest zajęty</string>
-    <string name="register_forget_password">Zapomniałeś hasła?</string>
-    <string name="register_password_reset">Hasło zostało zresetowane. Sprawdź swoją skrzynkę pocztową</string>
-    <string name="register_successful">Konto zostało utworzone. Email weryfikacyjny został wysłany</string>
-    <string name="register_failed">Nie można wysłać wiadomości weryfikacyjnej</string>
-    <string name="register_required">To pole jest wymagane</string>
-    <string name="register_not_valid_name">Pole to nie może zawierać cyfr, spacji ani znaków specjalnych</string>
-    <string name="register_invalid_email">Niepoprawny adres email</string>
-    <string name="register_passwords_not_match">Hasła nie są identyczne!</string>
-    <string name="register_password_validation">Hasło musi mieć długość conajmniej 8 znaków, zawierać małe i duże litery, znak specjalny i cyfrę</string>
-    <string name="register_progress_dialog">Proszę czekać...</string>
 
-    <string name="register_first_name_hint">Imię</string>
-    <string name="register_surname_hint">Nazwisko</string>
-    <string name="register_email_hint">Adres email</string>
-    <string name="register_password_hint">Hasło</string>
-    <string name="register_confirm_password_hint">Potwierdź hasło</string>
+    <!--<string name="register_toolbar_title">Utwórz konto</string>-->
+    <string name="register_toolbar_title">Register</string>
 
-    <string name="register_register_button">Utwórz konto</string>
-    <string name="register_back_to_login_button">Powrót do logowania</string>
+    <!--<string name="register_email_in_use">Podany adres email jest zajęty</string>-->
+    <string name="register_email_in_use">This email is already in use</string>
+
+    <!--<string name="register_forget_password">Zapomniałeś hasła?</string>-->
+    <string name="register_forget_password">Forgot password?</string>
+
+    <!--<string name="register_password_reset">Hasło zostało zresetowane. Sprawdź swoją skrzynkę pocztową</string>-->
+    <string name="register_password_reset">Password has been reset. Check your e-mail.</string>
+
+    <!--<string name="register_successful">Konto zostało utworzone. Email weryfikacyjny został wysłany</string>-->
+    <string name="register_successful">Account created. Verify your email.</string>
+
+    <!--<string name="register_failed">Nie można wysłać wiadomości weryfikacyjnej</string>-->
+    <string name="register_failed">Failed to send email verification</string>
+
+    <!--<string name="register_required">To pole jest wymagane</string>-->
+    <string name="register_required">This field is required</string>
+
+    <!--<string name="register_not_valid_name">Pole to nie może zawierać cyfr, spacji ani znaków specjalnych</string>-->
+    <string name="register_not_valid_name">Numbers, white spaces and special characters are not allowed here</string>
+
+    <!--<string name="register_invalid_email">Niepoprawny adres email</string>-->
+    <string name="register_invalid_email">Invalid email address</string>
+
+    <!--<string name="register_passwords_not_match">Hasła nie są identyczne!</string>-->
+    <string name="register_passwords_not_match">Passwords do not match</string>
+
+    <!--<string name="register_password_validation">Hasło musi mieć długość conajmniej 8 znaków, zawierać małe i duże litery, znak specjalny i cyfrę</string>-->
+    <string name="register_password_validation">Password must be eight characters including one uppercase letter, one special character and alphanumeric characters</string>
+
+    <!--<string name="register_progress_dialog">Proszę czekać...</string>-->
+    <string name="register_progress_dialog">Processing...</string>
+
+    <!--<string name="register_first_name_hint">Imię</string>-->
+    <string name="register_first_name_hint">First name</string>
+
+    <!--<string name="register_surname_hint">Nazwisko</string>-->
+    <string name="register_surname_hint">Surname</string>
+
+    <!--<string name="register_email_hint">Adres email</string>-->
+    <string name="register_email_hint">Email</string>
+
+    <!--<string name="register_password_hint">Hasło</string>-->
+    <string name="register_password_hint">Password</string>
+
+    <!--<string name="register_confirm_password_hint">Potwierdź hasło</string>-->
+    <string name="register_confirm_password_hint">Confirm password</string>
+
+    <!--<string name="register_register_button">Utwórz konto</string>-->
+    <string name="register_register_button">Create account</string>
+
+    <!--<string name="register_back_to_login_button">Powrót do logowania</string>-->
+    <string name="register_back_to_login_button">Back to log in</string>
 
 
     <!-- Login -->
 
-    <string name="login_toolbar_title">Logowanie</string>
-    <string name="login_required">To pole jest wymagane</string>
-    <string name="login_progress_dialog">Logowanie...</string>
-    <string name="login_email_not_verified">Adres email nie jest zweryfikowany</string>
-    <string name="login_failed">Niepoprawny email lub hasło</string>
 
-    <string name="login_email_hint">Adres email</string>
-    <string name="login_password_hint">Hasło</string>
+    <!--<string name="login_toolbar_title">Logowanie</string>-->
+    <string name="login_toolbar_title">Log In</string>
 
-    <string name="login_login_button">Zaloguj</string>
-    <string name="login_create_account_button">Utwórz konto</string>
+    <!--<string name="login_required">To pole jest wymagane</string>-->
+    <string name="login_required">This field is required</string>
+
+    <!--<string name="login_progress_dialog">Logowanie...</string>-->
+    <string name="login_progress_dialog">Logging...</string>
+
+    <!--<string name="login_email_not_verified">Adres email nie jest zweryfikowany</string>-->
+    <string name="login_email_not_verified">Address email is not verified</string>
+
+    <!--<string name="login_failed">Niepoprawny email lub hasło</string>-->
+    <string name="login_failed">Incorrect login or password</string>
+
+    <!--<string name="login_email_hint">Adres email</string>-->
+    <string name="login_email_hint">Email</string>
+
+    <!--<string name="login_password_hint">Hasło</string>-->
+    <string name="login_password_hint">Password</string>
+
+    <!--<string name="login_login_button">Zaloguj</string>-->
+    <string name="login_login_button">Log In</string>
+
+    <!--<string name="login_create_account_button">Utwórz konto</string>-->
+    <string name="login_create_account_button">Create account</string>
+
+    <!--<string name="no_internet">Nie masz połączenia z Internetem</string>-->
+    <string name="no_internet">No Internet connection</string>
+
+    <!--<string name="reset_password">Resetuj</string>-->
+    <string name="reset_password">Reset</string>
+
+    <!--<string name="provide_your_email">Wprowadź email!</string>-->
+    <string name="provide_your_email">Enter your email!</string>
+
+    <!--<string name="forgot_password">Zapomniałeś hasła?</string>-->
+    <string name="forgot_password">Forgot password?</string>
 
 
     <!-- Notifications -->
 
+    
     <string name="location_tracking_notification_title">MoonRunner</string>
     <string name="location_tracking_notification_body">00:00:00</string>
 
@@ -82,8 +151,7 @@
 
     <string name="permission_rationale"> Zgoda na lokalizację jest potrzebna do podstawowej funkcjonalności</string>
     <string name="permission_denied_explanation">Zgoda została odrzucona. Jest ona potrzebna do działania aplikacji</string>
-    <string name="settings">Ustawienia</string>
-    <string name="ok">OK</string>
+
     <string name="request_location_updates">Request location updates</string>
     <string name="remove_location_updates">Remove location updates</string>
 
@@ -176,7 +244,7 @@
     <string name="start">Start</string>
     <string name="activity">Aktywność</string>
     <string name="music">Muzyka</string>
-    <string name="no_internet">Nie masz połączenia z Internetem</string>
+
     <string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>
     <string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>
     <string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>
@@ -211,10 +279,10 @@
     <string name="deletion_account_confirmation">Czy na pewno chcesz usunąć konto?</string>
     <string name="wrong_password">Złe hasło!</string>
     <string name="account_deleted">Konto zostało usunięte</string>
-    <string name="forgot_password">Zapomniałeś hasła?</string>
+
     <string name="provide_email">Podaj email:</string>
-    <string name="reset_password">Resetuj</string>
-    <string name="provide_your_email">Wprowadź email!</string>
+
+
 
 
 </resources>

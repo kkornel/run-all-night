@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.login;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -9,18 +9,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.kornel.alphaui.friends.FriendsActivity;
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.mainactivity.MainActivity;
-import com.example.kornel.alphaui.utils.Database;
-import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,10 +24,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -99,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                // Get the layout inflater
+
                 final LayoutInflater inflater = getLayoutInflater();
 
                 View vView = inflater.inflate(R.layout.dialog_reset_password, null);
@@ -108,10 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 infoTextView.setText("");
                 final AlertDialog dialog;
 
-                // Inflate and set the layout for the dialog
-                // Pass null as the parent view because its going in the dialog layout
                 builder.setView(vView)
-                        // Add action buttons
                         .setPositiveButton(R.string.reset_password, null)
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -153,7 +142,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -182,7 +170,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             // hideProgressDialog();
 
@@ -210,7 +197,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(FirebaseUser user) {
-        // TODO: Do I need to send user as extra?
         Intent loginIntent = new Intent(this, MainActivity.class);
         loginIntent.putExtra(INTENT_EXTRA_FIREBASE_USER, user);
         startActivity(loginIntent);

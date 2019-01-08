@@ -53,7 +53,8 @@ public class LocationTrackingService extends Service {
 
     // The priority of the request, which gives the Google Play services location services
     // a strong hint about which location sources to use.
-    private static final int LOCATION_UPDATES_PRIORITY = LocationRequest.PRIORITY_HIGH_ACCURACY;
+    private static final int LOCATION_UPDATES_PRIORITY =
+            LocationRequest.PRIORITY_HIGH_ACCURACY;
 
     // Provides access to the Fused Location Provider API.
     private FusedLocationProviderClient mFusedLocationClient;

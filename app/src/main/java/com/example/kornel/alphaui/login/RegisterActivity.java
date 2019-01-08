@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ProfileInfoValidator;
 import com.example.kornel.alphaui.utils.User;
@@ -29,7 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import static com.example.kornel.alphaui.LoginActivity.INTENT_EXTRA_USER_EMAIL;
+import static com.example.kornel.alphaui.login.LoginActivity.INTENT_EXTRA_USER_EMAIL;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText mFirstNameEditText;
@@ -85,7 +86,6 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification(user);
 
@@ -125,7 +125,6 @@ public class RegisterActivity extends AppCompatActivity {
                             // hideProgressDialog();
                             // backToLogin(email);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Snackbar.make(
                                     mRegisterButton,
                                     R.string.register_email_in_use,

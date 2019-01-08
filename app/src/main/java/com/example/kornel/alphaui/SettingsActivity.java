@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
+import com.example.kornel.alphaui.login.LoginActivity;
 import com.example.kornel.alphaui.profile.EditProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.google.android.gms.tasks.OnCompleteListener;

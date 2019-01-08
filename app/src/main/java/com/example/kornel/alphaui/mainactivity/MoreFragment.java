@@ -16,7 +16,7 @@ import com.example.kornel.alphaui.FindOthersActivity;
 import com.example.kornel.alphaui.SettingsActivity;
 import com.example.kornel.alphaui.ShareYourLocationActivity;
 import com.example.kornel.alphaui.friends.FriendsActivity;
-import com.example.kornel.alphaui.LoginActivity;
+import com.example.kornel.alphaui.login.LoginActivity;
 import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseAuth;
 
