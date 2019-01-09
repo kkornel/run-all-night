@@ -31,7 +31,7 @@
     <string name="accept">Accept</string>
 
     <!--<string name="discard">Odrzuć</string>-->
-    <string name="discard">Discard</string>
+    <string name="discard">Reject</string>
 
     <!--<string name="friends">Znajomi</string>-->
     <string name="friends">Friends</string>
@@ -242,10 +242,10 @@
     <string name="friends_dialog_cancel_button">Cancel</string>
 
     <!--<string name="friends_dialog_already_sent">Zaproszenie zostało wysłane wcześniej</string>-->
-    <string name="friends_dialog_already_sent">Invite has been sent earlier</string>
+    <string name="friends_dialog_already_sent">Invitation has been sent earlier</string>
 
     <!--<string name="friends_dialog_invitation_sent">Zaproszenie zostało wysłane</string>-->
-    <string name="friends_dialog_invitation_sent">Invite sent</string>
+    <string name="friends_dialog_invitation_sent">Invitation sent</string>
 
     <!--<string name="friends_dialog_wrong_email">Nie ma użytkownika o takim adresie email</string>-->
     <string name="friends_dialog_wrong_email">There is no user with that email address</string>
@@ -392,6 +392,10 @@
     <string name="your_shares">Your shares</string>
     <string name="list">List</string>
     <string name="map">Map</string>
+    <string name="show_profile">Show profile</string>
+    <string name="invite_to_friends">Invite to friends</string>
+    <string name="distance_to_you">Distance to you:</string>
+    <string name="already_a_friends">Already a friend</string>
 
 
 </resources>

@@ -212,6 +212,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
                 return;
             }
             double distanceInput = Double.parseDouble(distanceStringInput);
+            mFindOthersListAdapter.loadNewData(new ArrayList<SharedLocationInfo>());
             find(workoutType, distanceInput);
         } catch (NumberFormatException ex) {
             showSnackbar(getString(R.string.invalid_number));

@@ -175,9 +175,10 @@ public class LoginActivity extends AppCompatActivity {
                                         R.string.login_email_not_verified,
                                         Snackbar.LENGTH_LONG)
                                         .show();
-                                return;
+                                hideProgressDialog();
+                                //return;
                             }
-
+                            // TODO uncomment
                             login(user);
                         } else {
                             Snackbar.make(

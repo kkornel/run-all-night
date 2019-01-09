@@ -29,7 +29,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Jadwiga Ofca"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,14 +36,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Jadwiga Ofca" />
 
     <TextView
         android:id="@+id/distanceLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Dystans do Ciebie:"
+        android:text="@string/distance_to_you"
         app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView" />
 
@@ -66,11 +66,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/avatarImageView"
-        app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/avatarImageView"
+        tools:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss" />
 
     <Button
         android:id="@+id/viewProfileButton"
@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Zobacz\nprofil"
+        android:text="@string/show_profile"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/avatarImageView"
@@ -88,11 +88,13 @@
         android:id="@+id/addToFriendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Zaproś\ndo znajomych"
+        android:text="@string/invite_to_friends"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/viewProfileButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/viewProfileButton"
         app:layout_constraintTop_toTopOf="@+id/viewProfileButton" />
 
 </android.support.constraint.ConstraintLayout>

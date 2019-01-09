@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.example.kornel.alphaui.MapWrapperLayout;
 import com.example.kornel.alphaui.OnInfoWindowElemTouchListener;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.ViewProfileActivity;
+import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +30,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -52,7 +60,8 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private Button mShowProfileButton;
     private Button mAddToFriendsButton;
 
-    private OnInfoWindowElemTouchListener mInfoButtonListener;
+    private OnInfoWindowElemTouchListener mShowProfileButtonListener;
+    private OnInfoWindowElemTouchListener mAddToFriendsButtonListener;
 
     private OnFindOthersCallback mOnFindOthersCallback;
 
@@ -62,10 +71,23 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private List<SharedLocationInfo> mSharedLocationInfoList;
     private Map<Marker, SharedLocationInfo> mMarkersMap;
 
+    private SharedLocationInfo mSli;
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mRootRef;
+    private DatabaseReference mUsersRef;
+    private DatabaseReference mFriendRequestsRef;
+    private String mUserUid;
+    private String mFriendUid;
+
     public interface OnFindOthersCallback {
         void onGotAllSharedLocations(List<SharedLocationInfo> sharedLocationInfoList);
+
         void onFindOthersSuccess();
+
         void onMapUpdate(SharedLocationInfo sharedLoc);
+
         void onNewRequest(Location location);
     }
 
@@ -80,6 +102,15 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mMapWrapperLayout = rootView.findViewById(R.id.map_relative_layout);
         SupportMapFragment map = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.summaryMap));
         map.getMapAsync(this);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserUid = mFirebaseAuth.getUid();
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRootRef = mFirebaseDatabase.getReference();
+
+        mUsersRef = mRootRef.child(Database.USERS);
+        mFriendRequestsRef = mRootRef.child(Database.FRIENDS_REQUESTS);
 
         return rootView;
     }
@@ -111,24 +142,6 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mShowProfileButton = mInfoWindow.findViewById(R.id.viewProfileButton);
         mAddToFriendsButton = mInfoWindow.findViewById(R.id.addToFriendButton);
 
-        // Setting custom OnTouchListener which deals with the pressed state
-        // so it shows up
-        mInfoButtonListener = new OnInfoWindowElemTouchListener(mShowProfileButton) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                // Here we can perform some action triggered after clicking the button
-                Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
-                // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
-
-                SharedLocationInfo iasd = mMarkersMap.get(marker);
-                Log.d(TAG, "onClickConfirmed: " + iasd.getUserProfile());
-
-                startActivity(new Intent(getContext(), ViewProfileActivity.class));
-            }
-        };
-        mShowProfileButton.setOnTouchListener(mInfoButtonListener);
-
-
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -139,7 +152,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
             public View getInfoContents(Marker marker) {
                 // Setting up the mInfoWindow with current's marker info
                 if (marker.equals(mYouMarker)) {
-                    mNameTextView.setText("Ty");
+                    mNameTextView.setText(R.string.you);
 
                     mAvatarImageView.setVisibility(View.GONE);
                     mDistanceLabel.setVisibility(View.GONE);
@@ -147,7 +160,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                     mMessageTextView.setVisibility(View.GONE);
                     mShowProfileButton.setVisibility(View.GONE);
                     mAddToFriendsButton.setVisibility(View.GONE);
-                    //mInfoButtonListener.setMarker(marker);
+                    //mShowProfileButtonListener.setMarker(marker);
 
                     // We must call this to set the current marker and mInfoWindow references
                     // to the MapWrapperLayout
@@ -163,16 +176,58 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 mShowProfileButton.setVisibility(View.VISIBLE);
                 mAddToFriendsButton.setVisibility(View.VISIBLE);
 
-                SharedLocationInfo sli = mMarkersMap.get(marker);
+                mSli = mMarkersMap.get(marker);
 
-                mNameTextView.setText(sli.getUserProfile().getFullName());
+                mFriendUid = mSli.getUserUid();
 
-                mDistanceTextView.setText(sli.getDistanceToYouString() + "km");
-                mMessageTextView.setText(sli.getMessage());
-                mInfoButtonListener.setMarker(marker);
+                DatabaseReference userFriendRef = mUsersRef.child(mUserUid).child(Database.FRIENDS).child(mFriendUid);
+                ValueEventListener friendsListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            mAddToFriendsButton.setEnabled(false);
+                            mAddToFriendsButton.setText(getString(R.string.already_a_friends));
+                        } else {
+
+                            DatabaseReference userFriendRequestsRef = mFriendRequestsRef.child(mUserUid).child(mFriendUid);
+                            ValueEventListener userFriendRequestsListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() != null) {
+                                        mAddToFriendsButton.setEnabled(false);
+                                        mAddToFriendsButton.setText(getString(R.string.friends_dialog_invitation_sent));
+                                    } else {
+                                        mAddToFriendsButton.setEnabled(true);
+                                        mAddToFriendsButton.setText(getString(R.string.invite_to_friends));
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                                    throw databaseError.toException();
+                                }
+                            };
+                            userFriendRequestsRef.addListenerForSingleValueEvent(userFriendRequestsListener);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                        throw databaseError.toException();
+                    }
+                };
+                userFriendRef.addListenerForSingleValueEvent(friendsListener);
+
+                mNameTextView.setText(mSli.getUserProfile().getFullName());
+
+                mDistanceTextView.setText(mSli.getDistanceToYouString() + "km");
+                mMessageTextView.setText(mSli.getMessage());
+                mShowProfileButtonListener.setMarker(marker);
 
                 Picasso.get()
-                        .load(sli.getUserProfile().getAvatarUrl())
+                        .load(mSli.getUserProfile().getAvatarUrl())
                         .into(mAvatarImageView);
 
                 // We must call this to set the current marker and mInfoWindow references
@@ -181,6 +236,44 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                 return mInfoWindow;
             }
         });
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        mShowProfileButtonListener = new OnInfoWindowElemTouchListener(mShowProfileButton) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here we can perform some action triggered after clicking the button
+                Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+                // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
+
+                SharedLocationInfo iasd = mMarkersMap.get(marker);
+                Log.d(TAG, "onClickConfirmed: " + iasd.getUserProfile());
+
+
+
+                startActivity(new Intent(getContext(), ViewProfileActivity.class));
+            }
+        };
+        mShowProfileButton.setOnTouchListener(mShowProfileButtonListener);
+
+
+        mAddToFriendsButtonListener = new OnInfoWindowElemTouchListener(mShowProfileButton) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+
+                mAddToFriendsButton.setEnabled(true);
+                mAddToFriendsButton.setText(getString(R.string.invite_to_friends));
+
+                mFriendRequestsRef.child(mUserUid).child(mFriendUid).setValue(Database.FRIENDS_REQUESTS_SENT);
+                mFriendRequestsRef.child(mFriendUid).child(mUserUid).setValue(Database.FRIENDS_REQUESTS_RECEIVED);
+
+                Toast.makeText(getContext(), R.string.friends_dialog_invitation_sent, Toast.LENGTH_SHORT).show();
+
+                mAddToFriendsButton.setText(getString(R.string.friends_dialog_invitation_sent));
+                mAddToFriendsButton.setEnabled(false);
+            }
+        };
+        mAddToFriendsButton.setOnTouchListener(mAddToFriendsButtonListener);
     }
 
     @Override
@@ -203,8 +296,8 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     public void onMapUpdate(final SharedLocationInfo sharedLoc) {
         Marker otherMarker = mMap.addMarker(new MarkerOptions()
-                        .position(sharedLoc.getLatLon().toLatLng())
-                        .title(sharedLoc.getUserProfile().getFullName()));
+                .position(sharedLoc.getLatLon().toLatLng())
+                .title(sharedLoc.getUserProfile().getFullName()));
 
         mMarkersMap.put(otherMarker, sharedLoc);
 
@@ -235,7 +328,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
+        return (int) (dp * scale + 0.5f);
     }
 
     public void setCallback(OnFindOthersCallback onFindOthersCallback) {
