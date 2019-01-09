@@ -1,17 +1,30 @@
 <resources>
     <string name="app_name">MoonRunner</string>
+
     <string name="nav_header_title">Android Studio</string>
+
     <string name="nav_header_subtitle">android.studio@android.com</string>
+
     <string name="nav_header_desc">Navigation header</string>
+
     <string name="action_settings">Settings</string>
+
     <string name="title_activity_bottom_navigation">bottom_navigation</string>
+
     <string name="title_feed">Feed</string>
+
     <string name="title_workout">Workout</string>
+
     <string name="title_more">More</string>
+
     <string name="section_format">Hello World from section: %1$d</string>
+
     <string name="title_activity_choose_sport">ChooseSportActivity</string>
+
     <string name="gps_tab_activities">GPS based</string>
+
     <string name="non_gps_tab_activities">NON GPS</string>
+
     <string name="title_activity_main2">Main2Activity</string>
 
 
@@ -45,7 +58,7 @@
     <!--<string name="settings">Ustawienia</string>-->
     <string name="settings">Settings</string>
 
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
     <!--<string name="you">Ty</string>-->
     <string name="you">You</string>
@@ -80,10 +93,10 @@
     <string name="register_forget_password">Forgot password?</string>
 
     <!--<string name="register_password_reset">Hasło zostało zresetowane. Sprawdź swoją skrzynkę pocztową</string>-->
-    <string name="register_password_reset">Password has been reset. Check your e-mail.</string>
+    <string name="register_password_reset">Password has been reset. Check your e-mail</string>
 
     <!--<string name="register_successful">Konto zostało utworzone. Email weryfikacyjny został wysłany</string>-->
-    <string name="register_successful">Account created. Verify your email.</string>
+    <string name="register_successful">Account created. Verify your email</string>
 
     <!--<string name="register_failed">Nie można wysłać wiadomości weryfikacyjnej</string>-->
     <string name="register_failed">Failed to send email verification</string>
@@ -104,7 +117,7 @@
     <string name="register_password_validation">Password must be eight characters including one uppercase letter, one special character and alphanumeric characters</string>
 
     <!--<string name="register_progress_dialog">Proszę czekać...</string>-->
-    <string name="register_progress_dialog">Processing...</string>
+    <string name="register_progress_dialog">Processing…</string>
 
     <!--<string name="register_first_name_hint">Imię</string>-->
     <string name="register_first_name_hint">First name</string>
@@ -138,7 +151,7 @@
     <string name="login_required">This field is required</string>
 
     <!--<string name="login_progress_dialog">Logowanie...</string>-->
-    <string name="login_progress_dialog">Logging...</string>
+    <string name="login_progress_dialog">Logging…</string>
 
     <!--<string name="login_email_not_verified">Adres email nie jest zweryfikowany</string>-->
     <string name="login_email_not_verified">Address email is not verified</string>
@@ -175,25 +188,39 @@
 
 
     <string name="location_tracking_notification_title">MoonRunner</string>
+
     <string name="location_tracking_notification_body">00:00:00</string>
 
     <string name="main_notification_channel_name">Primary</string>
-    <string name="resume_action_button">Wznów</string>
-    <string name="pause_action_button">Zatrzymaj</string>
-    <string name="pause_action_content_text">Zatrzymany</string>
+
+    <!--<string name="resume_action_button">Wznów</string>-->
+    <string name="resume_action_button">Resume</string>
+
+    <!--<string name="pause_action_button">Zatrzymaj</string>-->
+    <string name="pause_action_button">Pause</string>
+
+    <!--<string name="pause_action_content_text">Zatrzymany</string>-->
+    <string name="pause_action_content_text">Paused</string>
 
 
     <!-- Permissions -->
 
-    <string name="permission_rationale"> Zgoda na lokalizację jest potrzebna do podstawowej funkcjonalności</string>
-    <string name="permission_denied_explanation">Zgoda została odrzucona. Jest ona potrzebna do działania aplikacji</string>
+
+    <!--<string name="permission_rationale"> Zgoda na lokalizację jest potrzebna do podstawowej funkcjonalności</string>-->
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+
+    <!--<string name="permission_denied_explanation">Zgoda została odrzucona. Jest ona potrzebna do działania aplikacji</string>-->
+    <string name="permission_denied_explanation">>Permission was denied, but is needed for core functionality</string>
 
     <string name="request_location_updates">Request location updates</string>
+
     <string name="remove_location_updates">Remove location updates</string>
 
+    <!--<string name="enable_gps">Włącz GPS</string>-->
+    <string name="enable_gps">Enable GPS</string>
 
-    <string name="enable_gps">Włącz GPS</string>
-    <string name="enable_internet">Do zapisania treningu wymagane jest połączenie z Internetem</string>
+    <!--<string name="enable_internet">Do zapisania treningu wymagane jest połączenie z Internetem</string>-->
+    <string name="enable_internet">Internet connection is required to save training</string>
 
 
     <!--Friends Activity-->
@@ -217,7 +244,7 @@
     <string name="user_is_already_a_friends">This user is already your friend</string>
 
     <!--<string name="can_not_send_invitation_to_yrself">Nie możesz wysłac sobie zaproszenia.</string>-->
-    <string name="can_not_send_invitation_to_yrself">You can now invite yourself</string>
+    <string name="can_not_send_invitation_to_yrself">You cannot invite yourself</string>
 
     <!--<string name="no_new_invitations">Brak nowych zaproszeń</string>-->
     <string name="no_new_invitations">No new invitations</string>
@@ -260,97 +287,229 @@
     <!-- Confirm Password Dialog -->
 
 
-    <string name="confirm_password_dialog_title">Wprowadź obecne hasło</string>
-    <string name="confirm_password_cancel_button">Anuluj</string>
-    <string name="confirm_password_confirm_button">Potwierdź</string>
+    <!--<string name="confirm_password_dialog_title">Wprowadź obecne hasło</string>-->
+    <string name="confirm_password_dialog_title">Enter password</string>
+
+    <!--<string name="confirm_password_cancel_button">Anuluj</string>-->
+    <string name="confirm_password_cancel_button">Cancel</string>
+
+    <!--<string name="confirm_password_confirm_button">Potwierdź</string>-->
+    <string name="confirm_password_confirm_button">Confirm</string>
 
 
     <!-- Edit Profile Activity -->
 
-    <string name="edit_profile_activity_title">Edytuj profil</string>
-    <string name="edit_profile_new_password_hint">Nowe hasło</string>
-    <string name="edit_profile_chooser_title">Wybierz zdjęcie</string>
-    <string name="edit_profile_choose_avatar">Przeglądaj...</string>
-    <string name="edit_profile_save_changes">Zapisz zmiany</string>
-    <string name="verification_email_sent">Wysłano email weryfikacyjny</string>
+
+    <!--<string name="edit_profile_activity_title">Edytuj profil</string>-->
+    <string name="edit_profile_activity_title">Edit profile</string>
+
+    <!--<string name="edit_profile_new_password_hint">Nowe hasło</string>-->
+    <string name="edit_profile_new_password_hint">New password</string>
+
+    <!--<string name="edit_profile_chooser_title">Wybierz zdjęcie</string>-->
+    <string name="edit_profile_chooser_title">Select picture</string>
+
+    <!--<string name="edit_profile_choose_avatar">Przeglądaj...</string>-->
+    <string name="edit_profile_choose_avatar">Browse…</string>
+
+    <!--<string name="edit_profile_save_changes">Zapisz zmiany</string>-->
+    <string name="edit_profile_save_changes">Save changes</string>
+
+    <!--<string name="verification_email_sent">Wysłano email weryfikacyjny</string>-->
+    <string name="verification_email_sent">Verification email sent</string>
 
 
     <!-- Profile Activity -->
 
-    <string name="profile_details_activity_title">Profil</string>
-    <string name="edit_profile_profile_activity">Edytuj profil</string>
+
+    <!--<string name="profile_details_activity_title">Profil</string>-->
+    <string name="profile_details_activity_title">Profile</string>
+
+    <!--<string name="edit_profile_profile_activity">Edytuj profil</string>-->
+    <string name="edit_profile_profile_activity">Edit profile</string>
 
 
     <!-- Feed Fragment -->
-    <string name="no_your_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>
-    <string name="no_friends_workouts">Twoi znajomi nie zrobili jeszcze żadnego treningu</string>
-    <string name="summary">Podsumowanie</string>
-    <string name="duration">Czas</string>
-    <string name="avg_pace">Średnie tempo</string>
-    <string name="avg_speed">Średnia prędkość</string>
-    <string name="distance">Dystans</string>
-    <string name="max_pace">Max tempo</string>
-    <string name="max_speed">Max prędkość</string>
-    <string name="description">Opis</string>
-    <string name="add_description">Dodaj opis</string>
-    <string name="photo">Zdjęcie</string>
-    <string name="select">Wybierz</string>
-    <string name="delete">Usuń</string>
-    <string name="privacy_settings">Ustawienie prywatności</string>
-    <string name="who_can_see">Kto może zobaczyć:</string>
-    <string name="weather">Pogoda</string>
-    <string name="laps">Okrążenia</string>
+
+
+    <!--<string name="no_your_workouts">Nie zrobiłeś jeszcze żadnego treningu</string>-->
+    <string name="no_your_workouts">You have not done any training yet</string>
+
+    <!--<string name="no_friends_workouts">Twoi znajomi nie zrobili jeszcze żadnego treningu</string>-->
+    <string name="no_friends_workouts">Your friends have not done any training yet</string>
+
+    <!--<string name="summary">Podsumowanie</string>-->
+    <string name="summary">Summary</string>
+
+    <!--<string name="duration">Czas</string>-->
+    <string name="duration">Time</string>
+
+    <!--<string name="avg_pace">Średnie tempo</string>-->
+    <string name="avg_pace">Avg pace</string>
+
+    <!--<string name="avg_speed">Średnia prędkość</string>-->
+    <string name="avg_speed">Avg speed</string>
+
+    <!--<string name="distance">Dystans</string>-->
+    <string name="distance">Distance</string>
+
+    <!--<string name="max_pace">Max tempo</string>-->
+    <string name="max_pace">Max pace</string>
+
+    <!--<string name="max_speed">Max prędkość</string>-->
+    <string name="max_speed">Max speed</string>
+
+    <!--<string name="description">Opis</string>-->
+    <string name="description">Description</string>
+
+    <!--<string name="add_description">Dodaj opis</string>-->
+    <string name="add_description">Add description</string>
+
+    <!--<string name="photo">Zdjęcie</string>-->
+    <string name="photo">Photo</string>
+
+    <!--<string name="select">Wybierz</string>-->
+    <string name="select">Select</string>
+
+    <!--<string name="delete">Usuń</string>-->
+    <string name="delete">Delete</string>
+
+    <!--<string name="privacy_settings">Ustawienie prywatności</string>-->
+    <string name="privacy_settings">Privacy settings</string>
+
+    <!--<string name="who_can_see">Kto może zobaczyć:</string>-->
+    <string name="who_can_see">Who can see:</string>
+
+    <!--<string name="weather">Pogoda</string>-->
+    <string name="weather">Weather</string>
+
+    <!--<string name="laps">Okrążenia</string>-->
+    <string name="laps">Laps</string>
+
     <string name="title_activity_test">TestActivity</string>
-    <string name="save">Zapisz</string>
-    <string name="camera">Aparat</string>
-    <string name="gallery">Galeria</string>
-    <string name="pick_camera_gallery">Wybierz akcje:</string>
+
+    <!--<string name="save">Zapisz</string>-->
+    <string name="save">Save</string>
+
+    <!--<string name="camera">Aparat</string>-->
+    <string name="camera">Camera</string>
+
+    <!--<string name="gallery">Galeria</string>-->
+    <string name="gallery">Gallery</string>
+
+    <!--<string name="pick_camera_gallery">Wybierz akcje:</string>-->
+    <string name="pick_camera_gallery">Pick action:</string>
+
     <string name="title_activity_choose_workout2">ChooseWorkoutActivity2</string>
+
     <string name="tab_text_1">Tab 1</string>
+
     <string name="tab_text_2">Tab 2</string>
+
     <string name="tab_text_3">Tab 3</string>
-    <string name="details">Szczegóły</string>
-    <string name="updated">Zaktualizowano:</string>
-    <string name="hello">Cześć</string>
-    <string name="no_workouts_yet">Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!</string>
+
+    <!--<string name="details">Szczegóły</string>-->
+    <string name="details">Details</string>
+
+    <!--<string name="updated">Zaktualizowano:</string>-->
+    <string name="updated">Updated:</string>
+
+    <!--<string name="hello">Cześć</string>-->
+    <string name="hello">Hello</string>
+
+    <!--<string name="no_workouts_yet">Nie zrobiłeś jeszcze żadnego treningu, pora to zmienić!</string>-->
+    <string name="no_workouts_yet">No workouts yet, time to change it!</string>
+
     <string name="start">Start</string>
-    <string name="activity">Aktywność</string>
-    <string name="music">Muzyka</string>
 
-    <string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>
-    <string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>
-    <string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>
-    <string name="confirm_delete_workout">Czy na pewno chcesz usunąć trening?</string>
+    <!--<string name="activity">Aktywność</string>-->
+    <string name="activity">Activity</string>
 
-    <string name="workout_deleted">Usunięto trening.</string>
+    <!--<string name="music">Muzyka</string>-->
+    <string name="music">Music</string>
 
-    <string name="beginning">Początek</string>
-    <string name="end">Koniec</string>
-    <string name="something_went_wrong">Coś poszło nie tak</string>
-    <string name="workout_saved">Zapisano trening</string>
-    <string name="now">Teraz</string>
-    <string name="today">Dzisiaj</string>
-    <string name="only_me">Tylko ja</string>
-    <string name="new_post_swipe_to_refresh">Nowy post! Odśwież stronę, aby zobaczyć</string>
+    <!--<string name="permission_rationale_settings">Aby udzielić zgody trzeba przejść do ustawień</string>-->
+    <string name="permission_rationale_settings">Go to settings in order to change permissions</string>
 
-    <string name="edit_to_add_description">Edytuj, aby dodać opis</string>
-    <string name="photo_delete_confirmation">Czy na pewno chcesz usunąć zdjęcie?</string>
-    <string name="pick_settings">Wybierz ustawienia</string>
-    <string name="have_unsaved_changes">Masz niezapisane zmiany!</string>
-    <string name="still_want_to_exit">Czy chcesz nadal wyjść?</string>
-    <string name="changes_saved">Zapisano zmiany</string>
-    <string name="photo_will_be_deleted_after_saving">Zdjęcie zostanie usutnięte po zapisaniu zmian</string>
+    <!--<string name="storage_permission_rationale">Zgoda na dostęp do galeri jest wymagana.</string>-->
+    <string name="storage_permission_rationale">Storage permission is needed</string>
+
+    <!--<string name="camera_permission_rationale">Zgoda na dostęp do aparatu jest wymagana.</string>-->
+    <string name="camera_permission_rationale">Camera permission is needed</string>
+
+    <!--<string name="confirm_delete_workout">Czy na pewno chcesz usunąć trening?</string>-->
+    <string name="confirm_delete_workout">Are you sure to delete workout?</string>
+
+    <!--<string name="workout_deleted">Usunięto trening.</string>-->
+    <string name="workout_deleted">Workout deleted</string>
+
+    <!--<string name="beginning">Początek</string>-->
+    <string name="beginning">Beginning</string>
+
+    <!--<string name="end">Koniec</string>-->
+    <string name="end">End</string>
+
+    <!--<string name="something_went_wrong">Coś poszło nie tak</string>-->
+    <string name="something_went_wrong">Something went wrong</string>
+
+    <!--<string name="workout_saved">Zapisano trening</string>-->
+    <string name="workout_saved">Workout saved</string>
+
+    <!--<string name="now">Teraz</string>-->
+    <string name="now">Now</string>
+
+    <!--<string name="today">Dzisiaj</string>-->
+    <string name="today">Today</string>
+
+    <!--<string name="only_me">Tylko ja</string>-->
+    <string name="only_me">Only me</string>
+
+    <!--<string name="new_post_swipe_to_refresh">Nowy post! Odśwież stronę, aby zobaczyć</string>-->
+    <string name="new_post_swipe_to_refresh">New post, swipe to refresh</string>
+
+    <!--<string name="edit_to_add_description">Edytuj, aby dodać opis</string>-->
+    <string name="edit_to_add_description">Edit to add description</string>
+
+    <!--<string name="photo_delete_confirmation">Czy na pewno chcesz usunąć zdjęcie?</string>-->
+    <string name="photo_delete_confirmation">Are you sure to delete picture?</string>
+
+    <!--<string name="pick_settings">Wybierz ustawienia</string>-->
+    <string name="pick_settings">Choose settings</string>
+
+    <!--<string name="have_unsaved_changes">Masz niezapisane zmiany!</string>-->
+    <string name="have_unsaved_changes">Unsaved changes!</string>
+
+    <!--<string name="still_want_to_exit">Czy chcesz nadal wyjść?</string>-->
+    <string name="still_want_to_exit">Still want to go back?</string>
+
+    <!--<string name="changes_saved">Zapisano zmiany</string>-->
+    <string name="changes_saved">Changes saved</string>
+
+    <!--<string name="photo_will_be_deleted_after_saving">Zdjęcie zostanie usutnięte po zapisaniu zmian</string>-->
+    <string name="photo_will_be_deleted_after_saving">Photo will be deleted after saving</string>
+
     <string name="title_activity_find_others">FindOthersActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="logout">Wyloguj</string>
-    <string name="delete_account">Usuń konto</string>
-    <string name="deletion_account_confirmation">Czy na pewno chcesz usunąć konto?</string>
-    <string name="wrong_password">Złe hasło!</string>
-    <string name="account_deleted">Konto zostało usunięte</string>
 
-    <string name="provide_email">Podaj email:</string>
+    <!--<string name="logout">Wyloguj</string>-->
+    <string name="logout">Log Out</string>
+
+    <!--<string name="delete_account">Usuń konto</string>-->
+    <string name="delete_account">Delete account</string>
+
+    <!--<string name="deletion_account_confirmation">Czy na pewno chcesz usunąć konto?</string>-->
+    <string name="deletion_account_confirmation">Are you sure to DELETE account?</string>
+
+    <!--<string name="wrong_password">Złe hasło!</string>-->
+    <string name="wrong_password">Wrong password!</string>
+
+    <!--<string name="account_deleted">Konto zostało usunięte</string>-->
+    <string name="account_deleted">Account deleted</string>
+
+    <!--<string name="provide_email">Podaj email:</string>-->
+    <string name="provide_email">Enter email:</string>
 
 
     <!--Find others-->
@@ -382,20 +541,33 @@
 
     <!--<string name="share_location_title">Udostępnij!</string>-->
     <string name="share_location_title">Share!</string>
-    <string name="choose_activity">Choose activity:</string>
-    <string name="enter_msg">Enter message</string>
-    <string name="preview">Preview</string>
-    <string name="what_radius">What radius in kilometers to use?</string>
-    <string name="example_radius">Example: 3.5</string>
-    <string name="search">Search</string>
-    <string name="results">Results:</string>
-    <string name="your_shares">Your shares</string>
-    <string name="list">List</string>
-    <string name="map">Map</string>
-    <string name="show_profile">Show profile</string>
-    <string name="invite_to_friends">Invite to friends</string>
-    <string name="distance_to_you">Distance to you:</string>
-    <string name="already_a_friends">Already a friend</string>
 
+    <string name="choose_activity">Choose activity:</string>
+
+    <string name="enter_msg">Enter message</string>
+
+    <string name="preview">Preview</string>
+
+    <string name="what_radius">What radius in kilometers to use?</string>
+
+    <string name="example_radius">Example: 3.5</string>
+
+    <string name="search">Search</string>
+
+    <string name="results">Results:</string>
+
+    <string name="your_shares">Your shares</string>
+
+    <string name="list">List</string>
+
+    <string name="map">Map</string>
+
+    <string name="show_profile">Show profile</string>
+
+    <string name="invite_to_friends">Invite to friends</string>
+
+    <string name="distance_to_you">Distance to you:</string>
+
+    <string name="already_a_friends">Already a friend</string>
 
 </resources>

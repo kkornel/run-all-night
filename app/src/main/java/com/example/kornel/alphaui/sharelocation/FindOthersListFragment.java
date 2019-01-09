@@ -1,10 +1,12 @@
 package com.example.kornel.alphaui.sharelocation;
 
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,17 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
 
     private Location mYouLocation;
     private List<SharedLocationInfo> mSharedLocationInfoList;
+
+    private AlertDialog mInfoWindowDialog;
+
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mRootRef;
+    private DatabaseReference mUsersRef;
+    private DatabaseReference mFriendRequestsRef;
+    private String mUserUid;
+    private String mFriendUid;
 
     public FindOthersListFragment() {
 
@@ -90,12 +105,98 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
         mNoDataInfoTextView.setText("");
         mNoDataInfoTextView.setVisibility(View.VISIBLE);
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserUid = mFirebaseAuth.getUid();
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mRootRef = mFirebaseDatabase.getReference();
+
+        mUsersRef = mRootRef.child(Database.USERS);
+        mFriendRequestsRef = mRootRef.child(Database.FRIENDS_REQUESTS);
+
         return rootView;
+    }
+
+    private void showCameraGalleryDialog(int clickedItemIndex) {
+        User user = mSharedLocationInfoList.get(clickedItemIndex).getUserProfile();
+        SharedLocationInfo sli = mSharedLocationInfoList.get(clickedItemIndex);
+        final String userUid = user.getUserUid();
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        // Get the layout inflater
+        final LayoutInflater inflater = getLayoutInflater();
+
+        View mInfoWindow = inflater.inflate(R.layout.marker_info_window, null);
+        ImageView avatarImageView = mInfoWindow.findViewById(R.id.avatarImageView);
+        TextView nameTextView = mInfoWindow.findViewById(R.id.nameTextView);
+        TextView distanceLabel = mInfoWindow.findViewById(R.id.distanceLabel);
+        TextView distanceTextView = mInfoWindow.findViewById(R.id.distanceTextView);
+        TextView messageTextView = mInfoWindow.findViewById(R.id.messageTextView);
+        Button showProfileButton = mInfoWindow.findViewById(R.id.viewProfileButton);
+        final Button addToFriendsButton = mInfoWindow.findViewById(R.id.addToFriendButton);
+
+        DatabaseReference userFriendRef = mUsersRef.child(mUserUid).child(Database.FRIENDS).child(userUid);
+        ValueEventListener friendsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    addToFriendsButton.setEnabled(false);
+                    addToFriendsButton.setText(getString(R.string.already_a_friends));
+                } else {
+
+                    DatabaseReference userFriendRequestsRef = mFriendRequestsRef.child(mUserUid).child(userUid);
+                    ValueEventListener userFriendRequestsListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+                                addToFriendsButton.setEnabled(false);
+                                addToFriendsButton.setText(getString(R.string.friends_dialog_invitation_sent));
+                            } else {
+                                addToFriendsButton.setEnabled(true);
+                                addToFriendsButton.setText(getString(R.string.invite_to_friends));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                            throw databaseError.toException();
+                        }
+                    };
+                    userFriendRequestsRef.addListenerForSingleValueEvent(userFriendRequestsListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
+                throw databaseError.toException();
+            }
+        };
+        userFriendRef.addListenerForSingleValueEvent(friendsListener);
+
+        nameTextView.setText(sli.getUserProfile().getFullName());
+
+        distanceTextView.setText(sli.getDistanceToYouString() + "km");
+        messageTextView.setText(sli.getMessage());
+
+        Picasso.get()
+                .load(sli.getUserProfile().getAvatarUrl())
+                .into(avatarImageView);
+
+        mInfoWindowDialog = builder.create();
+        mInfoWindowDialog.show();
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        String friendUid = mSharedLocationInfoList.get(clickedItemIndex).getUserUid();
+        String userUid = mSharedLocationInfoList.get(clickedItemIndex).getUserUid();
+
+
+
+        showCameraGalleryDialog(clickedItemIndex);
+
+
 
         Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
     }

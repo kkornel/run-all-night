@@ -36,18 +36,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Jadwiga Ofca"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-                app:layout_constraintTop_toTopOf="@+id/avatarImageView" />
+                app:layout_constraintTop_toTopOf="@+id/avatarImageView"
+                tools:text="Jadwiga Ofca" />
 
             <TextView
                 android:id="@+id/distanceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Dystans do Ciebie:"
+                android:text="@string/distance_to_you"
                 app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
                 app:layout_constraintStart_toEndOf="@+id/avatarImageView" />
 
@@ -68,12 +68,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss"
                 android:textAlignment="viewStart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/avatarImageView"
-                app:layout_constraintTop_toBottomOf="@+id/avatarImageView" />
+                app:layout_constraintTop_toBottomOf="@+id/avatarImageView"
+                tools:text="Cześć, szukam ludzi chętnych do biegania! Ja biegam codziennie o godzinie 18, do okoła Malty. Spotykamy się pod galsssss" />
 
 
         </android.support.constraint.ConstraintLayout>

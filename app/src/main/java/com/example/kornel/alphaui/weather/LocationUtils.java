@@ -27,10 +27,13 @@ public class LocationUtils {
     private LocationManager mLocationManager;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private FusedLocationProviderClient mFusedLocationClient2;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private LocationCallback mLocationCallback2;
 
     private MyLocationResult mLocationResult;
+    private MyLocationResult mLocationResult2;
     private boolean mGpsEnabled = false;
     // private boolean mNetworkEnabled = false;
     private LocationErrorType mErrorType = null;
@@ -40,6 +43,38 @@ public class LocationUtils {
     public interface MyLocationResult {
         void gotLocation(Location location, LocationErrorType errorType);
     }
+
+    public void findUserLocation2(Activity activity, Context context, MyLocationResult result) {
+        mLocationResult2 = result;
+
+        if (mFusedLocationClient2 == null || mLocationManager == null) {
+            mFusedLocationClient2 = LocationServices.getFusedLocationProviderClient(context);
+            mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            createLocationRequest();
+        }
+
+        mLocationCallback2 = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                mLocationResult2.gotLocation(locationResult.getLastLocation(), mErrorType);
+                stopLocationUpdates();
+            }
+        };
+        mGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+
+        try {
+            mFusedLocationClient2.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback2,
+                    null /* Looper */);
+        } catch (SecurityException se) {
+            WeatherLog.e(se.getMessage());
+        }
+    }
+
 
     public void findUserLocation(Activity activity, Context context, MyLocationResult result) {
         WeatherLog.d(activity.toString());
@@ -59,6 +94,7 @@ public class LocationUtils {
                     return;
                 }
                 mLocationResult.gotLocation(locationResult.getLastLocation(), mErrorType);
+
             }
         };
 
