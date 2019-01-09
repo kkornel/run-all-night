@@ -81,7 +81,10 @@ public class LocationUtils {
 
         mLocationResult = result;
 
+        WeatherLog.setDebuggable(true);
+
         if (mFusedLocationClient == null || mLocationManager == null) {
+            WeatherLog.d("mFusedLocationClient or mFusedLocationClient == null");
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
             mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             createLocationRequest();
@@ -119,6 +122,7 @@ public class LocationUtils {
         // }
 
         if (!mGpsEnabled) {
+            WeatherLog.d("gps not enabled");
             result.gotLocation(null, mErrorType);
             return;
         }
@@ -140,6 +144,7 @@ public class LocationUtils {
 
         if (mGpsEnabled) {
             try {
+                WeatherLog.d("starting loc updates");
                 startLocationUpdates();
             } catch (SecurityException e) {
                 mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
@@ -147,6 +152,7 @@ public class LocationUtils {
         }
 
         if (mErrorType != null) {
+            WeatherLog.d("ups some errors");
             mLocationResult.gotLocation(null, mErrorType);
         } else {
             getLastLocation(activity);

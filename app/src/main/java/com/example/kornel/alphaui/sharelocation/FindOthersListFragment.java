@@ -68,6 +68,8 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     private String mUserUid;
     private String mFriendUid;
 
+    private boolean mFirstLocationUpdate = true;
+
     public FindOthersListFragment() {
 
     }
@@ -113,6 +115,8 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
 
         mUsersRef = mRootRef.child(Database.USERS);
         mFriendRequestsRef = mRootRef.child(Database.FRIENDS_REQUESTS);
+
+        new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersListFragment.this);
 
         return rootView;
     }
@@ -204,11 +208,16 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
         mYouLocation = location;
+        if (mFirstLocationUpdate) {
+            mFirstLocationUpdate = false;
+            return;
+        }
         mOnFindOthersCallback.onNewRequest(mYouLocation);
     }
 
     private void find(final String workoutType, final double distance) {
         new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersListFragment.this);
+
         mSharedLocationInfoList = new ArrayList<>();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -236,7 +245,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
 
                     // TODO i added this
                     if(mYouLocation == null) {
-                        Toast.makeText(getContext(), "Coulndt get your lcoation", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Couldn't get your location", Toast.LENGTH_LONG).show();
                         return;
                     }
 

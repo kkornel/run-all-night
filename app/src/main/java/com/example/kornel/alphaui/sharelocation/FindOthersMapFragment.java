@@ -288,9 +288,11 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     public void onNewRequest(final Location location) {
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
         mMap.clear();
         mMarkersMap = new HashMap<>();
         addYouMarker(mYouLatLng);
+
     }
 
     public void onMapUpdate(final SharedLocationInfo sharedLoc) {
