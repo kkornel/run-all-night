@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.kornel.alphaui.MapWrapperLayout;
 import com.example.kornel.alphaui.OnInfoWindowElemTouchListener;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.ViewProfileActivity;
+import com.example.kornel.alphaui.profile.ViewProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -292,7 +292,6 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mMap.clear();
         mMarkersMap = new HashMap<>();
         addYouMarker(mYouLatLng);
-
     }
 
     public void onMapUpdate(final SharedLocationInfo sharedLoc) {

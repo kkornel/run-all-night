@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewProfileActivity">
+    tools:context=".profile.ViewProfileActivity">
 
     <ImageView
         android:id="@+id/avatarImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/wall001" />
@@ -24,12 +25,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/colorBlack"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/avatarImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avatarImageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+        app:layout_constraintTop_toTopOf="@+id/avatarImageView"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="Pani jadwiga" />
 
     <TableLayout
@@ -37,11 +41,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView">
+        app:layout_constraintTop_toBottomOf="@+id/avatarImageView">
 
         <TableRow
             android:layout_width="match_parent"
@@ -49,7 +53,7 @@
             android:gravity="center_horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -59,20 +63,20 @@
                     android:id="@+id/totalDistanceTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1424km"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    tools:text="1424km" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dystans"
+                    android:text="@string/total_distance"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="154dp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -82,20 +86,19 @@
                     android:id="@+id/totalTimeTextView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="543h"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    tools:text="543h" />
 
                 <TextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Czas"
+                    android:text="@string/total_time"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="154dp" />
             </LinearLayout>
-
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -105,14 +108,14 @@
                     android:id="@+id/workoutsCountTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="874"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    tools:text="874" />
 
                 <TextView
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ilość treningów"
+                    android:text="@string/workouts"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="154dp" />
             </LinearLayout>
@@ -125,7 +128,7 @@
             android:gravity="center_horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="130dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -135,43 +138,20 @@
                     android:id="@+id/sharedLocationsCountTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    tools:text="4" />
 
                 <TextView
                     android:id="@+id/textView23"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Shared Locations"
+                    android:text="@string/shared_locations"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="154dp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/hmm2TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textColor="@color/colorBlack" />
-
-                <TextView
-                    android:id="@+id/textView2333"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hmm?"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="154dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="70dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -181,14 +161,14 @@
                     android:id="@+id/friendsCountTextView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="32"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    tools:text="32" />
 
                 <TextView
                     android:id="@+id/textView213"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Liczba znajomych"
+                    android:text="@string/friends"
                     tools:layout_editor_absoluteX="16dp"
                     tools:layout_editor_absoluteY="154dp" />
             </LinearLayout>

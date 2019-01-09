@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.sharelocation;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -23,18 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.ViewProfileActivity;
-import com.example.kornel.alphaui.profile.EditProfileActivity;
-import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
+import com.example.kornel.alphaui.profile.ViewProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.LocationUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -68,7 +61,6 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     private List<SharedLocationInfo> mSharedLocationInfoList;
 
     private AlertDialog mInfoWindowDialog;
-
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -130,88 +122,17 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
         return rootView;
     }
 
-    private void showCameraGalleryDialog(int clickedItemIndex) {
-        User user = mSharedLocationInfoList.get(clickedItemIndex).getUserProfile();
-        SharedLocationInfo sli = mSharedLocationInfoList.get(clickedItemIndex);
-        final String userUid = user.getUserUid();
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // Get the layout inflater
-        final LayoutInflater inflater = getLayoutInflater();
-
-        View mInfoWindow = inflater.inflate(R.layout.marker_info_window, null);
-        ImageView avatarImageView = mInfoWindow.findViewById(R.id.avatarImageView);
-        TextView nameTextView = mInfoWindow.findViewById(R.id.nameTextView);
-        TextView distanceLabel = mInfoWindow.findViewById(R.id.distanceLabel);
-        TextView distanceTextView = mInfoWindow.findViewById(R.id.distanceTextView);
-        TextView messageTextView = mInfoWindow.findViewById(R.id.messageTextView);
-        Button showProfileButton = mInfoWindow.findViewById(R.id.viewProfileButton);
-        final Button addToFriendsButton = mInfoWindow.findViewById(R.id.addToFriendButton);
-
-        DatabaseReference userFriendRef = mUsersRef.child(mUserUid).child(Database.FRIENDS).child(userUid);
-        ValueEventListener friendsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    addToFriendsButton.setEnabled(false);
-                    addToFriendsButton.setText(getString(R.string.already_a_friends));
-                } else {
-
-                    DatabaseReference userFriendRequestsRef = mFriendRequestsRef.child(mUserUid).child(userUid);
-                    ValueEventListener userFriendRequestsListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                addToFriendsButton.setEnabled(false);
-                                addToFriendsButton.setText(getString(R.string.friends_dialog_invitation_sent));
-                            } else {
-                                addToFriendsButton.setEnabled(true);
-                                addToFriendsButton.setText(getString(R.string.invite_to_friends));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                            throw databaseError.toException();
-                        }
-                    };
-                    userFriendRequestsRef.addListenerForSingleValueEvent(userFriendRequestsListener);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: " + databaseError.getMessage());
-                throw databaseError.toException();
-            }
-        };
-        //userFriendRef.addListenerForSingleValueEvent(friendsListener);
-
-        nameTextView.setText(sli.getUserProfile().getFullName());
-
-        distanceTextView.setText(sli.getDistanceToYouString() + "km");
-        messageTextView.setText(sli.getMessage());
-
-        Picasso.get()
-                .load(sli.getUserProfile().getAvatarUrl())
-                .into(avatarImageView);
-
-        mInfoWindowDialog = builder.create();
-        mInfoWindowDialog.show();
-    }
-    public void showConfirmPasswordDialog(int clickedItemIndex) {
+    public void showUserDialog(int clickedItemIndex) {
         final SharedLocationInfo sli = mSharedLocationInfoList.get(clickedItemIndex);
         final String userUid = mSharedLocationInfoList.get(clickedItemIndex).getUserUid();
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        // Get the layout inflater
+
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.marker_info_window, null);
         ImageView avatarImageView = vView.findViewById(R.id.avatarImageView);
         TextView nameTextView = vView.findViewById(R.id.nameTextView);
-        TextView distanceLabel = vView.findViewById(R.id.distanceLabel);
         TextView distanceTextView = vView.findViewById(R.id.distanceTextView);
         TextView messageTextView = vView.findViewById(R.id.messageTextView);
         Button showProfileButton = vView.findViewById(R.id.viewProfileButton);
@@ -295,15 +216,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     }
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        String userUid = mSharedLocationInfoList.get(clickedItemIndex).getUserUid();
-
-
-        showConfirmPasswordDialog(clickedItemIndex);
-        // showCameraGalleryDialog(clickedItemIndex);
-
-
-
-        Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+        showUserDialog(clickedItemIndex);
     }
 
     @Override

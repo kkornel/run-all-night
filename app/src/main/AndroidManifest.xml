@@ -112,7 +112,7 @@
             android:name=".sharelocation.FindOthersActivity"
             android:label="@string/title_activity_find_others"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ViewProfileActivity" />
+        <activity android:name=".profile.ViewProfileActivity" />
         <activity android:name=".SettingsActivity"></activity>
     </application>
 
