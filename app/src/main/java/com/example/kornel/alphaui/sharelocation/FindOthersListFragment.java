@@ -77,13 +77,6 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
         mResultsLabel = rootView.findViewById(R.id.resultsLabel);
         mResultsLabel.setVisibility(View.INVISIBLE);
 
-        mWorkoutTypeSpinner.post(new Runnable() {
-            @Override
-            public void run() {
-                mWorkoutTypeSpinner.setSelection(8);
-            }
-        });
-
         mNoDataInfoTextView = rootView.findViewById(R.id.noDataInfoTextView);
 
         mRecyclerView = rootView.findViewById(R.id.recyclerView);
@@ -138,6 +131,12 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
 
                     if (sharedLocationInfo.getUserUid().equals(userUid)) {
                         continue;
+                    }
+
+                    // TODO i added this
+                    if(mYouLocation == null) {
+                        Toast.makeText(getContext(), "Coulndt get your lcoation", Toast.LENGTH_LONG).show();
+                        return;
                     }
 
                     double distanceToYou = mYouLocation.distanceTo(sharedLocationInfo.getLocation());

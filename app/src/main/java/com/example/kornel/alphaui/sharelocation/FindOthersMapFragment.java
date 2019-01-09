@@ -45,6 +45,8 @@ import java.util.Map;
 public class FindOthersMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
     private static final String TAG = "FindOthersMapFragment";
 
+    public static final String EXTRA_USER = "extra_user";
+
     private static final int MARKER_MAP_PADDING = 200;
     private static final int MAP_ZOOM = 17;
 
@@ -166,7 +168,6 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
                     // to the MapWrapperLayout
                     mMapWrapperLayout.setMarkerWithInfoWindow(marker, mInfoWindow);
                     return mInfoWindow;
-
                 }
 
                 mAvatarImageView.setVisibility(View.VISIBLE);
@@ -243,19 +244,17 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
-                Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
-                // startActivity(new Intent(Main2Activity.this, Main3Activity.class));
+                // Toast.makeText(getContext(), marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
 
                 SharedLocationInfo iasd = mMarkersMap.get(marker);
-                Log.d(TAG, "onClickConfirmed: " + iasd.getUserProfile());
 
+                Intent i = new Intent(getContext(), ViewProfileActivity.class);
+                i.putExtra(EXTRA_USER, iasd.getUserProfile());
 
-
-                startActivity(new Intent(getContext(), ViewProfileActivity.class));
+                startActivity(i);
             }
         };
         mShowProfileButton.setOnTouchListener(mShowProfileButtonListener);
-
 
         mAddToFriendsButtonListener = new OnInfoWindowElemTouchListener(mShowProfileButton) {
             @Override

@@ -1,18 +1,18 @@
 package com.example.kornel.alphaui.utils;
 
 public enum GpsBasedWorkout {
-    RUNNING("Bieganie"),
-    WALKING("Chód"),
-    SKATEBOARDING("Jazda na deskorolce"),
-    RIDING("Jazda konno"),
-    ICE_SKATING("Jazda na łyżwach"),
-    SKIING("Jazda na nartach"),
-    ROLLER_SKATING("Jazda na rolkach"),
-    SNOWBOARDING("Jazda na snowboardzie"),
-    CYCLING("Jazda rowerem"),
-    SWIMMING("Pływanie"),
+    RUNNING("Running"),
+    WALKING("Walking"),
+    SKATEBOARDING("Skateboarding"),
+    RIDING("Horse riding"),
+    ICE_SKATING("Ice skating"),
+    SKIING("Skiing"),
+    ROLLER_SKATING("Roller skating"),
+    SNOWBOARDING("Snowboarding"),
+    CYCLING("Cycling"),
+    SWIMMING("Swimming"),
     TREKKING("Trekking"),
-    ROWING("Wiosłowanie");
+    ROWING("Rowing");
 
     private String value;
 
