@@ -33,10 +33,8 @@ public class ProfileDetailsActivity extends AppCompatActivity {
     private TextView mTotalDistanceTextView;
     private TextView mTotalTimeTextView;
     private TextView mWorkoutsCountTextView;
-    private TextView mHmm1TextView;
-    private TextView mHmm2TextView;
+    private TextView mSharedLocationsCountTextView;
     private TextView mFriendsCountTextView;
-
 
     private Button mEditProfileButton;
     private Button mAddFriendButton;
@@ -60,8 +58,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         mTotalDistanceTextView = findViewById(R.id.totalDistanceTextView);
         mTotalTimeTextView = findViewById(R.id.totalTimeTextView2);
         mWorkoutsCountTextView = findViewById(R.id.workoutsCountTextView);
-        mHmm1TextView = findViewById(R.id.hmm1TextView);
-        mHmm2TextView = findViewById(R.id.hmm2TextView);
+        mSharedLocationsCountTextView = findViewById(R.id.sharedLocationsCountTextView);
         mFriendsCountTextView = findViewById(R.id.friendsCountTextView2);
 
         mEditProfileButton = findViewById(R.id.editProfileButton);
@@ -106,6 +103,11 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 } else {
                     mFriendsCountTextView.setText(user.getFriends().size() + "");
                 }
+                if (user.getSharedLocations() == null) {
+                    mSharedLocationsCountTextView.setText(0 + "");
+                } else {
+                    mSharedLocationsCountTextView.setText(user.getSharedLocations().size() + "");
+                }
             }
 
             @Override
@@ -113,8 +115,6 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 throw databaseError.toException();
             }
         });
-
-
     }
 
     @Override

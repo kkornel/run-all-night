@@ -208,7 +208,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Log.d(TAG, "User password updated.");
+                                Log.d(TAG, "Users password updated.");
                             }
                         }
                     });
@@ -270,12 +270,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     public void showConfirmPasswordDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
+
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.confirm_password_dialog, null);
@@ -286,8 +285,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         final AlertDialog dialog;
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView)
                 // Add action buttons
                 .setPositiveButton(R.string.confirm_password_confirm_button, null)
@@ -320,12 +317,12 @@ public class EditProfileActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             uploadChanges();
                             hideProgressDialog();
-                            Toast.makeText(EditProfileActivity.this, "Zapisano zmiany", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, getString(R.string.changes_saved), Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                             Intent i = new Intent(EditProfileActivity.this, ProfileDetailsActivity.class);
                             startActivity(i);
                         } else {
-                            infoTextView.setText("Złe hasło!");
+                            infoTextView.setText(getString(R.string.wrong_password));
                         }
                     }
                 });

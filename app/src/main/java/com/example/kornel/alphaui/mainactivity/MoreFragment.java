@@ -21,14 +21,10 @@ import com.example.kornel.alphaui.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MoreFragment extends Fragment {
-    private static final String TAG = "MoreFragment";
-
-    Button mFreeButton;
-    Button mShareYourLocationButton;
-    Button mFindOtherRunnersButton;
-    Button mFriendsButton;
-    Button mLogoutButton;
-
+    private Button mShareYourLocationButton;
+    private Button mFindOtherRunnersButton;
+    private Button mFriendsButton;
+    private Button mLogoutButton;
 
     public MoreFragment() {
         // Required empty public constructor
@@ -36,22 +32,12 @@ public class MoreFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
-        mFreeButton = rootView.findViewById(R.id.freeButton);
         mShareYourLocationButton = rootView.findViewById(R.id.shareYourLocationButton);
         mFindOtherRunnersButton = rootView.findViewById(R.id.findOtherRunnersButton);
         mFriendsButton = rootView.findViewById(R.id.friendsButton);
         mLogoutButton = rootView.findViewById(R.id.logoutButton);
-
-        mFreeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         mShareYourLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,14 +83,11 @@ public class MoreFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Add your menu entries here
         super.onCreateOptionsMenu(menu, inflater);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.settings_menu_item:
                 Intent i = new Intent(getContext(), SettingsActivity.class);
@@ -114,5 +97,4 @@ public class MoreFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

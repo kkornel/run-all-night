@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog1, int id) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                        // Get the layout inflater
+
                         final LayoutInflater inflater = getLayoutInflater();
 
                         View vView = inflater.inflate(R.layout.confirm_password_dialog, null);
@@ -113,10 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         final AlertDialog dialog;
 
-                        // Inflate and set the layout for the dialog
-                        // Pass null as the parent view because its going in the dialog layout
                         builder.setView(vView)
-                                // Add action buttons
                                 .setPositiveButton(R.string.confirm_password_confirm_button, null)
                                 .setNegativeButton(R.string.confirm_password_cancel_button, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {

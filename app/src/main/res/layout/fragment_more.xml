@@ -8,33 +8,27 @@
 
 
     <Button
-        android:id="@+id/freeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
-    <Button
         android:id="@+id/shareYourLocationButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="share your location" />
+        android:text="@string/share_your_location_title" />
 
     <Button
         android:id="@+id/findOtherRunnersButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Find other runners" />
+        android:text="@string/find_others_title" />
 
     <Button
         android:id="@+id/friendsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Friends" />
+        android:text="@string/friends" />
 
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout" />
+        android:text="@string/logout" />
 
 </LinearLayout>

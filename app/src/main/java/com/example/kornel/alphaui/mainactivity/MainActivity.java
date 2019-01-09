@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_more:
                     fragmentManager.beginTransaction().hide(active).show(moreFragment).commit();
                     active = moreFragment;
-                    mToolbar.setNavigationIcon(R.drawable.ic_directions_bike_black_24dp);
+                    mToolbar.setNavigationIcon(R.drawable.ic_profile_white_2);
                     mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
