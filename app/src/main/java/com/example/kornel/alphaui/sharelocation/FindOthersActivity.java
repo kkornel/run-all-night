@@ -32,6 +32,9 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.find_others_title);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = findViewById(R.id.container);
@@ -85,5 +88,11 @@ public class FindOthersActivity extends AppCompatActivity implements FindOthersM
         public int getCount() {
             return 2;
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

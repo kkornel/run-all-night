@@ -27,7 +27,10 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.share_location_title);
+        toolbar.setTitle(R.string.share_your_location_title);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -76,5 +79,11 @@ public class ShareYourLocationActivity extends AppCompatActivity implements Shar
         public int getCount() {
             return 2;
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

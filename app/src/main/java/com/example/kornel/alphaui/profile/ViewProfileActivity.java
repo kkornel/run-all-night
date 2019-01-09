@@ -2,6 +2,7 @@ package com.example.kornel.alphaui.profile;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +26,13 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.users_profile);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         User user = (User) getIntent().getExtras().getSerializable(EXTRA_USER);
 
@@ -56,5 +64,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         } else {
             mSharedLocationsCountTextView.setText(user.getSharedLocations().size() + "");
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

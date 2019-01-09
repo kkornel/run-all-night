@@ -573,5 +573,7 @@
     <string name="shared_locations">Shared locations</string>
     <string name="total_time">Total time</string>
     <string name="total_distance">Total distance</string>
+    <string name="share_your_location_title">Share your location</string>
+    <string name="users_profile">User\'s profile</string>
 
 </resources>
