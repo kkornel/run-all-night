@@ -100,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintBaseline_toBaselineOf="@+id/currentWeatherDescriptionTextView"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Updated:" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Wiatr"
+                android:text="@string/wind"
                 app:layout_constraintBaseline_toBaselineOf="@+id/pressureLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/horizontal_666" />
@@ -154,10 +154,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintBaseline_toBaselineOf="@+id/humidityTextView"
                 app:layout_constraintEnd_toStartOf="@+id/horizontal_666"
-                app:layout_constraintStart_toStartOf="@+id/horizontal_333" />
+                app:layout_constraintStart_toStartOf="@+id/horizontal_333"
+                tools:text="1010hPa" />
 
             <TextView
                 android:id="@+id/pressureLabel"
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Ciśnienie"
+                android:text="@string/pressure"
                 app:layout_constraintBaseline_toBaselineOf="@+id/humidityLabel"
                 app:layout_constraintEnd_toStartOf="@+id/horizontal_666"
                 app:layout_constraintStart_toStartOf="@+id/horizontal_333" />
@@ -176,10 +176,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintEnd_toStartOf="@+id/horizontal_333"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="80%" />
 
             <TextView
                 android:id="@+id/windTextView"
@@ -187,10 +187,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="TextView"
                 app:layout_constraintBaseline_toBaselineOf="@+id/pressureTextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/horizontal_666" />
+                app:layout_constraintStart_toStartOf="@+id/horizontal_666"
+                tools:text="23km/h" />
 
             <TextView
                 android:id="@+id/humidityLabel"
@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="Wilgotność"
+                android:text="@string/humidity"
                 app:layout_constraintEnd_toStartOf="@+id/horizontal_333"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/humidityTextView" />
@@ -297,10 +297,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="TextView"
                 app:layout_constraintBottom_toTopOf="@+id/todayWeatherIconImageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Location" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 

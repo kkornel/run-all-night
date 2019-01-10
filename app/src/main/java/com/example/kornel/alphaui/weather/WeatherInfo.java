@@ -15,7 +15,6 @@ public class WeatherInfo implements Parcelable {
     public static final String PERCENT = "%";
     public static final String HECTOPASCAL = " hPa";
 
-
     /*
      * information in object "channel"
      */

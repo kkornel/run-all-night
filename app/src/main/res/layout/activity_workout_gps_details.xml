@@ -60,21 +60,21 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_017"
-                        app:layout_constraintTop_toTopOf="@+id/activityIconImageView" />
+                        app:layout_constraintTop_toTopOf="@+id/activityIconImageView"
+                        tools:text="Running" />
 
                     <TextView
                         android:id="@+id/dateTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="TextView"
                         app:layout_constraintBottom_toBottomOf="@+id/activityIconImageView"
-                        app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_017" />
+                        app:layout_constraintStart_toStartOf="@+id/horizontalGuideline_017"
+                        tools:text="Monday, 10 January 2019 09:54" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
 
@@ -125,12 +125,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/durationImageView"
-                        app:layout_constraintStart_toEndOf="@+id/durationImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/durationImageView"
+                        tools:text="0:00" />
 
                     <ImageView
                         android:id="@+id/avgPaceImageView"
@@ -157,12 +157,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/avgPaceImageView"
-                        app:layout_constraintStart_toEndOf="@+id/avgPaceImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/avgPaceImageView"
+                        tools:text="0:00" />
 
                     <ImageView
                         android:id="@+id/avgSpeedImageView"
@@ -192,12 +192,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/avgSpeedImageView"
-                        app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/avgSpeedImageView"
+                        tools:text="0.0" />
 
                     <android.support.constraint.Guideline
                         android:id="@+id/horizontalGuideline_05"
@@ -232,12 +232,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/distanceImageView"
-                        app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/distanceImageView"
+                        tools:text="0.00" />
 
                     <ImageView
                         android:id="@+id/maxPaceImageView"
@@ -269,7 +269,8 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/maxPaceImageView"
-                        app:layout_constraintStart_toEndOf="@+id/maxPaceImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/maxPaceImageView"
+                        tools:text="0:00" />
 
                     <ImageView
                         android:id="@+id/maxSpeedImageView"
@@ -298,12 +299,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text="TextView"
                         android:textColor="@color/colorBlack"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/maxSpeedImageView"
-                        app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView" />
+                        app:layout_constraintStart_toEndOf="@+id/maxSpeedImageView"
+                        tools:text="0.0" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -424,12 +425,12 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="TextView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/editDescriptionButton"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Status..." />
 
                     <ImageButton
                         android:id="@+id/editDescriptionButton"
@@ -534,7 +535,7 @@
                         android:textStyle="bold"
                         app:layout_constraintBaseline_toBaselineOf="@+id/privacyLabel2"
                         app:layout_constraintStart_toEndOf="@+id/privacyLabel2"
-                        tools:text="Tylko ja" />
+                        tools:text="Only me" />
 
                     <Button
                         android:id="@+id/changePrivacyButton"
@@ -664,11 +665,11 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="TextView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/weatherImageView" />
+                        app:layout_constraintTop_toBottomOf="@+id/weatherImageView"
+                        tools:text="Windy" />
 
                     <ImageView
                         android:id="@+id/weatherImageView"

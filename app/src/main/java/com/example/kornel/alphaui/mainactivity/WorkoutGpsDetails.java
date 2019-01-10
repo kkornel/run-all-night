@@ -409,7 +409,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void onEditStatus() {
-        // Get the layout inflater
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_change_description, null);
         final EditText editText = view.findViewById(R.id.editStatusEditText);
@@ -422,8 +421,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         editText.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         new AlertDialog.Builder(WorkoutGpsDetails.this)
                 .setView(view)
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -613,7 +610,7 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
         if (mWorkoutSummary.getPicUrl() != null && !mWorkoutSummary.getPicUrl().equals("")) {
             deletePhotoFromDatabase();
         } else {
-            Log.d(TAG, "onSuccess: WORKOUT DOESNOT COTAING PICTURE");
+            Log.d(TAG, "onSuccess: Workout does not contain photo");
         }
 
         workoutRef.child(mUserUid).child(mWorkoutKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {

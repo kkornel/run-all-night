@@ -2,8 +2,8 @@
 <resources>
     <array
         name="privacy_settings_array">
-        <item>Znajomi</item>
-        <item>Tylko ja</item>
+        <item>Friends</item>
+        <item>Only me</item>
     </array>
 
     <array

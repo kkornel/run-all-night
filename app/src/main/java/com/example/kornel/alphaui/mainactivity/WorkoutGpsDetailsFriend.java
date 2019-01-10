@@ -37,8 +37,6 @@ import static com.example.kornel.alphaui.mainactivity.FeedFriendsFragment.FRIEND
 import static com.example.kornel.alphaui.weather.WeatherInfo.CELSIUS;
 
 public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapReadyCallback {
-    private static final String TAG = "WorkoutGpsDetailsFriend";
-
     private ImageView mAvatarImageView;
     private TextView mNameTextView;
 
@@ -204,7 +202,6 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
             mWeatherCardView.setVisibility(View.GONE);
         }
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

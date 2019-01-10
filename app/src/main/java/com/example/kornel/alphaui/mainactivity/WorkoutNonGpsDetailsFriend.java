@@ -17,8 +17,6 @@ import com.squareup.picasso.Picasso;
 import static com.example.kornel.alphaui.mainactivity.FeedFriendsFragment.FRIEND_WORKOUT_INTENT_EXTRA;
 
 public class WorkoutNonGpsDetailsFriend extends AppCompatActivity {
-    private static final String TAG = "WorkoutNonGpsDetailsFri";
-
     private ImageView mAvatarImageView;
     private TextView mNameTextView;
 

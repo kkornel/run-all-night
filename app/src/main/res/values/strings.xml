@@ -591,5 +591,8 @@
     <string name="weather_details">Weather details</string>
     <string name="selected">Selected</string>
     <string name="last_workout">Last workout:</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
 
 </resources>
