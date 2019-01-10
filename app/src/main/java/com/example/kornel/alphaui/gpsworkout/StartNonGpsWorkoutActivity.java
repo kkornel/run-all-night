@@ -23,8 +23,6 @@ import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROU
 import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 
 public class StartNonGpsWorkoutActivity extends AppCompatActivity implements OnNewActivityState {
-    private static final String TAG = "StartNonGpsWorkoutActiv";
-
     private static final int START_BUTTON_INDEX_IN_VIEW_FLIPPER = 0;
     private static final int PAUSE_BUTTON_INDEX_IN_VIEW_FLIPPER = 1;
     private static final int RESUME_FINISH_BUTTON_INDEX_IN_VIEW_FLIPPER = 2;

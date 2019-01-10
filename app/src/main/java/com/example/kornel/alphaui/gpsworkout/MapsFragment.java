@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +33,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
-    private static final String TAG = "MapsFragment";
-
     public static final String ACTION_LOCATION_CHANGED = "location_changed_intent_filter";
     public static final String ACTION_LAST_LOCATION = "last_location_intent_filter";
 
@@ -136,7 +133,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         mCurrentMarker = mMap.addMarker(new MarkerOptions()
                 .position(path.get(path.size() - 1))
-                .title("Ty")
+                .title(getString(R.string.you))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
     }
 
@@ -160,8 +157,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public class LocationBroadcastReceiver extends BroadcastReceiver {
-        private static final String TAG = "LocationBroadcastReceiv";
-
         public static final String LOCATION_EXTRA_BROADCAST_INTENT = "array_path";
         public static final String LAST_LOCATION_EXTRA_BROADCAST_INTENT = "last_location";
 
@@ -183,7 +178,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         public void run() {
                             mMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
-                                    .title("Start")
+                                    .title(getString(R.string.start))
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                             centerMapOnTheLocationZoom(lastLocation, ZOOM_VALUE, true);
                         }
@@ -202,8 +197,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             // If user is looking and map do not move camera, just update path.
                             // Otherwise move and zoom camera to the new location.
                             updatePath(mPath);
-
-                            Log.d(TAG, "run: " + getUserVisibleHint());
 
                             if (!getUserVisibleHint()) {
                                 int idxOfNewLocation = mPath.size() - 1;

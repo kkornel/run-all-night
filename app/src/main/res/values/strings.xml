@@ -594,5 +594,14 @@
     <string name="wind">Wind</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
+    <!--<string name="no_weather_info">Brak informacji o pogodzie.</string>-->
+    <string name="no_weather_info">No weather info</string>
+    <string name="time">TIME</string>
+    <string name="kilometers">KILOMETERS</string>
+    <string name="current_pace">CURRENT PACE</string>
+    <string name="average_pace">AVG PACE</string>
+    <string name="durationn">Duration</string>
+    <string name="edit">Edit</string>
+    <string name="capital_start">START</string>
 
 </resources>

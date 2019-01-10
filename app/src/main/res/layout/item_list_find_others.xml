@@ -56,10 +56,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="17dp"
                 android:layout_marginStart="8dp"
-                android:text="1.8 km"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/distanceLabel"
-                app:layout_constraintStart_toEndOf="@+id/distanceLabel" />
+                app:layout_constraintStart_toEndOf="@+id/distanceLabel"
+                tools:text="1.8 km" />
 
             <TextView
                 android:id="@+id/messageTextView"

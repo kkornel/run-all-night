@@ -39,11 +39,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Wegiliusz M."
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-                app:layout_constraintTop_toTopOf="@+id/avatarImageView" />
+                app:layout_constraintTop_toTopOf="@+id/avatarImageView"
+                tools:text="Wergiliusz M." />
 
             <ImageView
                 android:id="@+id/activityImageView"
@@ -59,9 +59,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Yesterday at 12:34 PM"
                 app:layout_constraintBottom_toBottomOf="@+id/activityImageView"
-                app:layout_constraintStart_toEndOf="@+id/activityImageView" />
+                app:layout_constraintStart_toEndOf="@+id/activityImageView"
+                tools:text="Yesterday at 12:34 PM" />
 
             <TextView
                 android:id="@+id/distanceLabel"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Distance"
+                android:text="@string/distance"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider10" />
 
@@ -79,20 +79,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:text="12.5km"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/distanceLabel"
                 app:layout_constraintStart_toStartOf="@+id/distanceLabel"
-                app:layout_constraintTop_toBottomOf="@+id/distanceLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/distanceLabel"
+                tools:text="12.5km" />
 
             <TextView
                 android:id="@+id/durationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Duration"
+                android:text="@string/durationn"
                 app:layout_constraintBaseline_toBaselineOf="@+id/distanceLabel"
                 app:layout_constraintStart_toEndOf="@+id/divider8" />
 
@@ -100,12 +100,12 @@
                 android:id="@+id/durationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="25:43"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/distanceTextView"
                 app:layout_constraintEnd_toEndOf="@+id/durationLabel"
-                app:layout_constraintStart_toStartOf="@+id/durationLabel" />
+                app:layout_constraintStart_toStartOf="@+id/durationLabel"
+                tools:text="25:43" />
 
             <View
                 android:id="@+id/divider8"

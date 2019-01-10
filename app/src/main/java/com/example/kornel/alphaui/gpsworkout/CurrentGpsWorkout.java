@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CurrentGpsWorkout {
-    private static final String TAG = "CurrentGpsWorkout";
-
     private static final int MAX_OMITTED_LAT_LONS = 5;
     private static final double MIN_VALUE_OF_TOTAL_DISTANCE_METERS = 0.5;
     private static final double MIN_VALUE_OF_METERS_BETWEEN_LOCATIONS = 0.5;

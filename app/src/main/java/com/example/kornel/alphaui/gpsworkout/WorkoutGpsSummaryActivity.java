@@ -264,7 +264,7 @@ public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMa
                     .into(mWeatherImageView);
             mWeatherTempTextView.setText(weatherInfoCompressed.getTempC() + CELSIUS);
         } else {
-            mWeatherSummaryTextView.setText("Brak informacji o pogodzie.");
+            mWeatherSummaryTextView.setText(getString(R.string.no_weather_info));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mWeatherImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_umbrella, getApplicationContext().getTheme()));
             } else {

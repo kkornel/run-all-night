@@ -39,11 +39,7 @@ import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_START_FOREGRO
 import static com.example.kornel.alphaui.utils.ServiceUtils.ACTION_STOP_FOREGROUND_SERVICE;
 import static com.example.kornel.alphaui.utils.WorkoutUtils.WORKOUT_DETAILS_EXTRA_INTENT;
 
-public class StartGpsWorkoutActivity extends AppCompatActivity implements
-        OnNewActivityState,
-        MapsFragment.OnMapUpdate {
-    private static final String TAG = "StartGpsWorkoutActivity";
-
+public class StartGpsWorkoutActivity extends AppCompatActivity implements OnNewActivityState, MapsFragment.OnMapUpdate {
     private static final int REQUEST_CODE_PERMISSIONS_FINE_LOCATION = 34;
 
     private static final int START_BUTTON_INDEX_IN_VIEW_FLIPPER = 0;
@@ -301,7 +297,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
         mViewPager.setCurrentItem(MAIN_DETAIL_FRAGMENT_INDEX_IN_VIEW_PAGER);
     }
 
-    // A FragmentPagerAdapter that returns a fragment corresponding to one of the sections/tabs/pages.
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -309,8 +304,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
                 mMapsFragment = new MapsFragment();
                 mMapsFragment.setCallback(StartGpsWorkoutActivity.this);
@@ -326,7 +319,6 @@ public class StartGpsWorkoutActivity extends AppCompatActivity implements
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 3;
         }
     }

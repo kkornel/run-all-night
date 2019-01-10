@@ -3,8 +3,6 @@ package com.example.kornel.alphaui.gpsworkout;
 import java.util.Date;
 
 public class CurrentIndoorWorkout {
-    private static final String TAG = "CurrentIndoorWorkout";
-
     private Date mDate;
     private String mWorkoutName;
     private long mDuration;         // [ms]

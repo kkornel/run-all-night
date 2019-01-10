@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.example.kornel.alphaui.R;
 
 public class MainDetailsFragment extends Fragment {
-    private static final String TAG = "MainDetailsFragment";
-
     private TextView mTimeTextView;
     private TextView mDistanceTextView;
     private TextView mCurrentPaceTextView;

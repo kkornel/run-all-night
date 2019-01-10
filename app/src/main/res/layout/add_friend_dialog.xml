@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        tools:text="Ten użytkownik znajduje sie już na twojej liście znajomych" />
+        tools:text="@string/user_is_already_a_friends" />
 
 
 </LinearLayout>

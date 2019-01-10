@@ -25,7 +25,6 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
     @NonNull
     @Override
     public PaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.pace_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -39,8 +38,6 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PaceViewHolder paceViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mLapsList == null) || (mLapsList.size() == 0)) {
             paceViewHolder.mLapNumberTextView.setText("ERROR");
         } else {
@@ -57,9 +54,7 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
                 int secProgress = (int) lap.getTime() / 1000;
                 paceViewHolder.mLapProgressBar.setProgress(secProgress);
             }
-
         }
-
         // Googles way
         // paceViewHolder.bind(position);
     }

@@ -21,14 +21,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="42:21" />
+        tools:text="0:00" />
 
     <TextView
         android:id="@+id/totalTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TIME"
+        android:text="@string/time"
         app:layout_constraintEnd_toEndOf="@+id/timeTextView"
         app:layout_constraintStart_toStartOf="@+id/timeTextView"
         app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
@@ -91,7 +91,7 @@
                 android:background="@drawable/circle_button"
                 android:fontFamily="@font/lato_bold"
                 android:src="@drawable/ic_play_arrow_black_64dp"
-                android:text="START"
+                android:text="@string/capital_start"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"

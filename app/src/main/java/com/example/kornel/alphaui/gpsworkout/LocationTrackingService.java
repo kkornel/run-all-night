@@ -112,12 +112,10 @@ public class LocationTrackingService extends Service {
             case ACTION_START_FOREGROUND_SERVICE:
                 String workoutName = intent.getStringExtra(WORKOUT_NAME_EXTRA_INTENT);
                 startForegroundService(workoutName);
-                Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_SHORT).show();
                 break;
 
             case ACTION_STOP_FOREGROUND_SERVICE:
                 stopForegroundService();
-                Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_SHORT).show();
                 break;
 
             case ACTION_RESUME_WORKOUT:

@@ -67,7 +67,7 @@
                 android:background="@drawable/circle_button"
                 android:fontFamily="@font/lato_bold"
                 android:src="@drawable/ic_play_arrow_black_64dp"
-                android:text="START"
+                android:text="@string/capital_start"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -17,8 +17,6 @@ import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.Lap;
 
 public class PaceDetailsFragment extends Fragment {
-    private static final String TAG = "PaceDetailsFragment";
-
     private TextView mTimeTextView;
     private TextView mAvgPaceTextView;
     private TextView mCurrentPaceTextView;

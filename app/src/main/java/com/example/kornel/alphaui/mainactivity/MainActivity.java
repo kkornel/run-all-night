@@ -1,6 +1,7 @@
 package com.example.kornel.alphaui.mainactivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setDisplayShowTitleEnabled(true);
                     mToolbar.setTitle(R.string.feed_toolbar_title);
                     mToolbar.setNavigationIcon(null);
+                    mToolbar.setTitleTextColor(Color.WHITE);
                     invalidateOptionsMenu();
                     return true;
 
