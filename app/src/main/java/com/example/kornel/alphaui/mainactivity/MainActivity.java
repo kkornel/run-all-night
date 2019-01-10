@@ -8,60 +8,60 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.weather.WeatherLog;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String MORE_FRAGMENT = "MoreFragment";
+    private static final String FEED_FRAGMENT = "FeedFragment";
+    private static final String WORKOUT_FRAGMENT = "WorkoutFragment";
 
     private Toolbar mToolbar;
     private TextView mTitle;
 
-    private final FeedFragment feedFragment = new FeedFragment();
-    private final WorkoutFragment workoutFragment = new WorkoutFragment();
-    private final MoreFragment moreFragment = new MoreFragment();
-    private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private Fragment active = workoutFragment;
+    private final FeedFragment mFeedFragment = new FeedFragment();
+    private final WorkoutFragment mWorkoutFragment = new WorkoutFragment();
+    private final MoreFragment mMoreFragment = new MoreFragment();
+    private final FragmentManager mFragmentManager = getSupportFragmentManager();
+    private Fragment mActive = mWorkoutFragment;
 
     private BottomNavigationView mBottomNavigationView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
+
                 case R.id.navigation_feed:
-                    fragmentManager.beginTransaction().hide(active).show(feedFragment).commit();
-                    active = feedFragment;
+                    mFragmentManager.beginTransaction().hide(mActive).show(mFeedFragment).commit();
+                    mActive = mFeedFragment;
                     mTitle.setVisibility(View.GONE);
                     getSupportActionBar().setDisplayShowTitleEnabled(true);
-                    mToolbar.setTitle("Feed");
+                    mToolbar.setTitle(R.string.feed_toolbar_title);
                     mToolbar.setNavigationIcon(null);
                     invalidateOptionsMenu();
                     return true;
 
                 case R.id.navigation_workout:
-                    fragmentManager.beginTransaction().hide(active).show(workoutFragment).commit();
-                    active = workoutFragment;
+                    mFragmentManager.beginTransaction().hide(mActive).show(mWorkoutFragment).commit();
+                    mActive = mWorkoutFragment;
                     mTitle.setVisibility(View.VISIBLE);
-                    mTitle.setText("MoonRunner");
+                    mTitle.setText(getString(R.string.mainacitivity_title));
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                     invalidateOptionsMenu();
                     mToolbar.setNavigationIcon(null);
                     return true;
 
                 case R.id.navigation_more:
-                    fragmentManager.beginTransaction().hide(active).show(moreFragment).commit();
-                    active = moreFragment;
+                    mFragmentManager.beginTransaction().hide(mActive).show(mMoreFragment).commit();
+                    mActive = mMoreFragment;
                     mToolbar.setNavigationIcon(R.drawable.ic_profile_white_2);
                     mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                         @Override
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     mTitle.setVisibility(View.VISIBLE);
-                    mTitle.setText("More");
+                    mTitle.setText(getString(R.string.more_toolbar_title));
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                     return true;
             }
@@ -82,38 +82,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: ");
 
-        WeatherLog.setDebuggable(false);
+        WeatherLog.setDebuggable(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: ");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: ");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        Toast.makeText(this, "sadd", Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -128,22 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
         mTitle = mToolbar.findViewById(R.id.toolbar_title);
 
-        fragmentManager.beginTransaction().add(R.id.main_container, moreFragment, "MoreFragment").hide(moreFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.main_container, feedFragment, "FeedFragment").hide(feedFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.main_container, workoutFragment, "WorkoutFragment").commit();
+        mFragmentManager.beginTransaction().add(R.id.main_container, mMoreFragment, MORE_FRAGMENT).hide(mMoreFragment).commit();
+        mFragmentManager.beginTransaction().add(R.id.main_container, mFeedFragment, FEED_FRAGMENT).hide(mFeedFragment).commit();
+        mFragmentManager.beginTransaction().add(R.id.main_container, mWorkoutFragment, WORKOUT_FRAGMENT).commit();
 
         mBottomNavigationView = findViewById(R.id.navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mBottomNavigationView.setSelectedItemId(R.id.navigation_workout);
-
-        // if (savedInstanceState != null) {
-        // mUser = (FirebaseUser) getIntent().getExtras().get(INTENT_EXTRA_FIREBASE_USER);
-        // }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.settings_menu, menu);
 
         if (mBottomNavigationView.getSelectedItemId() == R.id.navigation_feed

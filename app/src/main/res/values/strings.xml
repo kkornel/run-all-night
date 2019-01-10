@@ -210,7 +210,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
 
     <!--<string name="permission_denied_explanation">Zgoda została odrzucona. Jest ona potrzebna do działania aplikacji</string>-->
-    <string name="permission_denied_explanation">>Permission was denied, but is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality</string>
 
     <string name="request_location_updates">Request location updates</string>
 
@@ -221,6 +221,15 @@
 
     <!--<string name="enable_internet">Do zapisania treningu wymagane jest połączenie z Internetem</string>-->
     <string name="enable_internet">Internet connection is required to save training</string>
+
+    <!--<string name="internet_connection_needed">Wymagane jest połączenie z Internetem.</string>-->
+    <string name="internet_connection_needed">Internet connection is required</string>
+
+    <!--<string name="internet_rationale">Aby w pełni korzystać z możliwości aplikacji wymagane jest połączenie z Internetem.</string>-->
+    <string name="internet_rationale">Internet connection is needed for core functionality</string>
+
+    <!--<string name="enable_gps_to_check_weather">Aby sprawdzić pogodę włącz GPS</string>-->
+    <string name="enable_gps_to_check_weather">Enable GPS in order to check weather</string>
 
 
     <!--Friends Activity-->
@@ -575,5 +584,12 @@
     <string name="total_distance">Total distance</string>
     <string name="share_your_location_title">Share your location</string>
     <string name="users_profile">User\'s profile</string>
+    <string name="choose_workout">Choose workout</string>
+    <string name="feed_toolbar_title">Feed</string>
+    <string name="mainacitivity_title">MoonRunner</string>
+    <string name="more_toolbar_title">More</string>
+    <string name="weather_details">Weather details</string>
+    <string name="selected">Selected</string>
+    <string name="last_workout">Last workout:</string>
 
 </resources>

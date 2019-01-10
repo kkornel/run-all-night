@@ -18,7 +18,6 @@ import com.example.kornel.alphaui.utils.ListItemClickListener;
 import java.util.List;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutViewHolder> {
-
     private Context mContext;
     private final ListItemClickListener mOnClickListener;
     private List<String> mWorkouts;
@@ -31,7 +30,6 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
     @Override
     public WorkoutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.workout_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -45,8 +43,6 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
     @Override
     public void onBindViewHolder(@NonNull WorkoutViewHolder workoutViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
             workoutViewHolder.mWorkoutTextView.setText("ERROR");
         } else {
@@ -58,7 +54,6 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
                 workoutViewHolder.mWorkoutImageView.setImageDrawable(mContext.getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkouts.get(position))));
             }
         }
-
         // Googles way
         // paceViewHolder.bind(position);
     }
@@ -86,7 +81,6 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
         @Override
         public void onClick(View v) {
-            Log.d("s", "onClick: ");
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }

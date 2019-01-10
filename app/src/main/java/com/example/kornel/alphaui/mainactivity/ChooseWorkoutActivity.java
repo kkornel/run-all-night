@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseWorkoutActivity extends AppCompatActivity {
-
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
@@ -35,12 +34,13 @@ public class ChooseWorkoutActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.choose_workout);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -68,8 +68,12 @@ public class ChooseWorkoutActivity extends AppCompatActivity {
         finish();
     }
 
-    // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-    // one of the sections/tabs/pages.
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -85,13 +89,11 @@ public class ChooseWorkoutActivity extends AppCompatActivity {
                 chooseWorkoutFragment.setWorkoutsList(mNonGpsWorkouts);
             }
 
-            // return PlaceholderFragment.newInstance(position + 1);
             return chooseWorkoutFragment;
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
     }

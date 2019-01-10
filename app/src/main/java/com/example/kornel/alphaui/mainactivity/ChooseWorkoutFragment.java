@@ -19,8 +19,6 @@ import java.util.List;
 import static com.example.kornel.alphaui.mainactivity.WorkoutFragment.WORKOUT_RESULT;
 
 public class ChooseWorkoutFragment extends Fragment implements ListItemClickListener {
-    private static final String TAG = "ChooseWorkoutFragment";
-
     private WorkoutAdapter mWorkoutAdapter;
     private RecyclerView mRecyclerView;
 

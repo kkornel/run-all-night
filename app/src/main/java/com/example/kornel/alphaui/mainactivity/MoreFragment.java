@@ -27,7 +27,7 @@ public class MoreFragment extends Fragment {
     private Button mLogoutButton;
 
     public MoreFragment() {
-        // Required empty public constructor
+
     }
 
     @Override

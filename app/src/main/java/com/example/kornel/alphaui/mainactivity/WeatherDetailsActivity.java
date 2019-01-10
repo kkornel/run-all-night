@@ -38,7 +38,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_details);
 
-        getSupportActionBar().setTitle(R.string.details);
+        getSupportActionBar().setTitle(R.string.weather_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

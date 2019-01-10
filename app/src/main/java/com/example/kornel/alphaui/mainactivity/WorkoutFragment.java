@@ -109,12 +109,11 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private Date mLastWorkoutDate;
 
     public WorkoutFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_workout, container, false);
 
         mWelcomeCardView = rootView.findViewById(R.id.welcomeCardView);
@@ -210,9 +209,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_black_64dp, getActivity().getApplicationContext().getTheme()));
+                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_black_64dp_2, getActivity().getApplicationContext().getTheme()));
             } else {
-                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_black_64dp));
+                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_black_64dp_2));
             }
         }
 
@@ -227,7 +226,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: ");
         mWeatherInfo = null;
         mWeatherInfoCompressed = null;
 
@@ -280,28 +278,24 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
         if (mHasMusicChosen) {
-            mSelectMusicTextView.setText("Wybrano");
+            mSelectMusicTextView.setText(getString(R.string.selected));
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: ");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: ");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
     }
 
     @Override
@@ -361,7 +355,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        MainActivityLog.d("requestLocationPermissions");
         switch (requestCode) {
             case REQUEST_CODE_FINE_LOCATION_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -369,11 +362,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                             == PackageManager.PERMISSION_GRANTED) {
                         // permission was granted, yay! Do the
                         // location-related task you need to do.
-                        MainActivityLog.d("onRequestPermissionsResult - YE");
                         searchByGPS();
                     }
                 } else {
-                    MainActivityLog.d("onRequestPermissionsResult - NON");
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Snackbar.make(
@@ -431,7 +422,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             // Should we show an explanation?
-            MainActivityLog.d("requestLocationPermissions - NON1");
             boolean shouldProvideRationale =
                     shouldShowRequestPermissionRationale(
                             Manifest.permission.ACCESS_FINE_LOCATION);
@@ -450,7 +440,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                         .setAction(R.string.ok, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                // Request permission
                                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         REQUEST_CODE_FINE_LOCATION_PERMISSIONS);
                             }
@@ -466,11 +455,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 // previously and checked "Never ask again".
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         REQUEST_CODE_FINE_LOCATION_PERMISSIONS);
-                MainActivityLog.d("requestLocationPermissions - NON2");
             }
         } else {
             searchByGPS();
-            MainActivityLog.d("requestLocationPermissions - YE2");
         }
     }
 
@@ -500,9 +487,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private void showNoInternetSnackBar() {
         Snackbar.make(
                 mStartWorkoutButton,
-                "Wymagane jest połączenie z Internetem.",
+                R.string.internet_connection_needed,
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction("Ok", new View.OnClickListener() {
+                .setAction(R.string.ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         checkInternetConnection();
@@ -513,9 +500,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private void buildAlertMessageNoInternetConnection() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("Aby w pełni korzystać z możliwości aplikacji wymagane jest połączenie z Internetem.")
+        builder.setMessage(R.string.internet_rationale)
                 .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         checkInternetConnection();
                     }
@@ -541,7 +528,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 user.setUserUid(dataSnapshot.getKey());
-                Log.d(TAG, "onDataChange: " + user);
                 CurrentUserProfile.setNewData(user);
                 String firstName = user.getFirstName();
                 String lastWorkoutId = user.getLastWorkout();
@@ -589,9 +575,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         final Runnable dateRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "run: new MIN");
                 String lastWorkoutDateString = WorkoutUtils.gapBetweenWorkouts(lastWorkoutDate);
-                mLastTrainingTextView.setText("Ostatni trening: " + lastWorkoutDateString);
+                mLastTrainingTextView.setText(getString(R.string.last_workout) + " " + lastWorkoutDateString);
                 dateHandler.postDelayed(this, 60000);
             }
         };
@@ -602,9 +587,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private void showNoGpsSnackBar() {
         Snackbar.make(
                 mStartWorkoutButton,
-                "Aby sprawdzić pogodę włącz GPS",
+                R.string.enable_gps_to_check_weather,
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", new View.OnClickListener() {
+                .setAction(R.string.ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         openLocationSettings();
