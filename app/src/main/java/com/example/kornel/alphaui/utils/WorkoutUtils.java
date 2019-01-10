@@ -45,25 +45,25 @@ public class WorkoutUtils {
 
         if (elapsedDays > 0) {
             if (elapsedDays == 1) {
-                return "1 dzień temu";
+                return "1 day ago";
             } else {
-                return String.valueOf(elapsedDays) + " dni temu";
+                return String.valueOf(elapsedDays) + " days ago";
             }
         } else {
             if (elapsedHours < 1) {
                 if (elapsedMinutes < 2) {
-                    return "Chwilę temu";
+                    return "A moment ago";
                 } else if (elapsedMinutes >= 2 && elapsedMinutes < 5) {
-                    return String.valueOf(elapsedMinutes) + " minuty temu";
+                    return String.valueOf(elapsedMinutes) + " minutes ago";
                 } else {
-                    return String.valueOf(elapsedMinutes) + " minut temu";
+                    return String.valueOf(elapsedMinutes) + " minutes ago";
                 }
             } else if (elapsedHours == 1) {
                 return "1 godzinę temu";
             } else if (elapsedHours >= 2 && elapsedHours < 5) {
-                return String.valueOf(elapsedMinutes) + " godziny temu";
+                return String.valueOf(elapsedMinutes) + " hours ago";
             } else {
-                return String.valueOf(elapsedHours) + " godzin temu";
+                return String.valueOf(elapsedHours) + " hours ago";
             }
         }
     }

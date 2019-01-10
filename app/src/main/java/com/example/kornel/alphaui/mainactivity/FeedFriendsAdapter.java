@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.kornel.alphaui.FriendWorkout;
+import com.example.kornel.alphaui.utils.FriendWorkout;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;

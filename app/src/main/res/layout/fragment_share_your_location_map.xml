@@ -60,7 +60,7 @@
         android:layout_marginRight="8dp"
         android:text="@string/preview" />
 
-    <com.example.kornel.alphaui.MapWrapperLayout
+    <com.example.kornel.alphaui.utils.MapWrapperLayout
         android:id="@+id/map_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
             tools:context=".sharelocation.ShareYourLocationActivity" />
-    </com.example.kornel.alphaui.MapWrapperLayout>
+    </com.example.kornel.alphaui.utils.MapWrapperLayout>
 
     <Button
         android:id="@+id/shareButton"

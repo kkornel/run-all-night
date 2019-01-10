@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.kornel.alphaui.sharelocation.FindOthersActivity;
-import com.example.kornel.alphaui.SettingsActivity;
+import com.example.kornel.alphaui.profile.SettingsActivity;
 import com.example.kornel.alphaui.sharelocation.ShareYourLocationActivity;
 import com.example.kornel.alphaui.friends.FriendsActivity;
 import com.example.kornel.alphaui.login.LoginActivity;

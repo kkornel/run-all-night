@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.utils;
 
-import java.io.BufferedOutputStream;
 import java.util.HashMap;
 
 public class CurrentUserProfile {

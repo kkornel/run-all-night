@@ -1,8 +1,8 @@
 package com.example.kornel.alphaui.utils;
 
 public enum Privacy {
-    ONLY_ME("Tylko ja"),
-    FRIENDS("Znajomi");
+    ONLY_ME("Only me"),
+    FRIENDS("Friends");
 
     private String value;
 

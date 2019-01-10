@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.MapWrapperLayout;
-import com.example.kornel.alphaui.OnInfoWindowElemTouchListener;
+import com.example.kornel.alphaui.utils.MapWrapperLayout;
+import com.example.kornel.alphaui.utils.OnInfoWindowElemTouchListener;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.profile.ViewProfileActivity;
 import com.example.kornel.alphaui.utils.Database;

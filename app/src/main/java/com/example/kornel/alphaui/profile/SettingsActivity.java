@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.profile;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -15,9 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.login.LoginActivity;
-import com.example.kornel.alphaui.profile.EditProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;

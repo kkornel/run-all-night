@@ -113,7 +113,7 @@
             android:label="@string/title_activity_find_others"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".profile.ViewProfileActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".profile.SettingsActivity"></activity>
     </application>
 
 </manifest>

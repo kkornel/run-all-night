@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;

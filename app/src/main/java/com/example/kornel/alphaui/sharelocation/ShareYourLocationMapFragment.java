@@ -14,7 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kornel.alphaui.MapWrapperLayout;
+import com.example.kornel.alphaui.utils.MapWrapperLayout;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.CurrentUserProfile;
 import com.example.kornel.alphaui.utils.Database;

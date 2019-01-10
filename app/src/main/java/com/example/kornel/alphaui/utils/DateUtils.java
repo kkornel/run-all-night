@@ -35,19 +35,19 @@ public class DateUtils {
     public static String convertDayName(String dayName) {
         switch (dayName) {
             case "Mon":
-                return "poniedziałek";
+                return "Monday";
             case "Tue":
-                return "wtorek";
+                return "Tuesday";
             case "Wed":
-                return "środa";
+                return "Wednesday";
             case "Thu":
-                return "czwartek";
+                return "Thursday";
             case "Fri":
-                return "piątek";
+                return "Friday";
             case "Sat":
-                return "sobota";
+                return "Saturday";
             case "Sun":
-                return "niedziela";
+                return "Sunday";
         }
         return "ERROR";
     }
@@ -55,29 +55,29 @@ public class DateUtils {
     public static String convertMonthToFullName(String month) {
         switch (month) {
             case "Jan":
-                return "stycznia";
+                return "January";
             case "Feb":
-                return "lutego";
+                return "February";
             case "Mar":
-                return "marca";
+                return "March";
             case "Apr":
-                return "kwietnia";
+                return "April";
             case "May":
-                return "maja";
+                return "May";
             case "Jun":
-                return "czerwca";
+                return "June";
             case "Jul":
-                return "lipca";
+                return "July";
             case "Aug":
-                return "sierpnia";
+                return "August";
             case "Sept":
-                return "wrzesnia";
+                return "September";
             case "Oct":
-                return "pazdziernika";
+                return "October";
             case "Nov":
-                return "listopada";
+                return "November";
             case "Dec":
-                return "grudnia";
+                return "December";
         }
         return "ERROR";
     }

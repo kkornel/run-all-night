@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui;
+package com.example.kornel.alphaui.utils;
 
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
