@@ -59,7 +59,7 @@ public class WorkoutUtils {
                     return String.valueOf(elapsedMinutes) + " minutes ago";
                 }
             } else if (elapsedHours == 1) {
-                return "1 godzinę temu";
+                return "1 hour ago";
             } else if (elapsedHours >= 2 && elapsedHours < 5) {
                 return String.valueOf(elapsedMinutes) + " hours ago";
             } else {
