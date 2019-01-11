@@ -40,6 +40,7 @@ import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
+import com.example.kornel.alphaui.weather.OpenWeather;
 import com.example.kornel.alphaui.weather.Weather;
 import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
@@ -100,7 +101,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private Button mStartWorkoutButton;
 
-    private Weather mWeather = Weather.getInstance(true);
+    // private Weather mWeather = Weather.getInstance(true);
+    private OpenWeather mWeather = OpenWeather.getInstance(true);
     private WeatherInfo mWeatherInfo;
     private WeatherInfoCompressed mWeatherInfoCompressed;
 
@@ -255,8 +257,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             if (!LocationUtils.isGpsEnabled(getContext())) {
                 setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
                 // showNoGpsSnackBar();
-            } else if (LocationUtils.lastKnowLocation == null) {
-                setGpsLayout(false, getString(R.string.could_not_get_location));
+            //} else if (LocationUtils.lastKnowLocation == null) {
+                //setGpsLayout(false, getString(R.string.could_not_get_location));
             } else {
                 setGpsLayout(true, getString(R.string.enable_gps_to_check_weather));
             }
@@ -469,15 +471,15 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private void searchByGPS() {
         mNoGpsTextView.setVisibility(View.GONE);
-        mWeather.setNeedDownloadIcons(true);
-        mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
+        // mWeather.setNeedDownloadIcons(true);
+        // mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
         mWeather.queryWeatherByGPS(getActivity(), getContext(), this);
     }
 
     private void searchByLatLon(double lat, double lon) {
-        mWeather.setNeedDownloadIcons(true);
-        mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
-        mWeather.queryWeatherByLatLon(getContext(), lat, lon, this);
+        // mWeather.setNeedDownloadIcons(true);
+        // mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
+        // mWeather.queryWeatherByLatLon(getContext(), lat, lon, this);
         // mWeather.queryWeatherByLatLon(getApplicationContext(), location, MainActivity.this);
     }
 
