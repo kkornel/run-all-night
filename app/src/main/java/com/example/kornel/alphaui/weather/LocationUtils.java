@@ -172,13 +172,15 @@ public class LocationUtils {
                             @Override
                             public void onSuccess(Location location) {
                                 WeatherLog.d("onSuccess");
-                                mLocationResult.gotLocation(null, null);
+
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
                                     // Logic to handle location object
                                     lastKnowLocation = location;
                                     WeatherLog.d(location.toString());
                                     mLocationResult.gotLocation(location, mErrorType);
+                                } else {
+                                    mLocationResult.gotLocation(null, null);
                                 }
                             }
                         });
