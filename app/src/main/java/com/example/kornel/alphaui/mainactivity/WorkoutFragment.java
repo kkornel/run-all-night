@@ -108,6 +108,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private Date mLastWorkoutDate;
 
+    private boolean mFirstLaunch = true;
+
     public WorkoutFragment() {
 
     }
@@ -136,7 +138,10 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 } else {
                     if (!LocationUtils.isGpsEnabled(getContext())) {
                         setGpsLayout(false);
-                        showNoGpsSnackBar();
+                        if (mFirstLaunch) {
+                            showNoGpsSnackBar();
+                            mFirstLaunch = false;
+                        }
                     } else {
                         setGpsLayout(true);
                         Intent intent = new Intent(WorkoutFragment.this.getActivity(), WeatherDetailsActivity.class);

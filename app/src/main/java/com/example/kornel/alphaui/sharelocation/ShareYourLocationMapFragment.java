@@ -1,9 +1,12 @@
 package com.example.kornel.alphaui.sharelocation;
 
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.LocationUtils;
+import com.example.kornel.alphaui.weather.WeatherLog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -117,6 +121,8 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
+                WeatherLog.d("onMapLoaded");
+
                 new LocationUtils().findUserLocation(getActivity(), getContext(), ShareYourLocationMapFragment.this);
             }
         });
@@ -168,6 +174,33 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
+        WeatherLog.d("gotLocation" + location);
+        WeatherLog.d("gotLocation" + errorType);
+
+        if (errorType == LocationUtils.LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.gps_not_enabled_explenation)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getActivity().finish();
+                        }
+                    });
+            builder.create().show();
+            return;
+        }
+
+        if (location == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.couldnt_get_location)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getActivity().finish();
+                        }
+                    });
+            builder.create().show();
+            return;
+        }
+
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mYouLatLng, MAP_ZOOM));
         // mMap.getUiSettings().setAllGesturesEnabled(false);

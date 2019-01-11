@@ -603,5 +603,7 @@
     <string name="durationn">Duration</string>
     <string name="edit">Edit</string>
     <string name="capital_start">START</string>
+    <string name="gps_not_enabled_explenation">GPS is not enabled</string>
+    <string name="couldnt_get_location">Couldn\'t get your location</string>
 
 </resources>

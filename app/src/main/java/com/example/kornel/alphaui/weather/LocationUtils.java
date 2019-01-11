@@ -76,7 +76,7 @@ public class LocationUtils {
     }
 
 
-    public void findUserLocation(Activity activity, Context context, MyLocationResult result) {
+    public void findUserLocation(Activity activity, Context context, final MyLocationResult result) {
         WeatherLog.d(activity.toString());
 
         mLocationResult = result;
@@ -94,6 +94,7 @@ public class LocationUtils {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) {
+                    WeatherLog.d("locationResult " + locationResult);
                     return;
                 }
                 mLocationResult.gotLocation(locationResult.getLastLocation(), mErrorType);
@@ -122,7 +123,9 @@ public class LocationUtils {
         // }
 
         if (!mGpsEnabled) {
+            mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
             WeatherLog.d("gps not enabled");
+            WeatherLog.d(mErrorType.name() + mErrorType.toString());
             result.gotLocation(null, mErrorType);
             return;
         }
@@ -144,7 +147,7 @@ public class LocationUtils {
 
         if (mGpsEnabled) {
             try {
-                WeatherLog.d("starting loc updates");
+                WeatherLog.d("Starting Location Updates");
                 startLocationUpdates();
             } catch (SecurityException e) {
                 mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
@@ -152,7 +155,7 @@ public class LocationUtils {
         }
 
         if (mErrorType != null) {
-            WeatherLog.d("ups some errors");
+            WeatherLog.d("Errors: " + mErrorType);
             mLocationResult.gotLocation(null, mErrorType);
         } else {
             getLastLocation(activity);
@@ -169,6 +172,7 @@ public class LocationUtils {
                             @Override
                             public void onSuccess(Location location) {
                                 WeatherLog.d("onSuccess");
+                                mLocationResult.gotLocation(null, null);
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
                                     // Logic to handle location object
