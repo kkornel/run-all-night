@@ -203,9 +203,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
         if (isSpotifyInstalled()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_spotify, getActivity().getApplicationContext().getTheme()));
+                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_spotify_2, getActivity().getApplicationContext().getTheme()));
             } else {
-                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_spotify));
+                mMusicImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_spotify_2));
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -588,7 +588,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         Snackbar.make(
                 mStartWorkoutButton,
                 R.string.enable_gps_to_check_weather,
-                Snackbar.LENGTH_INDEFINITE)
+                Snackbar.LENGTH_LONG)
                 .setAction(R.string.ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

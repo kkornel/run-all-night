@@ -40,7 +40,8 @@ public class Weather implements LocationUtils.MyLocationResult {
         KMH
     }
 
-    private static final String YQL_WEATHER_ENDPOINT_AUTHORITY = "query.yahooapis.com";
+    // private static final String YQL_WEATHER_ENDPOINT_AUTHORITY = "query.yahooapis.com";
+    private static final String YQL_WEATHER_ENDPOINT_AUTHORITY = "weather-ydn-yql.media.yahoo.com/forecastrss";
     private static final String YQL_WEATHER_ENDPOINT_PATH = "/v1/public/yql";
 
     private static final int DEFAULT_CONNECTION_TIMEOUT = 5 * 1000;
