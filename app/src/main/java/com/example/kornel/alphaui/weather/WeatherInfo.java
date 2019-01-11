@@ -50,7 +50,7 @@ public class WeatherInfo implements Parcelable {
     /*
      * information in object "condition"
      */
-    private int mCurrentCode = 0;
+    private String mCurrentCode = "";
     private String mCurrentConditionDate = "";
     private int mCurrentTempC = 0;
     private int mCurrentTempF = 0;
@@ -136,14 +136,14 @@ public class WeatherInfo implements Parcelable {
         return pl;
     }
 
-    protected void setCurrentCode(int currentCode) {
+    protected void setCurrentCode(String currentCode) {
         mCurrentCode = currentCode;
-        mCurrentConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + currentCode + ".gif";
+        // mCurrentConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + currentCode + ".gif";
     }
 
     protected void setTodayCode(int forecastCode) {
         mTodayCode = forecastCode;
-        mTodayConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + forecastCode + ".gif";
+        // mTodayConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + forecastCode + ".gif";
     }
 
     public String getLastBuildDate() {
@@ -226,7 +226,7 @@ public class WeatherInfo implements Parcelable {
         mPubDate = pubDate;
     }
 
-    public int getCurrentCode() {
+    public String getCurrentCode() {
         return mCurrentCode;
     }
 
@@ -382,7 +382,7 @@ public class WeatherInfo implements Parcelable {
         mAtmospherePressure = in.readInt();
         mConditionTitle = in.readString();
         mPubDate = in.readString();
-        mCurrentCode = in.readInt();
+        mCurrentCode = in.readString();
         mCurrentConditionDate = in.readString();
         mAtmospherePressure = in.readInt();
         mCurrentText = in.readString();
@@ -419,7 +419,7 @@ public class WeatherInfo implements Parcelable {
         dest.writeInt(mAtmospherePressure);
         dest.writeString(mConditionTitle);
         dest.writeString(mPubDate);
-        dest.writeInt(mCurrentCode);
+        dest.writeString(mCurrentCode);
         dest.writeString(mCurrentConditionDate);
         dest.writeInt(mAtmospherePressure);
         dest.writeString(mCurrentText);

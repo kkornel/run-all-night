@@ -259,7 +259,7 @@ public class Weather implements LocationUtils.MyLocationResult {
             // Current
             JSONObject condition = item.getJSONObject("condition");
             String code = condition.getString("code");
-            weatherInfo.setCurrentCode(Integer.valueOf(code));
+            //weatherInfo.setCurrentCode(Integer.valueOf(code));
             String date = condition.getString("date");
             weatherInfo.setCurrentConditionDate(date);
             String temp = condition.getString("temp");

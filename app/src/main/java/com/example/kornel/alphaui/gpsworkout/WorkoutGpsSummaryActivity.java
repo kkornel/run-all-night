@@ -258,7 +258,7 @@ public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMa
 
         WeatherInfoCompressed weatherInfoCompressed = mWorkoutSummary.getWeatherInfoCompressed();
         if (weatherInfoCompressed != null) {
-            mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
+            mWeatherSummaryTextView.setText(weatherInfoCompressed.getCode());
             Picasso.get()
                     .load(weatherInfoCompressed.getConditionIconURL())
                     .into(mWeatherImageView);

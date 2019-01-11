@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class WeatherInfoCompressed implements Parcelable {
-    private int code = 0;
+    private String code = "";
     private int tempC = 0;
     private String conditionIconURL = "";
 
@@ -12,17 +12,17 @@ public class WeatherInfoCompressed implements Parcelable {
 
     }
 
-    public WeatherInfoCompressed(int code, int tempC, String conditionIconURL) {
+    public WeatherInfoCompressed(String code, int tempC, String conditionIconURL) {
         this.code = code;
         this.tempC = tempC;
         this.conditionIconURL = conditionIconURL;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -54,7 +54,7 @@ public class WeatherInfoCompressed implements Parcelable {
     // Parcelling part
 
     public WeatherInfoCompressed(Parcel in) {
-        this.code = in.readInt();
+        this.code = in.readString();
         this.tempC = in.readInt();
         this.conditionIconURL = in.readString();
     }
@@ -66,7 +66,7 @@ public class WeatherInfoCompressed implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.code);
+        dest.writeString(this.code);
         dest.writeInt(this.tempC);
         dest.writeString(this.conditionIconURL);
     }

@@ -193,7 +193,7 @@ public class WorkoutGpsDetailsFriend extends AppCompatActivity implements OnMapR
 
         WeatherInfoCompressed weatherInfoCompressed = mWorkout.getWeatherInfoCompressed();
         if (weatherInfoCompressed != null) {
-            mWeatherSummaryTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfoCompressed.getCode()));
+            mWeatherSummaryTextView.setText(weatherInfoCompressed.getCode());
             Picasso.get()
                     .load(weatherInfoCompressed.getConditionIconURL())
                     .into(mWeatherImageView);
