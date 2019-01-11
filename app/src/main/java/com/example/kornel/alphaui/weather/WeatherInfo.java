@@ -4,8 +4,15 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.example.kornel.alphaui.utils.DateUtils;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class WeatherInfo implements Parcelable {
     public static final String FAHRENHEIT = "\u00b0F";
@@ -74,17 +81,46 @@ public class WeatherInfo implements Parcelable {
 
     public String getTimeFormatted() {
         String[] splitted = mCurrentConditionDate.split(" ");
-        String time = splitted[4];
+        // String time = splitted[4];
+        String time = splitted[1];
         String hour = time.split(":")[0];
         String min = time.split(":")[1];
-        String ampm = splitted[5];
-        if (ampm.equals("PM")) {
-            hour = DateUtils.convertPmTime(hour);
-        }
+        // String ampm = splitted[5];
+        // if (ampm.equals("PM")) {
+        //     hour = DateUtils.convertPmTime(hour);
+        // }
         return hour + ":" + min;
     }
 
     public String getCurrentConditionDatePl() {
+        // 2019-01-11 15:00:00
+        String[] separated = mCurrentConditionDate.split(" ");
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+        String ds = separated[0];
+        Date date = null;
+        try {
+            date = format.parse(ds);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // Fri Jan 11 00:01:00 GMT+01:00 2019
+        String[] splited = date.toString().split(" ");
+
+
+        String dayName = splited[0];
+        Log.d("dasdas", "getCurrentConditionDatePl: " + dayName);
+        dayName = DateUtils.convertDayName(dayName);
+        String month = splited[1];
+        month = DateUtils.convertMonthToNumber(month);
+        String day = splited[2];
+        String year = splited[5];
+
+        String pl = dayName + ", " + day + "." + month + "." + year;
+        Log.d("dasdas", "getCurrentConditionDatePl: " + pl);
+        return pl;
+    }
+
+    public String getCurrentConditionDatePlOld() {
         // 'Sun, 18 Nov 2018 05:00 AM CET'
         String[] separated = mCurrentConditionDate.split(" ");
         // 'Sun,'

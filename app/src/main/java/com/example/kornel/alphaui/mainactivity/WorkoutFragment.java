@@ -327,7 +327,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     .into(mCurrentWeatherIconImageView);
 
             mCurrentTempTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
-            mCurrentWeatherTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
+            mCurrentWeatherTextView.setText(weatherInfo.getConditionTitle());
             String fullAddress;
             String locality = weatherInfo.getAddress().getLocality();
             String thoroughfare = weatherInfo.getAddress().getThoroughfare();

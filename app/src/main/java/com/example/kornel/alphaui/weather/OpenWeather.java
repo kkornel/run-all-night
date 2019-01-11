@@ -264,6 +264,8 @@ public class OpenWeather implements LocationUtils.MyLocationResult {
             weatherInfo.setCurrentConditionIconURL(iconPath);
             weatherInfo.setTodayConditionIconURL(iconPath);
 
+            // weatherInfo.setcode
+
             WeatherLog.d(weatherInfo.toString());
 
             return weatherInfo;

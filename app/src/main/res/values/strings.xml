@@ -606,5 +606,7 @@
     <string name="gps_not_enabled_explenation">GPS is not enabled</string>
     <string name="couldnt_get_location">Couldn\'t get your location</string>
     <string name="could_not_get_location">Could not get your location</string>
+    <string name="weather_conditions">Weather Conditions</string>
+    <string name="forecasted_for">Forecasted for:</string>
 
 </resources>

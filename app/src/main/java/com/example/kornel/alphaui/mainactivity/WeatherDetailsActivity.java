@@ -38,7 +38,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_details);
 
-        getSupportActionBar().setTitle(R.string.weather_details);
+        getSupportActionBar().setTitle(R.string.weather_conditions);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -67,8 +67,8 @@ public class WeatherDetailsActivity extends AppCompatActivity {
                     .load(weatherInfo.getCurrentConditionIconURL())
                     .into(mCurrentWeatherIconImageView);
             mCurrentTemperatureTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
-            mCurrentWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getCurrentCode()));
-            mCurrentUpdateTimeTextView.setText(getString(R.string.updated) + " " + weatherInfo.getTimeFormatted());
+            mCurrentWeatherDescriptionTextView.setText(weatherInfo.getCurrentText());
+            mCurrentUpdateTimeTextView.setText(getString(R.string.forecasted_for) + " " + weatherInfo.getTimeFormatted());
 
             mHumidityTextView.setText(weatherInfo.getAtmosphereHumidity() + PERCENT);
             mPressureTextView.setText(weatherInfo.getAtmospherePressure() + HECTOPASCAL);
@@ -81,7 +81,7 @@ public class WeatherDetailsActivity extends AppCompatActivity {
                     .into(mTodayWeatherIconImageView);
             mTodayHighTemperatureTextView.setText(weatherInfo.getTodayHighC() + CELSIUS);
             mTodayLowTemperatureTextView.setText(weatherInfo.getTodayLowC() + CELSIUS);
-            mTodayWeatherDescriptionTextView.setText(WeatherConsts.getConditionPlByCode(weatherInfo.getTodayCode()));
+            mTodayWeatherDescriptionTextView.setText(weatherInfo.getConditionTitle());
         }
     }
 
