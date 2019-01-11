@@ -108,7 +108,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private Date mLastWorkoutDate;
 
-    private boolean mFirstLaunch = true;
 
     public WorkoutFragment() {
 
@@ -137,13 +136,12 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     requestLocationPermissions();
                 } else {
                     if (!LocationUtils.isGpsEnabled(getContext())) {
-                        setGpsLayout(false);
-                        if (mFirstLaunch) {
-                            showNoGpsSnackBar();
-                            mFirstLaunch = false;
-                        }
+                        setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
+                        showNoGpsSnackBar();
+                    } else if (LocationUtils.lastKnowLocation == null) {
+                        setGpsLayout(false, getString(R.string.could_not_get_location));
                     } else {
-                        setGpsLayout(true);
+                        setGpsLayout(true, getString(R.string.enable_gps_to_check_weather));
                         Intent intent = new Intent(WorkoutFragment.this.getActivity(), WeatherDetailsActivity.class);
                         if (mWeatherInfo != null) {
                             intent.putExtra(WEATHER_INFO_INTENT_EXTRAS, mWeatherInfo);
@@ -255,15 +253,17 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             requestLocationPermissions();
         } else {
             if (!LocationUtils.isGpsEnabled(getContext())) {
-                setGpsLayout(false);
-                showNoGpsSnackBar();
+                setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
+                // showNoGpsSnackBar();
+            } else if (LocationUtils.lastKnowLocation == null) {
+                setGpsLayout(false, getString(R.string.could_not_get_location));
             } else {
-                setGpsLayout(true);
+                setGpsLayout(true, getString(R.string.enable_gps_to_check_weather));
             }
         }
     }
 
-    private void setGpsLayout(boolean hasGps) {
+    private void setGpsLayout(boolean hasGps, String msg) {
         if (hasGps) {
             mNoGpsTextView.setVisibility(View.GONE);
             searchByGPS();
@@ -276,6 +276,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
             mCurrentWeatherTextView.setText("");
             mCurrentTimeLocationTextView.setText("");
             mCurrentTempTextView.setText("");
+            mNoGpsTextView.setText(msg);
             mNoGpsTextView.setVisibility(View.VISIBLE);
         }
     }
