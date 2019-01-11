@@ -308,6 +308,10 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     @Override
     public void gotWeatherInfo(final WeatherInfo weatherInfo, Weather.ErrorType errorType) {
+        if (weatherInfo == null) {
+            setGpsLayout(false, getString(R.string.could_not_get_location));
+        }
+
         if (weatherInfo != null) {
             mWeatherInfo = weatherInfo;
 
