@@ -17,7 +17,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/choose_activity" />
+        android:text="@string/choose_activity"
+        android:textColor="@color/colorBlack" />
 
     <Spinner
         android:id="@+id/workoutTypeSpinner"
@@ -41,7 +42,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/what_radius" />
+        android:text="@string/what_radius"
+        android:textColor="@color/colorBlack" />
 
     <EditText
         android:id="@+id/distanceEditText"
@@ -83,6 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/results"
+            android:textColor="@color/colorBlack"
             android:textSize="24sp" />
 
         <TextView
@@ -91,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="20"
             android:textAllCaps="false"
+            android:textColor="@color/colorBlack"
             android:textSize="24sp"
             android:textStyle="bold"
             tools:text="10" />

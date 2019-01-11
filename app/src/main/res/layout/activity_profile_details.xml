@@ -87,6 +87,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
                                 tools:text="1424km" />
 
                             <TextView
@@ -110,6 +111,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
                                 tools:text="543h" />
 
                             <TextView
@@ -133,6 +135,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
                                 tools:text="874" />
 
                             <TextView
@@ -163,6 +166,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
                                 tools:text="4" />
 
                             <TextView
@@ -186,6 +190,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
                                 tools:text="32" />
 
                             <TextView
