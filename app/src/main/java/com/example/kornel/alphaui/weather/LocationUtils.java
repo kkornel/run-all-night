@@ -36,7 +36,6 @@ public class LocationUtils {
     private MyLocationResult mLocationResult;
     private MyLocationResult mLocationResult2;
     private boolean mGpsEnabled = false;
-    // private boolean mNetworkEnabled = false;
     private LocationErrorType mErrorType = null;
 
     public static Location lastKnowLocation = null;
@@ -45,47 +44,10 @@ public class LocationUtils {
         void gotLocation(Location location, LocationErrorType errorType);
     }
 
-    public void findUserLocation2(Activity activity, Context context, MyLocationResult result) {
-        mLocationResult2 = result;
-
-        if (mFusedLocationClient2 == null || mLocationManager == null) {
-            mFusedLocationClient2 = LocationServices.getFusedLocationProviderClient(context);
-            mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            createLocationRequest();
-        }
-
-        mLocationCallback2 = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                mLocationResult2.gotLocation(locationResult.getLastLocation(), mErrorType);
-                stopLocationUpdates();
-            }
-        };
-        mGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-
-        try {
-            mFusedLocationClient2.requestLocationUpdates(mLocationRequest,
-                    mLocationCallback2,
-                    null /* Looper */);
-        } catch (SecurityException se) {
-            WeatherLog.e(se.getMessage());
-        }
-    }
-
-
     public void findUserLocation(Activity activity, Context context, final MyLocationResult result) {
-        WeatherLog.d(activity.toString());
-
         mLocationResult = result;
 
-        WeatherLog.setDebuggable(true);
-
         if (mFusedLocationClient == null || mLocationManager == null) {
-            WeatherLog.d("mFusedLocationClient or mFusedLocationClient == null");
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
             mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             createLocationRequest();
@@ -94,10 +56,7 @@ public class LocationUtils {
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                WorkoutLog.d("onLocationResult" + locationResult);
-
                 if (locationResult == null) {
-                    WeatherLog.d("locationResult " + locationResult);
                     return;
                 }
                 lastKnowLocation = locationResult.getLastLocation();
@@ -106,52 +65,21 @@ public class LocationUtils {
             }
         };
 
-        //exceptions will be thrown if provider is not permitted.
         try {
             mGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
             mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
         }
-        // try {
-        //     mNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        //     Log.d("qwe", "mNetworkEnabled= " + mNetworkEnabled);
-        // } catch (Exception ex) {
-        //     mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
-        // }
-
-        //don't start listeners if no provider is enabled
-        // if (!mGpsEnabled && !mNetworkEnabled) {
-        //     Log.d("qwe", "don't start listeners if no provider is enabled");
-        //     result.gotLocation(null, mErrorType);
-        //     return;
-        // }
 
         if (!mGpsEnabled) {
             mErrorType = LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE;
-            WeatherLog.d("gps not enabled");
             WeatherLog.d(mErrorType.name() + mErrorType.toString());
             result.gotLocation(null, mErrorType);
             return;
         }
 
-        // Location gps_loc = null;
-        // if (mGpsEnabled) {
-        //     try {
-        //         gps_loc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //         Log.d("qwe", "gps_loc= " + gps_loc);
-        //     } catch (SecurityException e) {
-        //         mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
-        //     }
-        // }
-        // if (gps_loc != null) {
-        //     Log.d("qwe", "gps_loc != null " + gps_loc);
-        //     mLocationResult.gotLocation(gps_loc, mErrorType);
-        //     //return;
-        // }
-
         if (mGpsEnabled) {
             try {
-                WeatherLog.d("Starting Location Updates");
                 startLocationUpdates();
             } catch (SecurityException e) {
                 mErrorType = LocationErrorType.FIND_LOCATION_NOT_PERMITTED;
@@ -159,7 +87,6 @@ public class LocationUtils {
         }
 
         if (mErrorType != null) {
-            WeatherLog.d("Errors: " + mErrorType);
             mLocationResult.gotLocation(null, mErrorType);
         } else {
             getLastLocation(activity);
@@ -168,27 +95,18 @@ public class LocationUtils {
 
     private void getLastLocation(Activity activity) {
         try {
-            WorkoutLog.d("getLastLocation mGpsEnabled = "+ mGpsEnabled);
             if (mGpsEnabled) {
-
-
                 mFusedLocationClient.getLastLocation()
                         .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
-                                WeatherLog.d("onSuccess");
-
-                                // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
-                                    // Logic to handle location object
                                     lastKnowLocation = location;
                                     WeatherLog.d(location.toString());
                                     mLocationResult.gotLocation(location, null);
                                 } else {
                                     mLocationResult.gotLocation(null, null);
                                 }
-                                //stopLocationUpdates();
-
                             }
                         });
             }
@@ -206,7 +124,6 @@ public class LocationUtils {
 
     private void startLocationUpdates() {
         try {
-            WorkoutLog.d("startLocationUpdates");
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback,
                     null /* Looper */);
@@ -216,7 +133,6 @@ public class LocationUtils {
     }
 
     private void stopLocationUpdates() {
-        WorkoutLog.d("stopLocationUpdates");
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 

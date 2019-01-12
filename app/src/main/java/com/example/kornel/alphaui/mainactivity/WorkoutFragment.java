@@ -41,7 +41,6 @@ import com.example.kornel.alphaui.utils.WorkoutUtils;
 import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.OpenWeather;
-import com.example.kornel.alphaui.weather.Weather;
 import com.example.kornel.alphaui.weather.WeatherInfo;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.example.kornel.alphaui.weather.WeatherInfoListener;
@@ -344,7 +343,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     }
 
     @Override
-    public void gotWeatherInfo(final WeatherInfo weatherInfo, Weather.ErrorType errorType) {
+    public void gotWeatherInfo(final WeatherInfo weatherInfo, OpenWeather.ErrorType errorType) {
         if (weatherInfo == null) {
             setGpsLayout(false, getString(R.string.could_not_get_location));
         }

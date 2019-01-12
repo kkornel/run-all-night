@@ -81,14 +81,9 @@ public class WeatherInfo implements Parcelable {
 
     public String getTimeFormatted() {
         String[] splitted = mCurrentConditionDate.split(" ");
-        // String time = splitted[4];
         String time = splitted[1];
         String hour = time.split(":")[0];
         String min = time.split(":")[1];
-        // String ampm = splitted[5];
-        // if (ampm.equals("PM")) {
-        //     hour = DateUtils.convertPmTime(hour);
-        // }
         return hour + ":" + min;
     }
 
@@ -106,9 +101,7 @@ public class WeatherInfo implements Parcelable {
         // Fri Jan 11 00:01:00 GMT+01:00 2019
         String[] splited = date.toString().split(" ");
 
-
         String dayName = splited[0];
-        Log.d("dasdas", "getCurrentConditionDatePl: " + dayName);
         dayName = DateUtils.convertDayName(dayName);
         String month = splited[1];
         month = DateUtils.convertMonthToNumber(month);
@@ -116,34 +109,15 @@ public class WeatherInfo implements Parcelable {
         String year = splited[5];
 
         String pl = dayName + ", " + day + "." + month + "." + year;
-        Log.d("dasdas", "getCurrentConditionDatePl: " + pl);
-        return pl;
-    }
-
-    public String getCurrentConditionDatePlOld() {
-        // 'Sun, 18 Nov 2018 05:00 AM CET'
-        String[] separated = mCurrentConditionDate.split(" ");
-        // 'Sun,'
-        String dayName = separated[0].substring(0, separated[0].length() - 1);
-        dayName = DateUtils.convertDayName(dayName);
-        String day = separated[1];
-        String month = separated[2];
-        month = DateUtils.convertMonthToNumber(month);
-        String year = separated[3];
-
-        String pl = dayName + ", " + day + "." + month + "." + year;
-
         return pl;
     }
 
     protected void setCurrentCode(String currentCode) {
         mCurrentCode = currentCode;
-        // mCurrentConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + currentCode + ".gif";
     }
 
     protected void setTodayCode(int forecastCode) {
         mTodayCode = forecastCode;
-        // mTodayConditionIconURL = "http://l.yimg.com/a/i/us/we/52/" + forecastCode + ".gif";
     }
 
     public String getLastBuildDate() {
