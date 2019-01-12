@@ -337,7 +337,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         Picasso.get()
                 .load(mWeatherInfo.getCurrentConditionIconURL())
                 .into(mCurrentWeatherIconImageView);
-        mWeatherInfo.get
+
         mCurrentTempTextView.setText(mWeatherInfo.getCurrentTempC() + CELSIUS);
         mCurrentWeatherTextView.setText(mWeatherInfo.getConditionTitle());
         String fullAddress;
