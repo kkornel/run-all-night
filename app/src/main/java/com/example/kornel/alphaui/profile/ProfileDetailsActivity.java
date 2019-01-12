@@ -130,7 +130,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
     public void onAddFriendClicked() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
+
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.add_friend_dialog, null);
@@ -141,10 +141,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
 
         final AlertDialog dialog;
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView)
-                // Add action buttons
                 .setPositiveButton(R.string.friends_dialog_add_button, null)
                 .setNegativeButton(R.string.friends_dialog_cancel_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

@@ -251,10 +251,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void deleteUserDatabase() {
                 deleteFriendRequests();
-                // deleteFriendsList();
-                // deleteWorkouts();
-                // deleteSharedLocations();
-                // deleteUserRootDb();
     }
 
     private void deleteUserRootDb() {
