@@ -176,9 +176,9 @@ public class LoginActivity extends AppCompatActivity {
                                         Snackbar.LENGTH_LONG)
                                         .show();
                                 hideProgressDialog();
-                                //return;
+                                return;
                             }
-                            // TODO uncomment
+
                             login(user);
                         } else {
                             Snackbar.make(
