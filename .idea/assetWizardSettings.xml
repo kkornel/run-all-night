@@ -19,11 +19,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="428" />
-                            <entry key="outputName" value="ic_spotify_2" />
+                            <entry key="height" value="512" />
+                            <entry key="outputName" value="ic_more_navicon_white" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="D:\Software\System\Downloads\spotify.svg" />
-                            <entry key="width" value="428" />
+                            <entry key="sourceFile" value="D:\Kornel\icons\New folder\more (1).svg" />
+                            <entry key="width" value="512" />
                           </map>
                         </option>
                       </PersistentState>

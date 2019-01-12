@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                     invalidateOptionsMenu();
                     mToolbar.setNavigationIcon(null);
+                    getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.cardviewColor));
                     return true;
 
                 case R.id.navigation_more:

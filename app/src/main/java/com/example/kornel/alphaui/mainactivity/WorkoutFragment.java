@@ -269,7 +269,14 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         if (!hasLocationPermissions()) {
             requestLocationPermissions();
         } else {
-            if ()
+            if (mWeatherInfo != null) {
+                setWeatherInfoIntoView();
+                return;
+            } else if (mWeatherInfo == null && OpenWeather.sWeatherInfo != null) {
+                mWeatherInfo = OpenWeather.sWeatherInfo;
+                setWeatherInfoIntoView();
+                return;
+            }
 
             if (!LocationUtils.isGpsEnabled(getContext())) {
                 setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
@@ -327,7 +334,27 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     }
 
     private void setWeatherInfoIntoView() {
-        
+        Picasso.get()
+                .load(mWeatherInfo.getCurrentConditionIconURL())
+                .into(mCurrentWeatherIconImageView);
+
+        mCurrentTempTextView.setText(mWeatherInfo.getCurrentTempC() + CELSIUS);
+        mCurrentWeatherTextView.setText(mWeatherInfo.getConditionTitle());
+        String fullAddress;
+        String locality = mWeatherInfo.getAddress().getLocality();
+        String thoroughfare = mWeatherInfo.getAddress().getThoroughfare();
+        if (thoroughfare == null || thoroughfare.equals("")) {
+            fullAddress = locality;
+        } else {
+            fullAddress = thoroughfare + ", " + locality;
+        }
+
+        mCurrentTimeLocationTextView.setText(fullAddress);
+
+        mWeatherInfoCompressed = new WeatherInfoCompressed(
+                mWeatherInfo.getCurrentCode(),
+                mWeatherInfo.getCurrentTempC(),
+                mWeatherInfo.getCurrentConditionIconURL());
     }
 
     @Override
@@ -356,28 +383,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     "Humidity: " + weatherInfo.getAtmosphereHumidity() + "\n" +
                     "Pressure: " + weatherInfo.getAtmospherePressure() + "\n"
             );
+            setWeatherInfoIntoView();
 
-            Picasso.get()
-                    .load(weatherInfo.getCurrentConditionIconURL())
-                    .into(mCurrentWeatherIconImageView);
-
-            mCurrentTempTextView.setText(weatherInfo.getCurrentTempC() + CELSIUS);
-            mCurrentWeatherTextView.setText(weatherInfo.getConditionTitle());
-            String fullAddress;
-            String locality = weatherInfo.getAddress().getLocality();
-            String thoroughfare = weatherInfo.getAddress().getThoroughfare();
-            if (thoroughfare == null || thoroughfare.equals("")) {
-                fullAddress = locality;
-            } else {
-                fullAddress = thoroughfare + ", " + locality;
-            }
-
-            mCurrentTimeLocationTextView.setText(fullAddress);
-
-            mWeatherInfoCompressed = new WeatherInfoCompressed(
-                    mWeatherInfo.getCurrentCode(),
-                    mWeatherInfo.getCurrentTempC(),
-                    mWeatherInfo.getCurrentConditionIconURL());
         } else {
             WeatherLog.e("gotWeatherInfo: NULL" + errorType);
         }

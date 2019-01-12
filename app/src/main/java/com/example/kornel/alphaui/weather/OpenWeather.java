@@ -37,6 +37,7 @@ public class OpenWeather implements LocationUtils.MyLocationResult {
 
     private int mConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
 
+    public static WeatherInfo sWeatherInfo;
 
     // INSTANCE
 
@@ -343,6 +344,7 @@ public class OpenWeather implements LocationUtils.MyLocationResult {
         protected void onPostExecute(WeatherInfo result) {
             super.onPostExecute(result);
             if (result == null && mErrorType == null) mErrorType = Weather.ErrorType.UNKNOWN;
+            sWeatherInfo = result;
             mWeatherInfoResult.gotWeatherInfo(result, mErrorType);
             mContext = null;
         }
