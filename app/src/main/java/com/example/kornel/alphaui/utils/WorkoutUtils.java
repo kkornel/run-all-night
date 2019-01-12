@@ -21,10 +21,6 @@ public class WorkoutUtils {
         Date todayDate = new Date();
         long different = todayDate.getTime() - workoutDate.getTime();
 
-        MainActivityLog.d("todayDate : " + todayDate);
-        MainActivityLog.d("workoutDate : " + workoutDate);
-        MainActivityLog.d("different : " + different);
-
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
         long hoursInMilli = minutesInMilli * 60;

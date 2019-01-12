@@ -20,7 +20,6 @@ public class LatLon implements Parcelable {
     public LatLon(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-
     }
 
     public double getLatitude() {
@@ -38,7 +37,6 @@ public class LatLon implements Parcelable {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-
 
     public static ArrayList<LatLng> latLonToLatLng(List<LatLon> latlons) {
         ArrayList<LatLng> arrayList = new ArrayList<>();

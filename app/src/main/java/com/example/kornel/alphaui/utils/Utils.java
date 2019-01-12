@@ -2,7 +2,6 @@ package com.example.kornel.alphaui.utils;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -14,15 +13,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static android.support.constraint.Constraints.TAG;
-
 public class Utils {
 
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }
@@ -52,11 +47,6 @@ public class Utils {
         double correctSecs = 60 * secPartOfMinPerKm;
         double correctSecsRounded = Math.round(correctSecs);
 
-        NewLocationLog.d("calculateNewDetails: minPerKm: " + minPerKm);
-        NewLocationLog.d("calculateNewDetails: minPartOfMinPerKm: " + minPartOfMinPerKm);
-        NewLocationLog.d("calculateNewDetails: correctSecs: " + correctSecs);
-        NewLocationLog.d("calculateNewDetails: correctSecsRounded: " + correctSecsRounded);
-
         return minPartOfMinPerKm + ":" + String.format("%02d", (int) correctSecsRounded);
     }
 
@@ -74,7 +64,6 @@ public class Utils {
     }
 
     public static String getDurationString(long ms) {
-
         int seconds = (int) (ms / 1000);
 
         int hours = seconds / 3600;
@@ -89,14 +78,12 @@ public class Utils {
         if (hours == 0) {
             time = minutes + ":" + String.format("%02d", seconds);
         } else {
-            // time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
             time = hours + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
         }
         return time;
     }
 
     public static String getDurationHoursString(long ms) {
-
         int seconds = (int) (ms / 1000);
 
         int hours = seconds / 3600;

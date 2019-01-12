@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
 
-
 public class Lap implements Parcelable {
     private Position position;
     private long time;

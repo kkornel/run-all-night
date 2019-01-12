@@ -18,6 +18,5 @@ public class Database {
     public static final String TOTAL_DISTANCE = "totalDistance";
     public static final String TOTAL_DURATION = "totalDuration";
     public static final String TOTAL_WORKOUTS = "totalWorkouts";
-
     public static final String SHARED_LOCATIONS = "sharedLocations";
 }

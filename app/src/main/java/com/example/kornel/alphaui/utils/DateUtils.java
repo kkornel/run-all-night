@@ -109,6 +109,6 @@ public class DateUtils {
             case "Dec":
                 return "12";
         }
-        return "";
+        return "ERROR";
     }
 }

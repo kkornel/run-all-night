@@ -47,7 +47,6 @@ public class FriendWorkout implements Parcelable {
     // Parcelling Part
 
     public FriendWorkout(Parcel in){
-        // this.date = new Date(in.readLong());
         this.friendName = in.readString();
         this.avatarUrl = in.readString();
         this.workout = in.readParcelable(WorkoutSummary.class.getClassLoader());
@@ -60,7 +59,6 @@ public class FriendWorkout implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        // dest.writeLong(this.date.getTime());
         dest.writeString(this.friendName);
         dest.writeString(this.avatarUrl);
         dest.writeParcelable(this.workout, flags);
