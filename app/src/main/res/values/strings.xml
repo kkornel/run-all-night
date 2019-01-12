@@ -499,9 +499,6 @@
 
     <string name="title_activity_find_others">FindOthersActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!--<string name="logout">Wyloguj</string>-->
     <string name="logout">Log Out</string>
 
@@ -578,37 +575,67 @@
     <string name="distance_to_you">Distance to you:</string>
 
     <string name="already_a_friends">Already a friend</string>
+
     <string name="workouts">Workouts</string>
+
     <string name="shared_locations">Shared locations</string>
+
     <string name="total_time">Total time</string>
+
     <string name="total_distance">Total distance</string>
+
     <string name="share_your_location_title">Share your location</string>
+
     <string name="users_profile">User\'s profile</string>
+
     <string name="choose_workout">Choose workout</string>
+
     <string name="feed_toolbar_title">Feed</string>
+
     <string name="mainacitivity_title">MoonRunner</string>
+
     <string name="more_toolbar_title">More</string>
+
     <string name="weather_details">Weather details</string>
+
     <string name="selected">Selected</string>
+
     <string name="last_workout">Last workout:</string>
+
     <string name="wind">Wind</string>
+
     <string name="pressure">Pressure</string>
+
     <string name="humidity">Humidity</string>
-    <!--<string name="no_weather_info">Brak informacji o pogodzie.</string>-->
+
     <string name="no_weather_info">No weather info</string>
+
     <string name="time">TIME</string>
+
     <string name="kilometers">KILOMETERS</string>
+
     <string name="current_pace">CURRENT PACE</string>
+
     <string name="average_pace">AVG PACE</string>
+
     <string name="durationn">Duration</string>
+
     <string name="edit">Edit</string>
+
     <string name="capital_start">START</string>
+
     <string name="gps_not_enabled_explenation">GPS is not enabled</string>
+
     <string name="couldnt_get_location">Couldn\'t get your location</string>
+
     <string name="could_not_get_location">Could not get your location</string>
+
     <string name="weather_conditions">Weather Conditions</string>
+
     <string name="forecasted_for">Forecasted for:</string>
+
     <string name="choose">Choose</string>
+    
     <string name="profile">Profile</string>
 
 </resources>
