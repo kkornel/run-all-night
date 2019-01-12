@@ -142,8 +142,8 @@ public class FriendsListFragment extends Fragment implements ListItemClickListen
         final String friendUid = mFriendsProfileList.get(clickedItemIndex).getUserUid();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Choose")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.choose)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Dialog removeFriendDialog = createDialog(
                                 getString(R.string.remove_friend),
@@ -155,7 +155,7 @@ public class FriendsListFragment extends Fragment implements ListItemClickListen
                         removeFriendDialog.show();
                     }
                 })
-                .setNegativeButton("Profile", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.profile, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent i = new Intent(getContext(), ViewProfileActivity.class);
                         i.putExtra(EXTRA_USER, mFriendsProfileList.get(clickedItemIndex));
@@ -166,15 +166,6 @@ public class FriendsListFragment extends Fragment implements ListItemClickListen
 
         Dialog friendDialog = builder.create();
         friendDialog.show();
-
-        Dialog removeFriendDialog = createDialog(
-                getString(R.string.remove_friend),
-                getString(R.string.remove),
-                getString(R.string.cancel),
-                friendUid,
-                this);
-
-        // removeFriendDialog.show();
     }
 
     public void setFriendsList(List<User> friendsProfileList) {

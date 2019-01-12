@@ -1,6 +1,5 @@
 package com.example.kornel.alphaui.friends;
 
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,6 @@ import com.example.kornel.alphaui.utils.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.FriendListViewHolder> {
     private final ListItemClickListener mOnClickListener;

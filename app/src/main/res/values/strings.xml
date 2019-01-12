@@ -608,5 +608,7 @@
     <string name="could_not_get_location">Could not get your location</string>
     <string name="weather_conditions">Weather Conditions</string>
     <string name="forecasted_for">Forecasted for:</string>
+    <string name="choose">Choose</string>
+    <string name="profile">Profile</string>
 
 </resources>
