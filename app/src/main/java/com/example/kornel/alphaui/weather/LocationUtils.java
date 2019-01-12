@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -93,12 +94,15 @@ public class LocationUtils {
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                WorkoutLog.d("onLocationResult" + locationResult);
+
                 if (locationResult == null) {
                     WeatherLog.d("locationResult " + locationResult);
                     return;
                 }
-                mLocationResult.gotLocation(locationResult.getLastLocation(), mErrorType);
-
+                lastKnowLocation = locationResult.getLastLocation();
+                mLocationResult.gotLocation(locationResult.getLastLocation(), null);
+                stopLocationUpdates();
             }
         };
 
@@ -164,8 +168,9 @@ public class LocationUtils {
 
     private void getLastLocation(Activity activity) {
         try {
+            WorkoutLog.d("getLastLocation mGpsEnabled = "+ mGpsEnabled);
             if (mGpsEnabled) {
-                stopLocationUpdates();
+
 
                 mFusedLocationClient.getLastLocation()
                         .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
@@ -178,10 +183,12 @@ public class LocationUtils {
                                     // Logic to handle location object
                                     lastKnowLocation = location;
                                     WeatherLog.d(location.toString());
-                                    mLocationResult.gotLocation(location, mErrorType);
+                                    mLocationResult.gotLocation(location, null);
                                 } else {
                                     mLocationResult.gotLocation(null, null);
                                 }
+                                //stopLocationUpdates();
+
                             }
                         });
             }
@@ -199,6 +206,7 @@ public class LocationUtils {
 
     private void startLocationUpdates() {
         try {
+            WorkoutLog.d("startLocationUpdates");
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                     mLocationCallback,
                     null /* Looper */);
@@ -208,6 +216,7 @@ public class LocationUtils {
     }
 
     private void stopLocationUpdates() {
+        WorkoutLog.d("stopLocationUpdates");
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
