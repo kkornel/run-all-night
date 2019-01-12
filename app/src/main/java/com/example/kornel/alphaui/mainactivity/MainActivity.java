@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         WeatherLog.setDebuggable(true);
+        MainActivityLog.setDebuggable(true);
+        WorkoutLog.setDebuggable(true);
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +53,6 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
                 workoutViewHolder.mWorkoutImageView.setImageDrawable(mContext.getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkouts.get(position))));
             }
         }
-        // Googles way
-        // paceViewHolder.bind(position);
     }
 
     @Override

@@ -17,7 +17,6 @@ import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
-import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

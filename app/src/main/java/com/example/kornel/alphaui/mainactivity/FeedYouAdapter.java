@@ -33,7 +33,6 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
 
     @Override
     public FeedYouViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.feed_you_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -47,8 +46,6 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
 
     @Override
     public void onBindViewHolder(@NonNull FeedYouViewHolder workoutViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mWorkouts == null) || (mWorkouts.size() == 0)) {
             workoutViewHolder.mDateTextView.setText("");
         } else {
@@ -74,9 +71,6 @@ public class FeedYouAdapter extends RecyclerView.Adapter<FeedYouAdapter.FeedYouV
                 workoutViewHolder.mWorkoutImageView.setImageDrawable(mContext.getResources().getDrawable(IconUtils.getWorkoutIcon(mWorkouts.get(position).getWorkoutName())));
             }
         }
-
-        // Googles way
-        // paceViewHolder.bind(position);
     }
 
     @Override

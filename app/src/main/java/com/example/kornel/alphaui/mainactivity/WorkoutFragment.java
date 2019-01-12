@@ -42,7 +42,6 @@ import com.example.kornel.alphaui.weather.LocationUtils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.example.kornel.alphaui.weather.OpenWeather;
 import com.example.kornel.alphaui.weather.Weather;
-import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfo;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.example.kornel.alphaui.weather.WeatherInfoListener;
@@ -101,7 +100,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private Button mStartWorkoutButton;
 
-    // private Weather mWeather = Weather.getInstance(true);
     private OpenWeather mWeather = OpenWeather.getInstance(true);
     private WeatherInfo mWeatherInfo;
     private WeatherInfoCompressed mWeatherInfoCompressed;
@@ -109,7 +107,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     private boolean mHasMusicChosen = false;
 
     private Date mLastWorkoutDate;
-
 
     public WorkoutFragment() {
 
@@ -149,15 +146,9 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                     if (!LocationUtils.isGpsEnabled(getContext())) {
                         setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
                         showNoGpsSnackBar();
-                        WorkoutLog.d("onClick not enabled");
                     } else if (LocationUtils.lastKnowLocation == null) {
-                        WorkoutLog.d("onClick lastKnowLocation == null");
-                        // setGpsLayout(false, getString(R.string.could_not_get_location));
                         searchByGPS();
                     } else {
-                        WorkoutLog.d("onClick  enabled");
-
-
                         setGpsLayout(true, getString(R.string.enable_gps_to_check_weather));
                         Intent intent = new Intent(WorkoutFragment.this.getActivity(), WeatherDetailsActivity.class);
                         if (mWeatherInfo != null) {
@@ -168,6 +159,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 }
             }
         });
+
         mCurrentWeatherIconImageView = rootView.findViewById(R.id.currentWeatherIconImageView);
         mCurrentWeatherTextView = rootView.findViewById(R.id.currentWeatherDescriptionTextView);
         mCurrentTempTextView = rootView.findViewById(R.id.currentTemperatureTextView);
@@ -280,13 +272,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
             if (!LocationUtils.isGpsEnabled(getContext())) {
                 setGpsLayout(false, getString(R.string.enable_gps_to_check_weather));
-                // showNoGpsSnackBar();
-            //} else if (LocationUtils.lastKnowLocation == null) {
-                //setGpsLayout(false, getString(R.string.could_not_get_location));
-                WorkoutLog.d("onStart not enabled");
             } else {
                 setGpsLayout(true, getString(R.string.enable_gps_to_check_weather));
-                WorkoutLog.d("onStart enabled");
             }
         }
     }
@@ -315,7 +302,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         if (mHasMusicChosen) {
             mSelectMusicTextView.setText(getString(R.string.selected));
         }
-        WorkoutLog.d("onResume");
     }
 
     @Override
@@ -359,30 +345,16 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     @Override
     public void gotWeatherInfo(final WeatherInfo weatherInfo, Weather.ErrorType errorType) {
-        WorkoutLog.d("weatherInfo = " + weatherInfo);
-        WorkoutLog.d("errorType = " + errorType);
-
-
         if (weatherInfo == null) {
-            WorkoutLog.d("weatherInfo == null");
             setGpsLayout(false, getString(R.string.could_not_get_location));
         }
 
         if (weatherInfo != null) {
             mNoGpsTextView.setVisibility(View.GONE);
             mWeatherInfo = weatherInfo;
-            WorkoutLog.d("weatherInfo != null");
 
             WeatherLog.d("gotWeatherInfo: " + weatherInfo.toString());
 
-            WeatherLog.d("====== CURRENT ======" + "\n" +
-                    "date: " + weatherInfo.getCurrentConditionDate() + "\n" +
-                    "weather: " + weatherInfo.getCurrentText() + "\n" +
-                    "temperature in ºC: " + weatherInfo.getCurrentTempC() + "\n" +
-                    "wind speed: " + weatherInfo.getWindSpeedMph() + "\n" +
-                    "Humidity: " + weatherInfo.getAtmosphereHumidity() + "\n" +
-                    "Pressure: " + weatherInfo.getAtmospherePressure() + "\n"
-            );
             setWeatherInfoIntoView();
 
         } else {
@@ -398,7 +370,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
                 setWorkoutTypeLayout(result);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Write your code if there's no result
+                // no results
             }
         }
     }
@@ -513,16 +485,7 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
 
     private void searchByGPS() {
         mNoGpsTextView.setVisibility(View.GONE);
-        // mWeather.setNeedDownloadIcons(true);
-        // mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
         mWeather.queryWeatherByGPS(getActivity(), getContext(), this);
-    }
-
-    private void searchByLatLon(double lat, double lon) {
-        // mWeather.setNeedDownloadIcons(true);
-        // mWeather.setTempUnit(Weather.TEMP_UNIT.CELSIUS);
-        // mWeather.queryWeatherByLatLon(getContext(), lat, lon, this);
-        // mWeather.queryWeatherByLatLon(getApplicationContext(), location, MainActivity.this);
     }
 
     private void checkInternetConnection() {
@@ -652,8 +615,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         Intent intent = new Intent();
         intent.setAction(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
-
-        // startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
     private void openSpotify() {
@@ -661,7 +622,6 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
         intent.setData(Uri.parse("spotify:album:0sNOF9WDwhWunNAHPD3Baj"));
         intent.putExtra(Intent.EXTRA_REFERRER,
                 Uri.parse("android-app://" + getActivity().getPackageName()));
-        // Uri.parse("android-app://" + context.getPackageName()));
         startActivity(intent);
     }
 

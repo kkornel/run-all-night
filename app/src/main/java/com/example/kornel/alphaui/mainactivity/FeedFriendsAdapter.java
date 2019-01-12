@@ -47,7 +47,6 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
     @Override
     public FeedFriendsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Called by the layout manager when it needs a new view
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -67,8 +66,6 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull FeedFriendsViewHolder activityViewHolder, int position) {
-        // Called by the layout manager when it wants new data in an existing row
-
         if ((mFriendsFeedList == null) || (mFriendsFeedList.size() == 0)) {
             activityViewHolder.mNameTextView.setText("");
         } else {
@@ -95,22 +92,19 @@ public class FeedFriendsAdapter extends RecyclerView.Adapter<FeedFriendsAdapter.
             }
 
             if (!WorkoutUtils.isGpsBased(workout.getWorkoutName())) {
-                activityViewHolder.mDistanceLabel.setText("Duration");
+                activityViewHolder.mDistanceLabel.setText(R.string.duration);
                 activityViewHolder.mDistanceTextView.setText(workout.getDurationString());
                 activityViewHolder.mDurationLabel.setText("");
                 activityViewHolder.mDurationTextView.setText("");
                 activityViewHolder.mDivider8.setVisibility(View.GONE);
             } else {
-                activityViewHolder.mDistanceLabel.setText("Distance");
+                activityViewHolder.mDistanceLabel.setText(R.string.distance);
                 activityViewHolder.mDistanceTextView.setText(workout.getDistanceKmString());
-                activityViewHolder.mDurationLabel.setText("Duration");
+                activityViewHolder.mDurationLabel.setText(R.string.durationn);
                 activityViewHolder.mDurationTextView.setText(workout.getDurationString());
                 activityViewHolder.mDivider8.setVisibility(View.VISIBLE);
             }
         }
-
-        // Googles way
-        // paceViewHolder.bind(position);
     }
 
     @Override

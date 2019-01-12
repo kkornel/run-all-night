@@ -82,11 +82,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                     public void onRefresh() {
                         Toast.makeText(getActivity(), getString(R.string.refresh), Toast.LENGTH_SHORT).show();
 
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        // fetchNewData();
-                        // readFriendsWorkouts(mFriendsIds);
-
                         if (mDataChanged) {
                             readFriendsWorkouts(mFriendsIds);
                             mDataChanged = false;
@@ -151,8 +146,6 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                         ChildEventListener childWorkoutListener = new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: ");
-
                                 if (!mFragmentJustStarted) {
                                     WorkoutSummary workoutSummary = dataSnapshot.getValue(WorkoutSummary.class);
 
@@ -176,19 +169,16 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
 
                             @Override
                             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildChanged: ");
                                 mDataChanged = true;
                             }
 
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d(TAG, "onChildRemoved: ");
                                 mDataChanged = true;
                             }
 
                             @Override
                             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildMoved: ");
                                 mDataChanged = true;
                             }
 
@@ -263,11 +253,10 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
                                 if (!workout.getPrivacy()) {
-                                    Log.d(TAG, "not private - adding: " + ds);
                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
                                     mFeedFriendsList.add(friendWorkout);
                                 } else {
-                                    Log.d(TAG, "private - not adding: " + ds);
+                                    // private not adding
                                 }
                             }
 
@@ -346,63 +335,4 @@ public class FeedFriendsFragment extends Fragment implements ListItemClickListen
             return friendName;
         }
     }
-
-    // private void readFriendsWorkouts() {
-    //     final DatabaseReference friendsRef = mUsersRef.child(mUserUid).child(Database.FRIENDS);
-    //     ValueEventListener friendsIdsListener = new ValueEventListener() {
-    //         @Override
-    //         public void onDataChange(DataSnapshot dataSnapshot) {
-    //             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                 final String friendUid = ds.getWorkoutKey();
-    //                 mFriendsCount = dataSnapshot.getChildrenCount();
-    //
-    //                 DatabaseReference friendUidRef = mUsersRef.child(friendUid);
-    //                 ValueEventListener friendsProfilesListener = new ValueEventListener() {
-    //                     @Override
-    //                     public void onDataChange(DataSnapshot dataSnapshot) {
-    //                         mFeedFriendsList = new ArrayList<>();
-    //                         User user = dataSnapshot.getValue(User.class);
-    //                         final String avatarUrl = user.getAvatarUrl();
-    //                         final String friendName = user.getFullName();
-    //
-    //                         DatabaseReference friendUidWorkoutsRef = mWorkoutsRef.child(friendUid);
-    //                         ValueEventListener friendsWorkoutsListener = new ValueEventListener() {
-    //                             @Override
-    //                             public void onDataChange(DataSnapshot dataSnapshot) {
-    //                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-    //                                     WorkoutSummary workout = ds.getValue(WorkoutSummary.class);
-    //                                     FriendWorkout friendWorkout = new FriendWorkout(friendName, avatarUrl, workout);
-    //                                     mFeedFriendsList.add(friendWorkout);
-    //                                 }
-    //
-    //                                 mNumberOfFriendsAlreadyIterated++;
-    //                                 if (mNumberOfFriendsAlreadyIterated == mFriendsCount) {
-    //                                     loadNewData(mFeedFriendsList);
-    //                                 }
-    //                             }
-    //
-    //                             @Override
-    //                             public void onCancelled(@NonNull DatabaseError databaseError) {
-    //                                 Log.e(TAG, databaseError.getMessage());
-    //                             }
-    //                         };
-    //                         friendUidWorkoutsRef.addListenerForSingleValueEvent(friendsWorkoutsListener);
-    //                     }
-    //
-    //                     @Override
-    //                     public void onCancelled(@NonNull DatabaseError databaseError) {
-    //                         Log.e(TAG, databaseError.getMessage());
-    //                     }
-    //                 };
-    //                 friendUidRef.addListenerForSingleValueEvent(friendsProfilesListener);
-    //             }
-    //         }
-    //
-    //         @Override
-    //         public void onCancelled(@NonNull DatabaseError databaseError) {
-    //             Log.e(TAG, databaseError.getMessage());
-    //         }
-    //     };
-    //     friendsRef.addListenerForSingleValueEvent(friendsIdsListener);
-    // }
 }

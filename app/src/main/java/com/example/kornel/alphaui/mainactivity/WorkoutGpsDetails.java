@@ -35,7 +35,6 @@ import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
-import com.example.kornel.alphaui.weather.WeatherConsts;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -482,7 +481,6 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 })
                 .setNegativeButton(R.string.no, null).show();
     }
-
 
     private void saveChanges() {
         if (!NetworkUtils.isConnected(WorkoutGpsDetails.this)) {

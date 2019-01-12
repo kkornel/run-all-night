@@ -20,18 +20,15 @@ public class FeedFragment extends Fragment {
     private FeedYouFragment mFeedYouFragment;
 
     public FeedFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mFeedPagerAdapter = new FeedPagerAdapter(getActivity().getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = rootView.findViewById(R.id.feedContainer);
         mViewPager.setAdapter(mFeedPagerAdapter);
 
@@ -43,8 +40,6 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
-    // A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-    // one of the sections/tabs/pages.
     public class FeedPagerAdapter extends FragmentPagerAdapter {
 
         public FeedPagerAdapter(FragmentManager fm) {
