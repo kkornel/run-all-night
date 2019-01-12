@@ -60,8 +60,6 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
     private Location mYouLocation;
     private List<SharedLocationInfo> mSharedLocationInfoList;
 
-    private AlertDialog mInfoWindowDialog;
-
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mRootRef;
@@ -257,7 +255,6 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
                         continue;
                     }
 
-                    // TODO i added this
                     if(mYouLocation == null) {
                         Toast.makeText(getContext(), "Couldn't get your location", Toast.LENGTH_LONG).show();
                         return;

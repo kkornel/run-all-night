@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,8 +120,6 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                WeatherLog.d("onMapLoaded");
-
                 new LocationUtils().findUserLocation(getActivity(), getContext(), ShareYourLocationMapFragment.this);
             }
         });
@@ -174,9 +171,6 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
-        WeatherLog.d("gotLocation" + location);
-        WeatherLog.d("gotLocation" + errorType);
-
         if (errorType == LocationUtils.LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.gps_not_enabled_explenation)
@@ -203,8 +197,6 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
 
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mYouLatLng, MAP_ZOOM));
-        // mMap.getUiSettings().setAllGesturesEnabled(false);
-        // addYouMarker(mYouLatLng);
     }
 
     public void setCallBack(OnDataChanged callBack) {
