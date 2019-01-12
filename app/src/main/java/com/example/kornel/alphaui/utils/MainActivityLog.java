@@ -1,13 +1,13 @@
-package com.example.kornel.alphaui.gpsworkout;
+package com.example.kornel.alphaui.utils;
 
 import android.util.Log;
 
-public class NewLocationLog {
-    private static final String TAG = "NewLocationLog";
+public class MainActivityLog {
+    private static final String TAG = "MainActivityLog";
     private static boolean isDebuggable = true;
 
     public static void setDebuggable(final boolean isDebuggable) {
-        NewLocationLog.isDebuggable = isDebuggable;
+        MainActivityLog.isDebuggable = isDebuggable;
     }
 
     public static void d(final String tag, final String message) {

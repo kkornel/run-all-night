@@ -14,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.kornel.alphaui.utils.MainActivityLog;
+import com.example.kornel.alphaui.utils.NewLocationLog;
 import com.example.kornel.alphaui.profile.ProfileDetailsActivity;
 import com.example.kornel.alphaui.R;
-import com.example.kornel.alphaui.weather.WeatherLog;
+import com.example.kornel.alphaui.utils.WeatherLog;
 
 public class MainActivity extends AppCompatActivity {
     private static final String MORE_FRAGMENT = "MoreFragment";
@@ -86,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        WeatherLog.setDebuggable(true);
         MainActivityLog.setDebuggable(true);
+        NewLocationLog.setDebuggable(true);
+        WeatherLog.setDebuggable(true);
         WorkoutLog.setDebuggable(true);
     }
 

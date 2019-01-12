@@ -44,7 +44,7 @@ import com.example.kornel.alphaui.weather.OpenWeather;
 import com.example.kornel.alphaui.weather.WeatherInfo;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.example.kornel.alphaui.weather.WeatherInfoListener;
-import com.example.kornel.alphaui.weather.WeatherLog;
+import com.example.kornel.alphaui.utils.WeatherLog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

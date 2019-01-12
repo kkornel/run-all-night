@@ -2,9 +2,7 @@ package com.example.kornel.alphaui.gpsworkout;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import com.example.kornel.alphaui.mainactivity.MainActivityLog;
 import com.example.kornel.alphaui.utils.DateUtils;
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
@@ -12,7 +10,6 @@ import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.WeatherInfoCompressed;
 import com.google.firebase.database.Exclude;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WorkoutSummary implements Parcelable {
-    private static final String TAG = "WorkoutSummary";
-
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss";
 
     private String workoutKey;
@@ -58,7 +53,6 @@ public class WorkoutSummary implements Parcelable {
         this.path = path;
         this.laps = laps;
     }
-
 
     // Constructor for IndoorWorkoutService
     public WorkoutSummary(Date date, String workoutName, long duration) {
@@ -103,7 +97,6 @@ public class WorkoutSummary implements Parcelable {
         }
 
         String date = dayName + ", " + day + " " + month + " " + year + " " + time;
-        Log.d(TAG, "getFullDateStringPlWithTime: " + date);
         return date;
     }
 
@@ -122,7 +115,6 @@ public class WorkoutSummary implements Parcelable {
         }
 
         String date = day + " " + month + " " + year + " | " + time;
-        Log.d(TAG, "getFullDateStringPlWithTime: " + date);
         return date;
     }
 
@@ -141,7 +133,6 @@ public class WorkoutSummary implements Parcelable {
         }
 
         String date = day + " " + month + " " + year;
-        Log.d(TAG, "getDateStringPl: " + date);
         return date;
     }
 
@@ -158,7 +149,6 @@ public class WorkoutSummary implements Parcelable {
         String secs = separatedTime[2];
 
         String timeHourMin = hours + ":" + mins;
-        Log.d(TAG, "getTimeHourMin: " + timeHourMin);
         return timeHourMin;
     }
 
@@ -327,7 +317,6 @@ public class WorkoutSummary implements Parcelable {
     // Parcelling Part
 
     public WorkoutSummary(Parcel in) {
-        // this.date = new Date(in.readLong());
         this.workoutKey = in.readString();
         this.dateMilliseconds = in.readLong();
         this.workoutName = in.readString();
@@ -354,7 +343,6 @@ public class WorkoutSummary implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        // dest.writeLong(this.date.getTime());
         dest.writeString(this.workoutKey);
         dest.writeLong(this.dateMilliseconds);
         dest.writeString(this.workoutName);

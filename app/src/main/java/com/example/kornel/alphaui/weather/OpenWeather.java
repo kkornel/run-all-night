@@ -6,7 +6,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
+
+import com.example.kornel.alphaui.utils.WeatherLog;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -23,7 +23,6 @@ import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.LatLon;
 import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.LocationUtils;
-import com.example.kornel.alphaui.weather.WeatherLog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

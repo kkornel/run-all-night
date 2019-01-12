@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.kornel.alphaui.gpsworkout.NewLocationLog;
 import com.example.kornel.alphaui.gpsworkout.WorkoutSummary;
 
 import java.text.DecimalFormat;

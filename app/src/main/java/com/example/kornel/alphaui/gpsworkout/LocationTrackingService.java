@@ -9,10 +9,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.NewLocationLog;
 import com.example.kornel.alphaui.utils.NotificationUtils;
 import com.example.kornel.alphaui.utils.OnNewActivityState;
 import com.google.android.gms.common.ConnectionResult;

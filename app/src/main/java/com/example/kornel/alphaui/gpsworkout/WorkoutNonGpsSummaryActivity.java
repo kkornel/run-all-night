@@ -49,7 +49,6 @@ import com.example.kornel.alphaui.mainactivity.WorkoutLog;
 import com.example.kornel.alphaui.utils.Database;
 import com.example.kornel.alphaui.utils.IconUtils;
 import com.example.kornel.alphaui.utils.User;
-import com.example.kornel.alphaui.utils.Utils;
 import com.example.kornel.alphaui.weather.NetworkUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -513,7 +512,6 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
 
     private void showCameraGalleryDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.select_photo_dialog, null);
@@ -537,8 +535,6 @@ public class WorkoutNonGpsSummaryActivity extends AppCompatActivity {
             }
         });
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView).setTitle(R.string.pick_camera_gallery);
 
         mCameraGalleryDialog = builder.create();

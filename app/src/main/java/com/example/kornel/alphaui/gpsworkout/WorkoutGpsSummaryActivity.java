@@ -566,7 +566,6 @@ public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMa
 
     private void onUploadCompleted(String photoUri, String key) {
         mWorkoutSummary.setPicUrl(photoUri);
-
         uploadWorkout(key);
     }
 
@@ -677,7 +676,6 @@ public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMa
 
     private void showCameraGalleryDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
         final LayoutInflater inflater = getLayoutInflater();
 
         View vView = inflater.inflate(R.layout.select_photo_dialog, null);
@@ -701,8 +699,6 @@ public class WorkoutGpsSummaryActivity extends AppCompatActivity implements OnMa
             }
         });
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(vView).setTitle(R.string.pick_camera_gallery);
 
         mCameraGalleryDialog = builder.create();

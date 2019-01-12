@@ -1,13 +1,13 @@
-package com.example.kornel.alphaui.mainactivity;
+package com.example.kornel.alphaui.utils;
 
 import android.util.Log;
 
-public class MainActivityLog {
-    private static final String TAG = "MainActivityLog";
+public class NewLocationLog {
+    private static final String TAG = "NewLocationLog";
     private static boolean isDebuggable = true;
 
     public static void setDebuggable(final boolean isDebuggable) {
-        MainActivityLog.isDebuggable = isDebuggable;
+        NewLocationLog.isDebuggable = isDebuggable;
     }
 
     public static void d(final String tag, final String message) {

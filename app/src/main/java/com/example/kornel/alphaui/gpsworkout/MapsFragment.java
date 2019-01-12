@@ -108,7 +108,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         getActivity().unregisterReceiver(mLocationReceiver);
     }
 
-
     private void centerMapOnTheLocationZoom(Location location, int zoom, boolean addMarker) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -122,7 +121,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void updatePath(ArrayList<LatLng> path) {
         if (mPolylineOptions == null) {
             mPolylineOptions = new PolylineOptions();
-            // .add(newLatLng);
             mPolyline = mMap.addPolyline(mPolylineOptions);
         } else {
             mPolyline.setPoints(path);
@@ -189,8 +187,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 case ACTION_LOCATION_CHANGED:
                     LatLon latLon = intent.getParcelableExtra(LOCATION_EXTRA_BROADCAST_INTENT);
                     mPath.add(new LatLng(latLon.getLatitude(), latLon.getLongitude()));
-                    // final ArrayList<LatLon> latLonPath = intent.getParcelableArrayListExtra(LOCATION_EXTRA_BROADCAST_INTENT);
-                    // final ArrayList<LatLng> path = LatLon.latLonToLatLng(latLonPath);
                     handler.post(new Runnable() {
                         @Override
                         public void run() {

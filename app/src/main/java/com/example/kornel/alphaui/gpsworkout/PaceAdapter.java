@@ -55,8 +55,6 @@ public class PaceAdapter extends RecyclerView.Adapter<PaceAdapter.PaceViewHolder
                 paceViewHolder.mLapProgressBar.setProgress(secProgress);
             }
         }
-        // Googles way
-        // paceViewHolder.bind(position);
     }
 
     private long searchForLongestLap() {

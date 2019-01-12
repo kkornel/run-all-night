@@ -79,7 +79,6 @@ public class Stopwatch {
         if (hours == 0) {
             time = minutes + ":" + String.format("%02d", seconds);
         } else {
-            // time = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
             time = hours + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
         }
         return time;

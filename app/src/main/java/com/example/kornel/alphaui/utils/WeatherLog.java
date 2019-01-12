@@ -1,4 +1,4 @@
-package com.example.kornel.alphaui.weather;
+package com.example.kornel.alphaui.utils;
 
 import android.util.Log;
 

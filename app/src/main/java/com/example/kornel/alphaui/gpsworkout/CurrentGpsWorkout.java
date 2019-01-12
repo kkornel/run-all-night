@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.example.kornel.alphaui.utils.Lap;
 import com.example.kornel.alphaui.utils.LatLon;
+import com.example.kornel.alphaui.utils.NewLocationLog;
 import com.example.kornel.alphaui.utils.Position;
 import com.example.kornel.alphaui.utils.Utils;
 

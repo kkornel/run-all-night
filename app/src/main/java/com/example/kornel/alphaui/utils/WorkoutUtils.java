@@ -1,7 +1,5 @@
 package com.example.kornel.alphaui.utils;
 
-import com.example.kornel.alphaui.mainactivity.MainActivityLog;
-
 import java.util.Date;
 
 public class WorkoutUtils {
