@@ -15,16 +15,16 @@ public class IconUtils {
 
         // GPS
         result.put(GpsBasedWorkout.CYCLING.getValue(), R.drawable.ic_cycling_64);
-        result.put(GpsBasedWorkout.ICE_SKATING.getValue(), R.drawable.ic_ice_skating_64);
-        result.put(GpsBasedWorkout.RIDING.getValue(), R.drawable.ic_riding_64);
-        result.put(GpsBasedWorkout.ROLLER_SKATING.getValue(), R.drawable.ic_roller_skating_64);
+        result.put(GpsBasedWorkout.ICE_SKATING.getValue(), R.drawable.ic_ice_skating_64_2);
+        result.put(GpsBasedWorkout.RIDING.getValue(), R.drawable.ic_riding_64_2);
+        result.put(GpsBasedWorkout.ROLLER_SKATING.getValue(), R.drawable.ic_roller_skating_64_2);
         result.put(GpsBasedWorkout.ROWING.getValue(), R.drawable.ic_rowing_64);
-        result.put(GpsBasedWorkout.RUNNING.getValue(), R.drawable.ic_running_64);
-        result.put(GpsBasedWorkout.SKATEBOARDING.getValue(), R.drawable.ic_skateboarding_64);
-        result.put(GpsBasedWorkout.SKIING.getValue(), R.drawable.ic_skiing_64);
-        result.put(GpsBasedWorkout.SNOWBOARDING.getValue(), R.drawable.ic_snowboarding_64);
-        result.put(GpsBasedWorkout.SWIMMING.getValue(), R.drawable.ic_swimming_64);
-        result.put(GpsBasedWorkout.TREKKING.getValue(), R.drawable.ic_trekking_64);
+        result.put(GpsBasedWorkout.RUNNING.getValue(), R.drawable.ic_running_64_2);
+        result.put(GpsBasedWorkout.SKATEBOARDING.getValue(), R.drawable.ic_skateboarding_64_2);
+        result.put(GpsBasedWorkout.SKIING.getValue(), R.drawable.ic_skiing_64_2);
+        result.put(GpsBasedWorkout.SNOWBOARDING.getValue(), R.drawable.ic_snowboarding_64_2);
+        result.put(GpsBasedWorkout.SWIMMING.getValue(), R.drawable.ic_swimming_64_2);
+        result.put(GpsBasedWorkout.TREKKING.getValue(), R.drawable.ic_trekking_64_2);
         result.put(GpsBasedWorkout.WALKING.getValue(), R.drawable.ic_walking_64);
 
         // NONGPS
