@@ -319,6 +319,8 @@ public class WorkoutFragment extends Fragment implements WeatherInfoListener {
     }
 
     private void setWeatherInfoIntoView() {
+        mNoGpsTextView.setVisibility(View.GONE);
+
         Picasso.get()
                 .load(mWeatherInfo.getCurrentConditionIconURL())
                 .into(mCurrentWeatherIconImageView);
