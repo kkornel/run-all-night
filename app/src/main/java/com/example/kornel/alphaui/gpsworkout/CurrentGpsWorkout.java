@@ -315,6 +315,9 @@ public class CurrentGpsWorkout {
     }
 
     public double getMaxPace() {
+        if (mMaxPace == 1000.0) {
+            return 0.0;
+        }
         return mMaxPace;
     }
 
