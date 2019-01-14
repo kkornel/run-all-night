@@ -73,7 +73,7 @@ public class CurrentGpsWorkout {
         mAvgPaceString = "0:00";
         mCurrentPace = 0.0;
         mCurrentPaceString = "0:00";
-        mMaxPace = 0.0;
+        mMaxPace = 1000.0;
         mMaxPaceString = "0:00";
         mAvgSpeed = 0.0;
         mCurrentSpeed = 0.0;
