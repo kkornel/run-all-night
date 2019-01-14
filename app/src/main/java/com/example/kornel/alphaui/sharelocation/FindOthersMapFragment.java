@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.mainactivity.MainActivity;
+import com.example.kornel.alphaui.utils.MainActivityLog;
 import com.example.kornel.alphaui.utils.MapWrapperLayout;
 import com.example.kornel.alphaui.utils.OnInfoWindowElemTouchListener;
 import com.example.kornel.alphaui.R;
@@ -85,6 +87,8 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     private String mUserUid;
     private String mFriendUid;
 
+    private boolean mFirstLoad = true;
+
     public interface OnFindOthersCallback {
         void onGotAllSharedLocations(List<SharedLocationInfo> sharedLocationInfoList);
 
@@ -126,7 +130,13 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersMapFragment.this);
+                if (mFirstLoad) {
+                    mFirstLoad = false;
+                    mMarkersMap = new HashMap<>();
+                    addYouMarker(mYouLatLng);
+                }
+
+                // new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersMapFragment.this);
             }
         });
 
@@ -314,6 +324,10 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
     public void onNewRequest(final Location location) {
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (mMap == null || mFirstLoad) {
+            return;
+        }
 
         mMap.clear();
         mMarkersMap = new HashMap<>();
