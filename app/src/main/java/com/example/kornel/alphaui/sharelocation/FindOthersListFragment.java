@@ -1,5 +1,6 @@
 package com.example.kornel.alphaui.sharelocation;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.profile.ViewProfileActivity;
 import com.example.kornel.alphaui.utils.Database;
+import com.example.kornel.alphaui.utils.ErrorLog;
 import com.example.kornel.alphaui.utils.ListItemClickListener;
 import com.example.kornel.alphaui.utils.User;
 import com.example.kornel.alphaui.utils.Utils;
@@ -199,7 +201,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
 
         nameTextView.setText(sli.getUserProfile().getFullName());
 
-        distanceTextView.setText(sli.getDistanceToYouString() + "km");
+        distanceTextView.setText(sli.getDistanceToYouString() + " km");
         messageTextView.setText(sli.getMessage());
 
         Picasso.get()
@@ -212,6 +214,7 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
         dialog = builder.create();
         dialog.show();
     }
+
     @Override
     public void onListItemClick(int clickedItemIndex) {
         showUserDialog(clickedItemIndex);
@@ -224,11 +227,30 @@ public class FindOthersListFragment extends Fragment implements ListItemClickLis
             mFirstLocationUpdate = false;
             return;
         }
+
+        if (location == null) {
+            ErrorLog.d(TAG + " - gotLocation - " + location);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.couldnt_get_location)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getActivity().finish();
+                        }
+                    });
+            builder.create().show();
+            return;
+        }
+
+        if (mOnFindOthersCallback == null) {
+            ErrorLog.d(TAG + " - gotLocation - " + mOnFindOthersCallback);
+            return;
+        }
+
         mOnFindOthersCallback.onNewRequest(mYouLocation);
     }
 
     private void find(final String workoutType, final double distance) {
-        new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersListFragment.this);
+        // new LocationUtils().findUserLocation(getActivity(), getContext(), FindOthersListFragment.this);
 
         mSharedLocationInfoList = new ArrayList<>();
 

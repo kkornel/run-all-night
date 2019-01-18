@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kornel.alphaui.mainactivity.MainActivity;
+import com.example.kornel.alphaui.utils.ErrorLog;
 import com.example.kornel.alphaui.utils.MainActivityLog;
 import com.example.kornel.alphaui.utils.MapWrapperLayout;
 import com.example.kornel.alphaui.utils.OnInfoWindowElemTouchListener;
@@ -235,7 +236,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
 
                 mNameTextView.setText(mSli.getUserProfile().getFullName());
 
-                mDistanceTextView.setText(mSli.getDistanceToYouString() + "km");
+                mDistanceTextView.setText(mSli.getDistanceToYouString() + " km");
                 mMessageTextView.setText(mSli.getMessage());
                 mShowProfileButtonListener.setMarker(marker);
 
@@ -290,6 +291,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
         if (errorType == LocationUtils.LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE) {
+            ErrorLog.d(TAG + " - gotLocation - " + errorType);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.gps_not_enabled_explenation)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -302,6 +304,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         }
 
         if (location == null) {
+            ErrorLog.d(TAG + " - gotLocation - " + location);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.couldnt_get_location)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -326,6 +329,7 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
         mYouLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (mMap == null || mFirstLoad) {
+            ErrorLog.d(TAG + " - onNewRequest - " + mMap + " " + mFirstLoad);
             return;
         }
 
@@ -358,6 +362,11 @@ public class FindOthersMapFragment extends Fragment implements OnMapReadyCallbac
     }
 
     private void addYouMarker(LatLng youLatLng) {
+        if (youLatLng == null) {
+            ErrorLog.d(TAG + " - addYouMarker - " + youLatLng);
+            return;
+        }
+
         mYouMarker = mMap.addMarker(new MarkerOptions()
                 .position(youLatLng)
                 .title(getString(R.string.you))

@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kornel.alphaui.utils.ErrorLog;
 import com.example.kornel.alphaui.utils.MapWrapperLayout;
 import com.example.kornel.alphaui.R;
 import com.example.kornel.alphaui.utils.CurrentUserProfile;
@@ -40,6 +41,8 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 
 public class ShareYourLocationMapFragment extends Fragment implements OnMapReadyCallback, LocationUtils.MyLocationResult {
+    private static final String TAG = "ShareYourLocationMapFra";
+
     private static final int MESSAGE_MAX_LENGTH = 140;
     private static final int MAP_ZOOM = 15;
 
@@ -171,6 +174,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
     @Override
     public void gotLocation(Location location, LocationUtils.LocationErrorType errorType) {
         if (errorType == LocationUtils.LocationErrorType.LOCATION_SERVICE_IS_NOT_AVAILABLE) {
+            ErrorLog.d(TAG + " - gotLocation - " + errorType);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.gps_not_enabled_explenation)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -183,6 +187,7 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
         }
 
         if (location == null) {
+            ErrorLog.d(TAG + " - gotLocation - " + location);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.couldnt_get_location)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -238,6 +243,11 @@ public class ShareYourLocationMapFragment extends Fragment implements OnMapReady
     }
 
     private void addYouMarker(LatLng youLatLng) {
+        if (youLatLng == null) {
+            ErrorLog.d(TAG + " - addYouMarker - " + youLatLng);
+            return;
+        }
+
         mYouMarker = mMap.addMarker(new MarkerOptions()
                 .position(youLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));

@@ -53,7 +53,7 @@ public class FindOthersListAdapter extends RecyclerView.Adapter<FindOthersListAd
                     .into(findOthersListViewHolder.mAvatarImageView);
 
             findOthersListViewHolder.mNameTextView.setText(sli.getUserProfile().getFullName());
-            findOthersListViewHolder.mDistanceTextView.setText(sli.getDistanceToYouString());
+            findOthersListViewHolder.mDistanceTextView.setText(sli.getDistanceToYouString() + " km");
             findOthersListViewHolder.mMessageTextView.setText(sli.getMessage());
         }
     }

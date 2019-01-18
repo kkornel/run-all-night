@@ -176,7 +176,8 @@ public class LoginActivity extends AppCompatActivity {
                                         Snackbar.LENGTH_LONG)
                                         .show();
                                 hideProgressDialog();
-                                return;
+                                // TODO uncomment - register also login instantly
+                                // return;
                             }
 
                             login(user);

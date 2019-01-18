@@ -476,7 +476,9 @@ public class WorkoutGpsDetails extends AppCompatActivity implements OnMapReadyCa
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        onBackPressed();
+                        // TODO: here changed
+                        // onBackPressed();
+                        finish();
                     }
                 })
                 .setNegativeButton(R.string.no, null).show();
