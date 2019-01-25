@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -40,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mConfirmPasswordEditText;
     private Button mRegisterButton;
     private Button mBackToLoginButton;
+
+    private TextView mInputValidationError;
 
     private FirebaseAuth mAuth;
 
@@ -74,6 +77,9 @@ public class RegisterActivity extends AppCompatActivity {
                 backToLogin(null);
             }
         });
+
+        mInputValidationError = findViewById(R.id.inputValidationError);
+        mInputValidationError.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -180,6 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void onRegisterClicked() {
         if (!validateForm()) {
+            mInputValidationError.setVisibility(View.VISIBLE);
             return;
         }
 
