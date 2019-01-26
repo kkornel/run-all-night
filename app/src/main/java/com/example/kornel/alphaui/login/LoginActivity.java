@@ -148,8 +148,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            login(user);
+
+        if (getIntent().getExtras() != null) {
+            String email = getIntent().getStringExtra(INTENT_EXTRA_USER_EMAIL);
+            mEmailEditText.setText(email);
+        } else {
+            if (user != null) {
+                if (user.isEmailVerified()) {
+                    login(user);
+                }
+            }
         }
     }
 
