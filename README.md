@@ -4,6 +4,6 @@ Mobile application for monitoring physical activity.
 
 ## Info
 
-Provides functionality for locating, tracking and monitoring indoors and outdoors acitivies.
+Provides functionality for locating, tracking and monitoring indoor and outdoor activities.
 
 Created for Android system using Java.
